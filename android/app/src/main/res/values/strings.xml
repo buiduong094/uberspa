@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">UberOne</string>
+    <string moduleConfig="true" name="CodePushDeploymentKey">9N626HRwdxKO6ps8ziUC1QeESl5oiTegGsGh8</string>
+</resources>

@@ -1,0 +1,15 @@
+export const ImageSource = {
+    logo: require('./images/uber.png'),
+    separetor: require('./images/separetor.png'),
+    google: require('./images/google.png'),
+    facebook: require('./images/facebook.png'),
+    apple: require('./images/apple.png'),
+    clinic: require('./images/Clinic.png'),
+    spa: require('./images/Spa.png'),
+    salon: require('./images/Salon.png'),
+    nail: require('./images/Nails.png'),
+    service: require('./images/service.png'),
+    bookmark: require('./images/bookmarStar.png'),
+    voucher: require('./images/Voucher.png'),
+    background: require('./images/background.png'),
+}

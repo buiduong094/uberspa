@@ -1,0 +1,16 @@
+export const ActionType = {
+    CHANGE_FORM_STAGE: 'auth/CHANGE_FORM_STAGE',
+    COMMITING_FORM: 'auth/COMMITING_FORM',
+    COMMITED_FORM: 'auth/COMMITED_FORM',
+    REQUEST_DATA:'auth/REQUEST_DATA',
+    RECEIVED_DATA: 'auth/RECEIVED_DATA',
+   
+    LOGIN: 'auth/LOGIN',
+    LOGGED: 'auth/LOGED',
+    
+    
+    LOGIN_FAIL: 'auth/LOGIN_FAIL',
+    CHANGE_STEP: 'auth/CHANGE_STEP',
+    REGISTER: 'auth/REGISTER',
+    FIELD_CHANGE: 'auth/FIELD_CHANGE',
+}
