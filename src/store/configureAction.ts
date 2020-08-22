@@ -1,11 +1,11 @@
 import { ContextState } from "./context/InitState";
-import { IState as CertState } from "./cert/InitState";
+import { State as ServiceState } from "store/service/InitState";
 
 
 
 export interface ApplicationState {
     ContextState: ContextState,
-    CertState: CertState
+    ServiceState: ServiceState
 
   }
 export interface IAction {

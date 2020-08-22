@@ -52,6 +52,7 @@ export const ActionCreators = {
             type: ActionType.REQUEST_ITEMS,
         });
         let response = await client.post(Endpoint.GET_NOTIFICATION, {server_key: SERVER_KEY});
+   
         if(response && response.status == 200) {
             const data = response?.data.data;
             dispatch({

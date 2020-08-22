@@ -19,7 +19,7 @@ interface UIProps {
     onChildPress?: Function
 }
 
-const NotificationItem = (props: UIProps) => {
+const UberItem = (props: UIProps) => {
     const { onPress, onRightPress, uistyle, type, item, childs, isExpand, selected, onChildPress } = props;
     const Stars = () => {
         const stars = new Array<any>();
@@ -193,7 +193,7 @@ const NotificationItem = (props: UIProps) => {
         </Container >
     )
 }
-export default NotificationItem;
+export default UberItem;
 const Container = styled.View`
 flex:1;
 backgroundColor:white;

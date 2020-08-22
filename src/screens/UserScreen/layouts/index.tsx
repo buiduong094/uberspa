@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { ApplicationState } from 'store/configureAction';
-import { ActionCreators as ReduxAction } from 'store/cert';
+
 import { RouteName } from 'constant';
 import { ImageSource } from 'assets';
 import { convertHeight } from 'utils/convertSize';
@@ -31,7 +31,7 @@ interface UIProps {
     onChangeImage?: Function
     showCamera?: boolean,
 }
-type Props = UIProps & typeof ReduxAction;
+type Props = UIProps;
 
 const UserScreen = (props: Props) => {
 
@@ -187,15 +187,13 @@ const UserScreen = (props: Props) => {
     )
 }
 const mapStateToProps = (state: ApplicationState) => ({
-    listItems: state.CertState.listItems,
+
     user: state.ContextState.user,
     showCamera: state.ContextState.showCamera
 })
 const mapDispatchToProps = {
-    RequestItems: ReduxAction.RequestItems,
-    RequestItem: ReduxAction.RequestItem,
-    onShowCamera: ContextActions.ShowCamera,
-    onChangeImage: ContextActions.ChangeImage
+
+
 };
 
 const withConnect = connect(

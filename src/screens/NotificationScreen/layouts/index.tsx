@@ -22,9 +22,7 @@ const Layout = () => {
     useEffect(() => {
       ActionCreators.REQUEST_ITEMS(dispatch)
     }, []);
-    useEffect(() => {
-      console.log('item', state.items)
-    }, [state.items]);
+ 
     return (
         <Container>
             <Header text='THÔNG BÁO'>

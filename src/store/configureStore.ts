@@ -2,18 +2,18 @@ import { InitState as ContextState } from './context/InitState';
 import { Reducer as ContextReducer } from './context/Reducer';
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import thunk from 'redux-thunk';
-import { Reducer as CertReducer, InitState as CertState } from './cert';
+import { Reducer as ServiceReducer, InitState as ServiceState } from 'store/service';
 
 import { ApplicationState } from './configureAction';
 
 
 const AllReducers = {
   ContextState: ContextReducer,
-  CertState: CertReducer
+  ServiceState: ServiceReducer
 }
 const AppState: ApplicationState = {
   ContextState: ContextState,
-  CertState: CertState
+  ServiceState: ServiceState
 };
 const rootReducers = combineReducers({ ...AllReducers })
 const middlewares = applyMiddleware(thunk);

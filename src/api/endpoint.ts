@@ -5,10 +5,13 @@ export const Endpoint = {
     LOGIN: `${BASE_API_URL}/login`,
     CREATE_CUSTOMER: `${BASE_API_URL}/create_customer`,
     CHANGE_PASSWORD: `${BASE_API_URL}/change_password?=`,
+
+    
     CREATE_SHOP: `${BASE_API_URL}/create_shop`,
     LOGOUT: `${BASE_API_URL}/logout`,
     GET_PRODUCT: `${BASE_API_URL}/getallproduct`,
     SEARCH_SHOP: `${BASE_API_URL}/searh_shop`,
+    SHOP_SERVICE: `${BASE_API_URL}/shop_services_detail`,
     SEARCH_SERVICE: `${BASE_API_URL}/searh_services`,
     SEARCH_NEAR_BY: `${BASE_API_URL}/searh_shop_near`,
     GET_SLIDER: `${BASE_API_URL}/get_image_home`,

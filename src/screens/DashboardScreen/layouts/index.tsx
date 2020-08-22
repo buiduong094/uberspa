@@ -21,30 +21,32 @@ import clientPermision from 'utils/clientPermission';
 import DeviceInfo from "react-native-device-info";
 import Geolocation from '@react-native-community/geolocation';
 import alertDefaultTitle from 'utils/alertDefaultTitle';
-interface UIProps {
-    user?: User,
-    active?: boolean,
-    inactiveMessage?: string,
-    RetrieveCode: Function
+import { ActionCreators as ServiceAction } from 'store/service';
+interface State {
+
+
 }
+type UIProps = State & typeof ServiceAction;
 const Layout = (props: UIProps) => {
     const navigation = useNavigation();
     const [state, dispatch] = useReducer(reducer, InitState);
 
     useEffect(() => {
         ActionCreators.GET_CAROUSEL(dispatch);
-        DeviceInfo.isLocationEnabled().then((enabled: boolean) => {
-            if (!enabled) {
-                alertDefaultTitle.show(MessageDefine.REQUIRE_OPEN_GPS, "Đồng ý")
-                return false;
-            } else {
-                clientPermision.GeoLocation().then(geoPermission => {
-                    if (geoPermission) {
-                        CurrentLocation();
-                    }
-                });
-            }
-        })
+        props.Services();
+        // DeviceInfo.isLocationEnabled().then((enabled: boolean) => {
+        //     if (!enabled) {
+        //         alertDefaultTitle.show(MessageDefine.REQUIRE_OPEN_GPS, "Đồng ý")
+        //         return false;
+        //     } else {
+        //         clientPermision.GeoLocation().then(geoPermission => {
+        //             if (geoPermission) {
+        //                 CurrentLocation();
+        //             }
+        //         });
+        //     }
+        // })
+        ActionCreators.REQUEST_NEAR_BY_SERVICES(dispatch, 0, 0);
     }, [])
 
     const CurrentLocation = async () => {
@@ -93,32 +95,48 @@ const Layout = (props: UIProps) => {
                         }
                     </Swiper>
                 </SlideWrapper>
-               
+
                 <WrapperStyled>
-                    <Title>Danh sách dịch vụ</Title>
+                    <FlexStyled>
+                        <Title>Danh sách dịch vụ</Title>
+                        <TouchableOpacity onPress={() => {
+                            navigation.navigate(RouteName.SERVICE)
+                        }}>
+                            <ViewMoreTitle >xem thêm</ViewMoreTitle>
+                        </TouchableOpacity>
+                    </FlexStyled>
+
                     <ServiceStyled >
-                        <ImageButton height={220} width={width / 3} source={ImageSource.clinic} ></ImageButton>
+                        <ImageButton onPress={() => {
+
+                        }} height={220} width={width / 3} source={ImageSource.clinic} ></ImageButton>
                         <WrapperStyled style={{ marginLeft: 10 }}>
-                            <ImageButton height={100} width={((width / 3) * 2) + 10} source={ImageSource.spa} ></ImageButton>
+                            <ImageButton onPress={() => {
+
+                            }} height={100} width={((width / 3) * 2) + 10} source={ImageSource.spa} ></ImageButton>
                             <WrapperStyled style={{ flexDirection: 'row', marginTop: 15 }}>
-                                <ImageButton height={100} width={width / 3} source={ImageSource.nail} containerStyle={{ marginRight: 15 }} ></ImageButton>
-                                <ImageButton height={100} width={width / 3} source={ImageSource.salon} ></ImageButton>
+                                <ImageButton onPress={() => {
+
+                                }} height={100} width={width / 3} source={ImageSource.nail} containerStyle={{ marginRight: 15 }} ></ImageButton>
+                                <ImageButton onPress={() => {
+
+                                }} height={100} width={width / 3} source={ImageSource.salon} ></ImageButton>
                             </WrapperStyled>
                         </WrapperStyled>
                     </ServiceStyled>
 
                 </WrapperStyled>
-                <WrapperStyled style={{ paddingBottom: 20 }}>
-                    
-                    
-                    <LoginButton
-                        uistyle={{ position: 'absolute', bottom: -0, alignSelf: 'center', width: 130 }}
-                        textstyle={{ fontSize: 16 }}
-                        text='ĐẶT NGAY'
-                        onPress={() => {
-                            navigation.navigate(RouteName.BOOKING);
-                        }}></LoginButton>
-                </WrapperStyled>
+
+
+
+                <LoginButton
+                    uistyle={{ marginVertical: 20, alignSelf: 'center', width: 130 }}
+                    textstyle={{ fontSize: 16 }}
+                    text='ĐẶT NGAY'
+                    onPress={() => {
+                        navigation.navigate(RouteName.BOOKING);
+                    }}></LoginButton>
+
 
                 <WrapperStyled>
                     <FlexStyled>
@@ -135,6 +153,10 @@ const Layout = (props: UIProps) => {
                                 <UberItem
                                     uistyle={{ marginBottom: 15 }}
                                     item={item}
+                                    onPress={(r) => {
+
+                                        navigation.navigate(RouteName.PACKAGESERVICE);
+                                    }}
                                     type={UberItemType.SERVICE} />
                             )
                         }
@@ -146,13 +168,11 @@ const Layout = (props: UIProps) => {
 }
 
 const mapStateToProps = (state: ApplicationState) => ({
-    active: state.ContextState.active,
-    user: state.ContextState.user,
-    inactiveMessage: state.ContextState.inactiveMessage
+
 })
 
 const mapDispatchToProps = {
-    RetrieveCode: ContextActions.RetrieveCode
+    ...ServiceAction
 };
 
 const withConnect = connect(
@@ -163,7 +183,7 @@ export default compose(withConnect)(Layout as any)
 const Container = styled.View`
 flex: 1;
 width:100%;
-background-color: #F6FBFB;
+background-color: #F2F2F2;
 height:100%;
 `;
 const Title = styled.Text`

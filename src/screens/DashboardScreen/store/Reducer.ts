@@ -20,24 +20,21 @@ interface ReceivedAction {
     type: string,
     data: any
 }
-interface CommitAction {
+interface FieldChangeAction {
     type: string,
+    fieldName: string,
+    fieldValue: any
 }
 interface CommitedAction {
     type: string,
 }
 
 
-type KnownAction = RequestAction | ReceivedAction | CommitAction | CommitedAction ;
+type KnownAction = RequestAction | ReceivedAction | FieldChangeAction | CommitedAction;
 
 
 export const ActionCreators = {
-    REQUEST_ITEMS: async (dispatch: React.Dispatch<KnownAction>, state: IState) => {
-        dispatch({
-            type: ActionType.REQUEST_ITEMS,
-            // data: geoMarkers
-        });
-    },
+  
     REQUEST_NEAR_BY_SERVICES: async (
         dispatch: React.Dispatch<KnownAction>,
         longitude: number,
@@ -45,12 +42,12 @@ export const ActionCreators = {
     ) => {
         const queryBody = {
             server_key: SERVER_KEY,
-          
+
             latitude: 20.958021,
             longitude: 107.091785
         };
         const response = await client.post(Endpoint.SEARCH_NEAR_BY, queryBody);
-        console.log(response);
+
         if (response && response.status == 200) {
             let realData = response?.data?.data?.listShop;
             dispatch({
