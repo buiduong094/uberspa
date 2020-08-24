@@ -6,6 +6,7 @@ import { IState } from './InitState';
 
 import { User } from 'models/user';
 import { BookingItem } from '../../../models/booking/index';
+import { Endpoint } from 'api/endpoint';
 interface RequestAction {
     type: string,
 }
@@ -41,15 +42,30 @@ type KnownAction = RequestAction | ReceivedAction | CommitAction | CommitedActio
 export const ActionCreators = {
 
     Loading: (dispatch: React.Dispatch<KnownAction>) => {
-        dispatch({
-            type: ActionType.LOADING
-        });
-        (async () => {
 
-        })();
 
     },
-    RequestItems: (dispatch: React.Dispatch<KnownAction>, state: IState) => {
+    RequestItems: (dispatch: React.Dispatch<KnownAction>, key: number) => {
+        (async () => {
+
+            dispatch({
+                type: ActionType.FIELD_CHANGE,
+                fieldName: 'items',
+                fieldValue: []
+            })
+            const response = await client.post(Endpoint.BOOKING_LIST, { status: key });
+            if (response && response.status == 200) {
+
+                let data = response.data.data as Array<any>;
+                console.log(data);
+                dispatch({
+                    type: ActionType.FIELD_CHANGE,
+                    fieldName: 'items',
+                    fieldValue: data
+                })
+
+            }
+        })();
     },
     FieldChange: (dispatch: React.Dispatch<KnownAction>, fieldName: string, fieldValue: any) => {
         dispatch({
@@ -58,7 +74,7 @@ export const ActionCreators = {
             fieldValue: fieldValue
         })
     },
-    DeleteItem: (dispatch: React.Dispatch<KnownAction>, id?: number) => {
+    CancelBooking: (dispatch: React.Dispatch<KnownAction>, id?: number) => {
         dispatch({
             type: ActionType.DELETE_ITEM,
             id: id,
@@ -86,11 +102,11 @@ export const reducer = (state: IState, incomingAction: KnownAction): IState => {
                 ...state,
                 [action.fieldName]: action.fieldValue
             };
-        case ActionType.DELETE_ITEM: 
+        case ActionType.DELETE_ITEM:
             action = incomingAction as DeleteAction;
             let data = [...state.items]
             const index = data.findIndex(elem => elem.id === action.id)
-            if(index !== -1) {
+            if (index !== -1) {
                 data.splice(index, 1)
             }
             return {

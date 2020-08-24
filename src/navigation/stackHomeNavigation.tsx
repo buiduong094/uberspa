@@ -3,7 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import {Layout as DashboardScreen} from 'screens/DashboardScreen';
 import {Layout as ServiceScreen} from 'screens/ServiceScreen';
 import {Layout as MapScreen} from 'screens/MapScreen';
-import {Layout as PackageServiceScreen} from 'screens/PackageServiceScreen';
+import  PackageServiceScreen from 'screens/PackageServiceScreen';
 import {Layout as CalendarScreen} from 'screens/CalendarScreen';
 // import {Layout as MapScreen} from 'screens/CalendarScreen';
 import { RouteName } from 'constant';

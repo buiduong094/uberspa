@@ -1,9 +1,11 @@
 
 export interface State {
     shop?: any,
-    
-    bookservice?: any,
+    activeServices?: any,
+    bookService?: any,
     shopServices?:any,
+    hasCoupon?: boolean,
+    couponValid?: boolean
 
 }
 export const InitState: State =

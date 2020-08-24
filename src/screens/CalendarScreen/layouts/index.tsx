@@ -18,10 +18,11 @@ import { TimeLine, Button, TextInputUI } from 'components';
 import * as Icon from 'constant/icons';
 import alertDefaultTitle from 'utils/alertDefaultTitle';
 import DateUI from 'components/DateUI';
-interface UIProps {
+import { ActionCreators as ServiceAction } from 'store/service';
+interface State {
 
 }
-
+type UIProps = State & typeof ServiceAction;
 
 const Layout = (props: UIProps) => {
     const [state, dispatch] = React.useReducer(reducer, InitState)

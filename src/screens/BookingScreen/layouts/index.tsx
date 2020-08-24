@@ -1,15 +1,16 @@
-import React, {useState, useEffect, useReducer} from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import styled from 'styled-components/native';
-import {Header, TabList, UberItem} from 'components';
-import {reducer, ActionCreators} from '../store/Reducer';
-import {InitState} from '../store/InitState';
-import {TagItem} from 'models/tag';
-import {convertHeight} from 'utils/convertSize';
-import {UberItemType} from 'constant';
+import { Header, TabList, UberItem, BookingItem } from 'components';
+import { reducer, ActionCreators } from '../store/Reducer';
+import { InitState } from '../store/InitState';
+import { TagItem } from 'models/tag';
+import { convertHeight } from 'utils/convertSize';
+import { UberItemType } from 'constant';
 import Swipeout from 'react-native-swipeout';
 import * as Icon from 'constant/icons';
 import alertDefaultTitle from 'utils/alertDefaultTitle';
 import { MessageDefine } from 'locales';
+
 type UIProps = {
   navigation?: any;
   style?: any;
@@ -17,41 +18,35 @@ type UIProps = {
 
 const Layout = (props: UIProps) => {
   const [state, dispatch] = useReducer(reducer, InitState);
-  const {style} = props;
+  const { style } = props;
 
-
+  useEffect(() => {
+    ActionCreators.RequestItems(dispatch, 1);
+  }, [])
 
   const onTabItemSelected = (item: TagItem, index: number) => {
+
     let tabLists = [...(state.tabItems ?? [])];
     tabLists.forEach((s, i) => {
       if (i == index) {
-        s.selected = item.selected;
+        s.selected = true;
       } else {
         s.selected = false;
       }
     });
 
     ActionCreators.FieldChange(dispatch, 'tabItems', tabLists);
+    ActionCreators.RequestItems(dispatch, Number(item.key));
+
   };
 
   let swipeBtns = [
-    {
-      component: (
-        <SwipeWrapper>
-          <Icon.Pencil color="#FFF" size={20} />
-          <RepairText>SỬA</RepairText>
-        </SwipeWrapper>
-      ),
-      backgroundColor: '#68D5FF',
-      onPress: () => {
-        console.log('Repair Item');
-      }, 
-    },
+
     {
       component: (
         <SwipeWrapper>
           <Icon.Remove color="#FFF" size={20} />
-          <DeleteText>HUỶ BỎ</DeleteText>
+          <DeleteText>HUỶ</DeleteText>
         </SwipeWrapper>
       ),
       backgroundColor: '#FF4F4F',
@@ -72,11 +67,7 @@ const Layout = (props: UIProps) => {
         />
       </Content>
       <ScrollWrapper>
-        {state.items.length == 0 && (
-          <NotFoundWrapper>
-            <TextNotFound>Bạn không có lịch đặt nào!</TextNotFound>
-          </NotFoundWrapper>
-        )}
+
         {state.items.length > 0 &&
           state.items.map((item: any) => (
             <Swipeout
@@ -84,9 +75,9 @@ const Layout = (props: UIProps) => {
               autoClose={true}
               backgroundColor="transparent"
               onOpen={() => ActionCreators.SelectItem(dispatch, item)}
-              >
-              <UberItem
-                uistyle={{marginBottom: 1, borderRadius: 0}}
+            >
+              <BookingItem
+                uistyle={{ marginBottom: 1, borderRadius: 0 }}
                 item={item}
                 type={UberItemType.BOOKING}
               />

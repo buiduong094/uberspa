@@ -36,12 +36,12 @@ export const ActionCreators = {
     Services: (): ThunkAction<KnowAction> => (dispatch, getState) => {
         (async () => {
             const response = await client.post(Endpoint.SEARCH_SERVICE, { page: 1, pagesize: 4 });
-            console.log(response);
+          
             if (response && response.data.status == 200) {
                 let data = response.data.data.listServices as Array<any>;
                 dispatch({
                     type: ActionType.FIELD_CHANGE,
-                    fieldName: 'shopServices',
+                    fieldName: 'activeServices',
                     fieldValue: data
                 })
             }
@@ -53,14 +53,41 @@ export const ActionCreators = {
     ServiceByShop: (shop: any): ThunkAction<KnowAction> => (dispatch, getState) => {
         (async () => {
 
-
-            const response = await client.post(Endpoint.SHOP_SERVICE, { shop_id: shop.id });
+            dispatch({
+                type: ActionType.FIELD_CHANGE,
+                fieldName: 'shop',
+                fieldValue: shop
+            })
+            const response = await client.post(Endpoint.SHOP_SERVICE, { shop_id: 1 });
             if (response && response.status == 200) {
+                console.log(response);
+                let data = response.data.data as Array<any>;
+                dispatch({
+                    type: ActionType.FIELD_CHANGE,
+                    fieldName: 'shopServices',
+                    fieldValue: data
+                })
 
             }
         })();
     },
     Booking: (): ThunkAction<KnowAction> => (dispatch, getState) => {
+    },
+    CouponValid: (coupon: string): ThunkAction<KnowAction> => (dispatch, getState) => {
+        (async()=>{
+
+        const response = await client.post(Endpoint.COUPON_VALID, { ma_giam_gia: coupon });
+            if (response && response.status == 200) {
+                let data = response.data.data as Array<any>;
+                dispatch({
+                    type: ActionType.FIELD_CHANGE,
+                    fieldName: 'shopServices',
+                    fieldValue: data
+                })
+
+            }
+
+        })();
     },
 
     FieldChange: (fieldName: string, fieldValue: string): ThunkAction<KnowAction> => (dispatch, getState) => {
@@ -81,7 +108,13 @@ export const Reducer: ReduxReducer<ContextState, KnowAction> =
         }
         let action;
         switch (incomingAction.type) {
-
+            case ActionType.COMITED_FORM:
+              
+                return {
+                    ...state,
+                     hasCoupon: false,
+                     couponValid:false
+                }
             case ActionType.FIELD_CHANGE:
                 action = incomingAction as FieldChangeAction;
                 return {

@@ -12,9 +12,11 @@ export const Endpoint = {
     GET_PRODUCT: `${BASE_API_URL}/getallproduct`,
     SEARCH_SHOP: `${BASE_API_URL}/searh_shop`,
     SHOP_SERVICE: `${BASE_API_URL}/shop_services_detail`,
+    COUPON_VALID:`${BASE_API_URL}/check_ma_giam_gia`,
     SEARCH_SERVICE: `${BASE_API_URL}/searh_services`,
     SEARCH_NEAR_BY: `${BASE_API_URL}/searh_shop_near`,
     GET_SLIDER: `${BASE_API_URL}/get_image_home`,
+    BOOKING_LIST:`${BASE_API_URL}/booking_customer_get_list`,
 
     USER_DETAIL: `${BASE_API_URL}/customer_detail`,
     USER_UPDATE: `${BASE_API_URL}/customer_update_profile`,

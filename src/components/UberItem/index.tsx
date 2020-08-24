@@ -50,7 +50,7 @@ const NotificationItem = (props: UIProps) => {
                     <ImageStyled
                         style={{ height: 56, width: 56, alignSelf: 'flex-start' }}
                         resizeMode='stretch'
-                        source={{ uri: item?.logo ?? 'https://benhvienthucuc.vn/wp-content/themes/benh-vien-thu-cuc-vn/assets/images/sec12_1.png' }}></ImageStyled>
+                        source={{ uri:  item?.logo ?? 'https://benhvienthucuc.vn/wp-content/themes/benh-vien-thu-cuc-vn/assets/images/sec12_1.png' }}></ImageStyled>
 
                     {
                         type == UberItemType.VOUCHER &&
@@ -76,8 +76,8 @@ const NotificationItem = (props: UIProps) => {
                                 <SubTitleStyled>{item?.address}</SubTitleStyled>
                             }
                             {
-                                item?.bookingName && type == UberItemType.BOOKING &&
-                                <BookingTitleStyled >{item?.bookingName}</BookingTitleStyled>
+                                type == UberItemType.BOOKING &&
+                                <BookingTitleStyled >{item?.bookingName ? item.bookingName : item.name}</BookingTitleStyled>
                             }
                             {
                                 item?.bookingDate && type == UberItemType.BOOKING &&

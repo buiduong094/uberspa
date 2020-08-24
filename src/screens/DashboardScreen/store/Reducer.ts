@@ -49,7 +49,9 @@ export const ActionCreators = {
         const response = await client.post(Endpoint.SEARCH_NEAR_BY, queryBody);
 
         if (response && response.status == 200) {
+        
             let realData = response?.data?.data?.listShop;
+            console.log(realData);
             dispatch({
                 type: ActionType.RECEIVE_NEAR_SERIVCE,
                 data: realData
