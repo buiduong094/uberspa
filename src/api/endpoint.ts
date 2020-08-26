@@ -17,6 +17,7 @@ export const Endpoint = {
     SEARCH_NEAR_BY: `${BASE_API_URL}/searh_shop_near`,
     GET_SLIDER: `${BASE_API_URL}/get_image_home`,
     BOOKING_LIST:`${BASE_API_URL}/booking_customer_get_list`,
+    BOOKING :`${BASE_API_URL}/customer_booking`,
 
     USER_DETAIL: `${BASE_API_URL}/customer_detail`,
     USER_UPDATE: `${BASE_API_URL}/customer_update_profile`,

@@ -52,7 +52,7 @@ const Layout = (props: UIProps) => {
       backgroundColor: '#FF4F4F',
       onPress: () => {
         alertDefaultTitle.show(MessageDefine.DELETE_BOOKING, 'Đóng', () => { }, 'Đồng ý', () => {
-          ActionCreators.DeleteItem(dispatch, state.itemSelected?.id)
+
         });
       }
     },
@@ -67,21 +67,26 @@ const Layout = (props: UIProps) => {
         />
       </Content>
       <ScrollWrapper>
-
         {state.items.length > 0 &&
           state.items.map((item: any) => (
-            <Swipeout
-              right={swipeBtns}
-              autoClose={true}
-              backgroundColor="transparent"
-              onOpen={() => ActionCreators.SelectItem(dispatch, item)}
-            >
+            item.status == 1 ?
+              <Swipeout
+                right={swipeBtns}
+                autoClose={true}
+                backgroundColor="transparent"
+                onOpen={() => ActionCreators.SelectItem(dispatch, item)}
+              >
+                <BookingItem
+                  uistyle={{ marginBottom: 1, borderRadius: 0 }}
+                  item={item}
+                  type={UberItemType.BOOKING}
+                />
+              </Swipeout> :
               <BookingItem
                 uistyle={{ marginBottom: 1, borderRadius: 0 }}
                 item={item}
                 type={UberItemType.BOOKING}
               />
-            </Swipeout>
           ))}
       </ScrollWrapper>
     </Container>

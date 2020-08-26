@@ -18,9 +18,16 @@ import { TimeLine, Button, TextInputUI } from 'components';
 import * as Icon from 'constant/icons';
 import alertDefaultTitle from 'utils/alertDefaultTitle';
 import DateUI from 'components/DateUI';
-import { ActionCreators as ServiceAction } from 'store/service';
-interface State {
 
+import { ActionCreators as ServiceAction } from 'store/service';
+import { ApplicationState } from 'store/configureAction';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import ReadOnlyText from 'components/ReadOnlyText';
+import { DialogMessage, MessageType } from 'models/message';
+import LoadingSpine from 'components/LoadingSpine';
+interface State {
+    message?: DialogMessage
 }
 type UIProps = State & typeof ServiceAction;
 
@@ -28,12 +35,26 @@ const Layout = (props: UIProps) => {
     const [state, dispatch] = React.useReducer(reducer, InitState)
     const navigation = useNavigation();
     useEffect(() => {
+        props.Loading();
         ActionCreators.Loading(dispatch);
 
     }, [])
+    useEffect(() => {
+        if (props.message && props.message.display) {
+            if (props.message.type != MessageType.Loading) {
+                if (props.message.type == MessageType.Success) {
+                    alertDefaultTitle.show(props.message?.message ? props.message.message : 'Đặt chỗ thành công vui lòng kiếm trả trong Lịch đặt', 'OK');
+
+                }
+                else {
+                    alertDefaultTitle.show(props.message?.message ? props.message.message : 'Đặt chỗ thất bại, vui lòng liên hệ quản trị', 'OK');
+                }
+            }
+
+        }
+    }, [props.message])
 
     const RenderTimeLine = () => {
-
         let calendars = new Array<any>();
         const length = state.timeLine?.length ?? 0;
         for (let i = 0; i < length; i = i + 4) {
@@ -44,23 +65,9 @@ const Layout = (props: UIProps) => {
                     {
                         cells?.map((item, index) => (
                             <TimeLine item={item} index={(index + j)} onPress={() => {
-                                let cloneTimeLine = state.timeLine?.slice() ?? [];
-                                let selectItem = cloneTimeLine[index + i];
-                                if (selectItem.stage == TimeStage.Available) {
-                                    selectItem.stage = TimeStage.Choosing;
-                                }
-                                else if (selectItem.stage == TimeStage.Locked) {
-
-                                }
-                                else {
-                                    selectItem.stage = TimeStage.Available;
-                                }
-
-                                ActionCreators.FieldChange(dispatch, 'timeLine', cloneTimeLine);
-
+                                ActionCreators.TimeChoice(dispatch, item, state);
                             }} />
                         ))
-
                     }
                 </Row>
             )
@@ -68,7 +75,6 @@ const Layout = (props: UIProps) => {
         return calendars;
 
     }
-
 
     return (
 
@@ -84,7 +90,7 @@ const Layout = (props: UIProps) => {
                     {
                         state.calender?.map((item) => (
                             <DateUI onPress={() => {
-
+                                ActionCreators.DateChoice(dispatch, item, state);
                             }} item={item}  ></DateUI>
                         ))
                     }
@@ -94,8 +100,6 @@ const Layout = (props: UIProps) => {
                 {
                     RenderTimeLine()
                 }
-
-
                 <Wrapper>
                     <CircleState state={TimeStage.Locked} title='Đã đặt'></CircleState>
                     <CircleState style={{ marginLeft: 15 }} state={TimeStage.Available} title='Còn trống'></CircleState>
@@ -106,43 +110,69 @@ const Layout = (props: UIProps) => {
                 </Wrapper>
 
 
-                <TextArea numberOfline={5} uistyle={{ marginTop: 15 }} placeholder='Ghi chú đặt lịch' onTextChange={() => { }} />
-                <TextWrapper>
-                    <TextTitle>Phương thức thanh toán</TextTitle>
+                <TextArea numberOfline={5} uistyle={{ marginTop: 15 }} placeholder='Ghi chú đặt lịch' onTextChange={(description: string) => {
+                    ActionCreators.FieldChange(dispatch, 'description', description)
+                }} />
+                <ReadOnlyText uistyle={{ marginTop: 15 }} text='Thanh toán tại cơ sở' title='Phương thức thanh toán' ></ReadOnlyText>
 
-                    <TextInputUI
-                    uistyle={{marginTop:10}}
-                        placeholder="Phương thức thanh toán "
-                        contentstyle={{ borderRadius: 5 }}
-                        type="text"
-                        keyboardType="default"
-                        onChangeText={() => {
-
-                        }}
-                    />
-                </TextWrapper>
                 <TextWrapper>
                     <TextTitle>Mã giảm giá</TextTitle>
-                    <TextInputUI
-                        placeholder="Mã giảm giá"
-                        uistyle={{marginTop:10}}
-                        contentstyle={{ borderRadius: 5 }}
-                        leftIcon={<Icon.Code size={25} color="#C2C2C2" />}
-                        type="text"
-                        keyboardType="default"
-                        onChangeText={() => {
-
-                        }}
-                    />
+                    <CouponStyled style={{ marginTop: 10, flex: 1 }}>
+                        <TextInputUI
+                            placeholder="Mã giảm giá"
+                            uistyle={{ flex: 1 }}
+                            textValue={state.coupon}
+                            contentstyle={{ borderRadius: 5 }}
+                            leftIcon={<Icon.Code size={25} color="#C2C2C2" />}
+                            type="text"
+                            keyboardType="default"
+                            onChangeText={(coupon) => {
+                                ActionCreators.FieldChange(dispatch, 'coupon', coupon)
+                            }}
+                        />
+                        <ButtonStyled onPress={() => {
+                            if (state.coupon) {
+                                props.CouponValid(state.coupon)
+                            }
+                        }}>
+                            <TextTitle style={{  color: 'white', textAlign:'center', alignSelf:'center' }}>Áp dụng</TextTitle>
+                        </ButtonStyled>
+                    </CouponStyled>
                 </TextWrapper>
 
-                <Button uistyle={{ marginHorizontal: 0, marginVertical: 20 }} text='Hoàn tất' onPress={() => alert('Thành công')}></Button>
-            </ScrollWrapper>
 
+                <Button uistyle={{ marginHorizontal: 0, marginVertical: 20 }} text='Hoàn tất' onPress={() => {
+                    if (state.timeSelected && state.dateSelected) {
+                        props.Booking(state.dateSelected, state.timeSelected, state.coupon, state.description);
+                    }
+                    else {
+                        alertDefaultTitle.show('Chưa chọn thời gian', 'Đóng');
+                    }
+                }}></Button>
+            </ScrollWrapper>
+         
+            {
+                (props.message?.display && props.message.type == MessageType.Loading) &&
+                <LoadingSpine />
+            }
+           
         </Container>
     );
 }
-export default Layout;
+const mapStateToProps = (state: ApplicationState) => ({
+    services: state.ServiceState.shopServices,
+    message: state.ServiceState.message
+})
+
+const mapDispatchToProps = {
+    ...ServiceAction
+};
+
+const withConnect = connect(
+    mapStateToProps,
+    mapDispatchToProps
+);
+export default compose(withConnect)(Layout as any)
 
 const Container = styled.View`
 
@@ -165,7 +195,9 @@ marginTop:15px;
 justifyContent:space-between;
 `;
 const Wrapper = styled.View`
+flex:1;
 flex-direction:row;
+
 marginTop:15px;
 `;
 const DateWrapper = styled.ScrollView`
@@ -174,4 +206,19 @@ marginVertical:15px;
 `;
 const TextWrapper = styled.View`
 marginTop:15px;
+justifyContent:center;
+`;
+const CouponStyled = styled.View`
+alignItems:center;
+flex-direction:row;
+justifyContent:space-between;`;
+const ButtonStyled = styled.TouchableOpacity`
+marginLeft:15px;
+padding:5px;
+alignContent:center;
+alignItems:center;
+background: #65DF7B;
+borderRadius:5px;
+ height:48px;
+ justifyContent:center;
 `;

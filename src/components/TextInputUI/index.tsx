@@ -66,7 +66,6 @@ export default TextInputUI;
 const Container = styled.View`
 `;
 const Wrapper = styled.View`
-
 height:48px;
 borderWidth: 1;
 borderRadius: 24;

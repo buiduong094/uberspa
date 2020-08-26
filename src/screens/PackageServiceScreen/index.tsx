@@ -11,7 +11,7 @@ import { ApplicationState } from 'store/configureAction';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 
-interface State  {
+interface State {
 
     services?: any[]
 }
@@ -19,7 +19,7 @@ type UIProps = State & typeof ServiceAction;
 
 
 const Layout = (props: UIProps) => {
-  
+
     const navigation = useNavigation();
 
     return (
@@ -29,12 +29,14 @@ const Layout = (props: UIProps) => {
                 titleStyle={{ marginLeft: -30 }}
                 navigation={navigation}>
             </Header>
-
             <TextStyled>Quý khách vui lòng chọn gói dịch vụ muốn sử dụng</TextStyled>
             <ScrollWrapper>
                 {
-                    props.services &&  props.services?.map((item) =>
+                    props.services && props.services?.map((item) =>
                         <UberItem
+                            onPress={() => {
+                                props.FieldChange('bookService', item);
+                            }}
                             uistyle={{ marginBottom: 15, }}
                             item={item}
                             type={UberItemType.PACKAGESERVICE}

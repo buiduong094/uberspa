@@ -103,6 +103,7 @@ export default function Layout() {
   const Filter = () => {
 
     return (<Content>
+
       {
         state.step == 1 &&
         <ContentStep>
@@ -112,7 +113,7 @@ export default function Layout() {
             icon={<Icon.Address size={20} color='#C2C2C2' />}
           ></SearchInput>
           <Title text="Dịch vụ" titleStyle={{ marginVertical: 10 }}></Title>
-          <ScrollWrapper>
+          <ScrollWrapper showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false}>
             {
               state.services &&
               <ServiceWrapper>
@@ -210,6 +211,7 @@ export default function Layout() {
       <BackButton onPress={goBack}>
         <Icon.Back size={27}></Icon.Back>
       </BackButton>
+
       {
         (state.step == 1 || state.step == 2) && Filter()
       }
@@ -236,7 +238,10 @@ const Container = styled.View`
   height:100%;
 `;
 const Content = styled.View`
-flex:1;
+position:absolute;
+height:40%;
+width:100%;
+bottom:0;
 background-color: #FFFF;
 padding:15px;
 borderRadius:10;
