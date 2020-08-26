@@ -1,10 +1,11 @@
 export enum MessageType {
     Success,
     Pending,
-    Error
+    Error,
+    Loading
 }
 
-export interface FormMessage {
+export interface DialogMessage {
     type?: MessageType,
     message?: string,
     display?: boolean

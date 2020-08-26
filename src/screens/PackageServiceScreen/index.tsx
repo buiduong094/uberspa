@@ -2,26 +2,25 @@ import React, { useState, useEffect, useReducer } from 'react';
 import styled from 'styled-components/native';
 import { Header, SearchInput, UberItem, Button } from 'components';
 import { useNavigation } from '@react-navigation/native';
-import { reducer } from '../store/Reducer';
-import { InitState } from '../store/InitState';
+
 import { UberItemType, RouteName } from 'constant';
 import { Dimensions } from 'react-native';
 import * as Icon from 'constant/icons';
+import { ActionCreators as ServiceAction } from 'store/service';
+import { ApplicationState } from 'store/configureAction';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
 
-type UIProps = {
+interface State {
 
-    text?: string,
-    hasText?: boolean,
-    navigation?: any,
-    style?: any,
-    children?: any,
-    step?: number,
-    resetStep?: Function,
+    services?: any[]
 }
+type UIProps = State & typeof ServiceAction;
+
+
 const Layout = (props: UIProps) => {
-    const { style } = props;
+
     const navigation = useNavigation();
-    const [state, dispatch] = useReducer(reducer, InitState);
 
     return (
         <Container >
@@ -30,12 +29,14 @@ const Layout = (props: UIProps) => {
                 titleStyle={{ marginLeft: -30 }}
                 navigation={navigation}>
             </Header>
-
             <TextStyled>Quý khách vui lòng chọn gói dịch vụ muốn sử dụng</TextStyled>
             <ScrollWrapper>
                 {
-                    state.services?.length > 0 && state.services?.map((item) =>
+                    props.services && props.services?.map((item) =>
                         <UberItem
+                            onPress={() => {
+                                props.FieldChange('bookService', item);
+                            }}
                             uistyle={{ marginBottom: 15, }}
                             item={item}
                             type={UberItemType.PACKAGESERVICE}
@@ -49,7 +50,19 @@ const Layout = (props: UIProps) => {
         </Container>
     )
 }
-export default Layout;
+const mapStateToProps = (state: ApplicationState) => ({
+    services: state.ServiceState.shopServices
+})
+
+const mapDispatchToProps = {
+    ...ServiceAction
+};
+
+const withConnect = connect(
+    mapStateToProps,
+    mapDispatchToProps
+);
+export default compose(withConnect)(Layout as any)
 const Container = styled.View`
 flex:1;
 backgroundColor: #F2F2F2;

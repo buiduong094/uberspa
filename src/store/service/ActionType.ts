@@ -1,4 +1,6 @@
 export const ActionType = {
-    LOADING: "context/LOADING",
-    FIELD_CHANGE: 'context/FIELD_CHANGE'
+    LOADING: "component/LOADING",
+    FIELD_CHANGE: 'component/FIELD_CHANGE',
+    COMITED_FORM:'component/COMMITED_FORM'
+
 }

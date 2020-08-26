@@ -16,6 +16,7 @@ import TimeLine from './TimeLine';
 import MessageItem from './MessageChat';
 import TextInputFormikUI from './TextInputFormik'
 import Camera from './Camera'
+import BookingItem from './BookingItem'
 
 export {
     Header,
@@ -35,5 +36,6 @@ export {
     TimeLine,
     MessageItem,
     TextInputFormikUI,
-    Camera
+    Camera,
+    BookingItem
 }

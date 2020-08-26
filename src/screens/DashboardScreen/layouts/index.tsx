@@ -154,7 +154,7 @@ const Layout = (props: UIProps) => {
                                     uistyle={{ marginBottom: 15 }}
                                     item={item}
                                     onPress={(r) => {
-
+                                        props.ServiceByShop(item);
                                         navigation.navigate(RouteName.PACKAGESERVICE);
                                     }}
                                     type={UberItemType.SERVICE} />
