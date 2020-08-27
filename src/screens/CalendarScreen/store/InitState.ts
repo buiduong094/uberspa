@@ -169,7 +169,7 @@ export interface IState {
     dateSelected?: CalendarDate,
     coupon?:string,
     description?: string,
-    message?: DialogMessage
+ 
 
 }
 
@@ -177,7 +177,6 @@ export const InitState: IState = {
 
 
     loading: true,
-    note: 'Vui lòng chọn thời  gian sử dụng dịch vụ',
-
+    note: 'Vui lòng chọn thời gian sử dụng dịch vụ',
     timeLine: DefaultTimeLine
 }

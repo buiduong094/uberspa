@@ -5,12 +5,12 @@ import { useNavigation } from '@react-navigation/native';
 import * as Icon from 'constant/icons';
 import { reducer } from '../../store/Reducer';
 import { InitState } from '../../store/InitState';
-import { UberItem, MessageItem, TextInputUI, ModalUI } from 'components';
+import { UberItem, MessageItem, TextInputUI, ModalUI, Camera } from 'components';
 import { UberItemType } from 'constant';
 import { convertHeight } from 'utils/convertSize';
 import { ActionCreators } from 'screens/MessageScreen/store/Reducer';
 import { Message } from 'models/message';
-import { Dimensions, KeyboardAvoidingView, Platform ,Keyboard, FlatList, TextInput} from 'react-native';
+import { Dimensions, KeyboardAvoidingView, Platform, Keyboard, FlatList, TextInput } from 'react-native';
 import { User } from 'models/user';
 import { ApplicationState } from 'store/configureAction';
 import { connect } from 'react-redux';
@@ -24,7 +24,7 @@ const Layout = (props: UIProps) => {
     const [state, dispatch] = useReducer(reducer, InitState);
     const flatListRef = useRef<FlatList | null>(null)
     useEffect(() => {
-        if(state.isSent) {
+        if (state.isSent) {
             ActionCreators.ChangeText(dispatch, '')
         }
     }, [state.isSent]);
@@ -34,9 +34,9 @@ const Layout = (props: UIProps) => {
 
     const sendMessage = () => {
         const message = {
-            _id: '1' ,
+            _id: '1',
             created: new Date().toDateString(),
-            message: state.message ,
+            message: state.message,
             // avatar: props.user?.avatar,
             // sender: props.user?.email,
             sender: 'abc',
@@ -44,60 +44,84 @@ const Layout = (props: UIProps) => {
             supporter: '0'
         }
         Keyboard.dismiss();
-        if(state.message && state.message != null) {
+        if (state.message && state.message != null) {
             ActionCreators.SendMessage(dispatch, message)
         }
         goIndex()
     }
     const goIndex = () => {
-        flatListRef.current?.scrollToIndex({animated: true, index: state.messageItems.length - 1});
+        flatListRef.current?.scrollToIndex({ animated: true, index: state.messageItems.length - 1 });
     };
-    
-    
+
+    const onCameraImageChange = (sources: any) => {
+        // const images = state.warning ? state.warning['IMG_NOIDUNGBAOCAO'] : [];
+        // let cloneImages = [...images ?? []];
+        // cloneImages = cloneImages.concat(sources);
+
+        // ActionCreators.FIELD_CHANGE(dispatch, 'warning.IMG_NOIDUNGBAOCAO', cloneImages);
+        // ActionCreators.FIELD_CHANGE(dispatch, 'showCamera', false);
+        ActionCreators.FIELD_CHANGE(dispatch, 'showCamera', false);
+    }
+
+    const onCameraTakeImage = (sources: any) => {
+        // const images = state.warning ? state.warning['IMG_NOIDUNGBAOCAO'] : [];
+        // const cloneImages = [...images ?? [], sources];
+        // ActionCreators.FIELD_CHANGE(dispatch, 'warning.IMG_NOIDUNGBAOCAO', cloneImages);
+        ActionCreators.FIELD_CHANGE(dispatch, 'showCamera', false);
+    }
+
     const ShowModal = () => {
         return (
-            <ModalUI height='100%' display={state.showModal ? state.showModal : false} setVisibleModel={() => {}}>
-                <WrapperStyled>
-                    <RemoveIcon
-                        onPress={() => ActionCreators.ShowModal(dispatch, false)}>
-                        <Icon.Remove size={20} color="#FFF" />
-                    </RemoveIcon>
-                    <TitleStyled>Nội dung và công cụ</TitleStyled>
-                </WrapperStyled>
-                <WrapperModal 
-                    onPress={() => {}}>
-                    <WrapImage>
-                        <Icon.Image size={25} color="#FFF" />
-                    </WrapImage>
-                    <WrapText>
-                        <TextTitle>Ảnh</TextTitle>
-                        <TextContent>Chia sẻ ảnh</TextContent>
-                    </WrapText>
-                </WrapperModal>  
-                <WrapperModal 
-                    onPress={() => {}}>
-                    <WrapImage>
-                        <Icon.Video size={25} color="#FFF" />
-                    </WrapImage>
-                    <WrapText>
-                        <TextTitle>Video</TextTitle>
-                        <TextContent>Chia sẻ video</TextContent>
-                    </WrapText>
-                </WrapperModal>  
-                <WrapperModal 
-                    onPress={() => {}}>
-                    <WrapImage>
-                        <Icon.File size={25} color="#FFF" />
-                    </WrapImage>
-                    <WrapText>
-                        <TextTitle>Tệp</TextTitle>
-                        <TextContent>Chia sẻ tệp</TextContent>
-                    </WrapText>
-                </WrapperModal>  
+            <ModalUI height={'auto'} display={state.showModal ? state.showModal : false} setVisibleModel={() => { }}>
+                <ContentWrapper>
+                    <WrapperStyled>
+                        <RemoveIcon
+                            onPress={() => ActionCreators.ShowModal(dispatch, false)}>
+                            <Icon.Remove size={20} color="#FFF" />
+                        </RemoveIcon>
+                        <TitleStyled>Nội dung và công cụ</TitleStyled>
+                    </WrapperStyled>
+                    <WrapperModal
+                        onPress={() => {
+                            ActionCreators.FIELD_CHANGE(dispatch, 'showModal', false);
+                            ActionCreators.FIELD_CHANGE(dispatch, 'showCamera', true);
+                        }}>
+                        <WrapImage>
+                            <Icon.Image size={25} color="#FFF" />
+                        </WrapImage>
+                        <WrapText>
+                            <TextTitle>Ảnh</TextTitle>
+                            <TextContent>Chia sẻ ảnh</TextContent>
+                        </WrapText>
+                    </WrapperModal>
+                    <WrapperModal
+                        onPress={() => { 
+                            ActionCreators.FIELD_CHANGE(dispatch, 'showModal', false);
+                            ActionCreators.FIELD_CHANGE(dispatch, 'showVideo', true);
+                        }}>
+                        <WrapImage>
+                            <Icon.Video size={25} color="#FFF" />
+                        </WrapImage>
+                        <WrapText>
+                            <TextTitle>Video</TextTitle>
+                            <TextContent>Chia sẻ video</TextContent>
+                        </WrapText>
+                    </WrapperModal>
+                    <WrapperModal
+                        onPress={() => { }}>
+                        <WrapImage>
+                            <Icon.File size={25} color="#FFF" />
+                        </WrapImage>
+                        <WrapText>
+                            <TextTitle>Tệp</TextTitle>
+                            <TextContent>Chia sẻ tệp</TextContent>
+                        </WrapText>
+                    </WrapperModal>
+                </ContentWrapper>
             </ModalUI>
         )
     }
-    
+
     return (
         <KeyboardAvoidingView
             style={{ flex: 1, justifyContent: 'flex-end' }}
@@ -109,8 +133,8 @@ const Layout = (props: UIProps) => {
                     titleStyle={{ marginLeft: -30 }}
                     navigation={navigation}>
                 </Header>
-                <FlatList 
-                    style={{ paddingHorizontal:15 }}
+                <FlatList
+                    style={{ paddingHorizontal: 15 }}
                     data={state.messageItems}
                     renderItem={({ item }) => (
                         <MessageItem
@@ -121,17 +145,17 @@ const Layout = (props: UIProps) => {
                     )}
                     ref={flatListRef}
                     keyExtractor={item => item.index}
-                    
+
                 />
                 <InputMessage>
-                    <WrapPlus onPress={() =>{
+                    <WrapPlus onPress={() => {
                         ActionCreators.ShowModal(dispatch, true)
                     }}>
                         <Icon.Plus size={25} color="#AFAFAF" />
                     </WrapPlus>
                     <TextInputUI
                         placeholder="Nội dung trò chuyện"
-                        uistyle={{ flex:1 }}
+                        uistyle={{ flex: 1 }}
                         contentstyle={{ borderWidth: 0 }}
                         type="text"
                         keyboardType="default"
@@ -144,7 +168,29 @@ const Layout = (props: UIProps) => {
                         <Icon.Send size={26} color="#65DF7B"></Icon.Send>
                     </SendIcon>
                 </InputMessage>
-                { ShowModal() }
+                {ShowModal()}
+                {
+                    state.showCamera &&
+                    <Camera
+                        type={1}
+                        onClose={() => {
+                            ActionCreators.FIELD_CHANGE(dispatch, 'showCamera', false);
+                        }}
+                        onCature={onCameraTakeImage}
+                        onSelectImages={onCameraImageChange}
+                    ></Camera>
+                }
+                {
+                    state.showVideo &&
+                    <Camera
+                        type={2}
+                        onClose={() => {
+                            ActionCreators.FIELD_CHANGE(dispatch, 'showCamera', false);
+                        }}
+                        onCature={onCameraTakeImage}
+                        onSelectImages={onCameraImageChange}
+                    ></Camera>
+                }
             </Container >
         </KeyboardAvoidingView>
     );
@@ -231,5 +277,7 @@ color: #FFF;
 text-align: center;
 width: 90%;
 `;
-
+const ContentWrapper = styled.View`
+backgroundColor: #20232A;
+`;
 
