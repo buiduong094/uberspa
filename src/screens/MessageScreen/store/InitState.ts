@@ -8,12 +8,16 @@ export interface IState {
   message?: string,
   isSent?: boolean,
   showModal?: boolean,
-  loading: boolean
+  loading: boolean,
+  showCamera: boolean,
+  showVideo: boolean,
 }
 export const InitState: IState = {
   conversations: [],
   messageItems: [],
   isSent: false,
   showModal: false,
-  loading: false
+  loading: false,
+  showCamera: false,
+  showVideo: false
 }
