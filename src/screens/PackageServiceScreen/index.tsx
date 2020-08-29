@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useReducer } from 'react';
 import styled from 'styled-components/native';
-import { Header, SearchInput, UberItem, Button } from 'components';
+import { Header, ServiceItem, UberItem, Button } from 'components';
 import { useNavigation } from '@react-navigation/native';
 
 import { UberItemType, RouteName } from 'constant';
@@ -33,7 +33,7 @@ const Layout = (props: UIProps) => {
             <ScrollWrapper>
                 {
                     props.services && props.services?.map((item) =>
-                        <UberItem
+                        <ServiceItem
                             onPress={() => {
                                 props.FieldChange('bookService', item);
                             }}
@@ -70,17 +70,8 @@ backgroundColor: #F2F2F2;
 const ScrollWrapper = styled.ScrollView`
 padding:15px;
 `;
-const TextWrapper = styled.View`
-marginBottom: 10px
-`;
+
 const TextStyled = styled.Text`
 marginTop: 10px;
 marginLeft: 15px
-`;
-const SearchBar = styled.View`
-flexDirection:row;
-alignItems: center;
-`;
-const IconWrapper = styled.TouchableOpacity`
-marginLeft: 10;
 `;

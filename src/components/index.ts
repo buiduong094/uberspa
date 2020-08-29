@@ -17,6 +17,7 @@ import MessageItem from './MessageChat';
 import TextInputFormikUI from './TextInputFormik'
 import Camera from './Camera'
 import BookingItem from './BookingItem'
+import ServiceItem from './ServiceItem'
 
 export {
     Header,
@@ -37,5 +38,6 @@ export {
     MessageItem,
     TextInputFormikUI,
     Camera,
-    BookingItem
+    BookingItem,
+    ServiceItem
 }
