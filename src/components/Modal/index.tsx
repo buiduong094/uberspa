@@ -6,7 +6,7 @@ import styled from 'styled-components/native';
 
 export interface UIProps {
     display: boolean,
-    height: string,
+    height: string | number,
     setVisibleModel: Function,
     children?: any
 }
@@ -50,12 +50,11 @@ export default ModalUI;
 
 const Container = styled.View`
     flex: 1;
-    marginTop: 550;
 `;
 
 const HighlightWrapper = styled.TouchableHighlight`
     flex: 1;
-    background-color: #20232A;
+    background-color: #00000077;
     flex-direction:row;
     alignItems:flex-end;
 

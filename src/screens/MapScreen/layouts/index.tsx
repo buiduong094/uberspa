@@ -10,7 +10,7 @@ import { ActionCreators, reducer, InitState } from '../store';
 import Geolocation from '@react-native-community/geolocation';
 import DeviceInfo from "react-native-device-info";
 import * as Icon from 'constant/icons';
-import { SearchInput, ImageButton, UberItem, LoginButton } from 'components';
+import { SearchInput, ImageButton, UberItem, LoginButton, ModalUI } from 'components';
 import Title from 'components/Title';
 import { ImageButtonType, UberItemType } from 'constant';
 import TextInputUI from 'components/TextInputUI';
@@ -27,7 +27,7 @@ export default function Layout() {
   useEffect(() => {
     ActionCreators.Loading(dispatch, state.bodySearch);
     if (Platform.OS == 'android')
-      MapboxGL.setTelemetryEnabled(false);
+      MapboxGL.setTelemetryEnabled(true);
     DeviceInfo.isLocationEnabled().then((enabled: boolean) => {
       if (!enabled) {
         alertDefaultTitle.show(MessageDefine.REQUIRE_OPEN_GPS, "Đồng ý")
@@ -107,7 +107,11 @@ export default function Layout() {
       {
         state.step == 1 &&
         <ContentStep>
-          <Title text="Địa điểm" titleStyle={{ marginBottom: 10 }}></Title>
+          <DialogHeader>
+            <Title text="Địa điểm" titleStyle={{ marginBottom: 10 }}></Title>
+
+            <Icon.Close color='black' size={22} />
+          </DialogHeader>
           <SearchInput
             placeHolder=""
             icon={<Icon.Address size={20} color='#C2C2C2' />}
@@ -173,7 +177,7 @@ export default function Layout() {
             placeholder="Nội dung ghi chú"
             contentstyle={{ backgroundColor: '#F4F5F6' }}
           />
-          <ButtonWrapper>
+          <BookingWrapper>
             <VoucherWrapper>
               <VoucherBorder>
                 <Voucher
@@ -191,7 +195,7 @@ export default function Layout() {
               textstyle={{ fontSize: 18 }}
               text='ĐẶT NGAY'
               onPress={onBooking}></LoginButton>
-          </ButtonWrapper>
+          </BookingWrapper>
         </ScrollWrapper>
       }
     </Content>)
@@ -199,7 +203,7 @@ export default function Layout() {
   }
   return (
     <Container>
-      <MapboxGL.MapView
+      <MapboxGL.MapView logoEnabled={false} attributionEnabled={false}
         style={{ flex: 1 }}
         zoomEnabled={true}
       >
@@ -212,9 +216,14 @@ export default function Layout() {
         <Icon.Back size={27}></Icon.Back>
       </BackButton>
 
-      {
-        (state.step == 1 || state.step == 2) && Filter()
-      }
+        {
+          (state.step == 1 || state.step == 2) &&
+          <ModalUI display={state.display?? true}>
+            {
+              Filter()
+            }
+          </ModalUI>
+        }
       {
         state.step == 3 && state.loadingConfirm &&
         <ConfirmWrapper>
@@ -238,8 +247,7 @@ const Container = styled.View`
   height:100%;
 `;
 const Content = styled.View`
-position:absolute;
-height:40%;
+
 width:100%;
 bottom:0;
 background-color: #FFFF;
@@ -249,6 +257,14 @@ borderRadius:10;
 const ContentStep = styled.View``;
 const ScrollWrapper = styled.ScrollView`
 
+`;
+const DialogHeader = styled.View`
+flexDirection:row;
+justifyContent:space-between;
+borderBottomWidth:1px;
+borderColor:#D8D8D8;
+paddingBottom:10px;
+marginBottom:10px;
 `;
 const BackButton = styled.TouchableOpacity`
 position: absolute;
@@ -265,7 +281,7 @@ alignItems:center;
 justifyContent:space-between;
 flex:1
 `;
-const ButtonWrapper = styled.View`
+const BookingWrapper = styled.View`
 flexDirection:row;
 alignItems:center;
 justifyContent:space-between;

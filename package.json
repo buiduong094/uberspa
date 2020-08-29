@@ -25,10 +25,10 @@
     "@react-navigation/native": "^5.0.1",
     "@react-navigation/native-stack": "^5.0.3",
     "@react-navigation/stack": "^5.0.1",
-
     "axios": "^0.19.2",
     "formik": "^2.1.4",
     "lodash": "^4.17.15",
+    "native-base": "^2.13.13",
     "react": "16.11.0",
     "react-native": "^0.62.2",
     "react-native-camera": "^3.28.0",
@@ -48,11 +48,11 @@
     "react-redux": "^7.2.0",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
+    "rn-fetch-blob": "^0.12.0",
     "rn-placeholder": "^3.0.0",
     "styled-components": "^4.3.2",
     "typescript": "^3.9.7",
-    "yup": "^0.27.0",
-    "native-base":"^2.13.13"
+    "yup": "^0.27.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
@@ -63,7 +63,6 @@
     "@babel/plugin-transform-runtime": "7.5.5",
     "@babel/preset-typescript": "^7.3.3",
     "@babel/runtime": "^7.10.2",
- 
     "@react-native-community/eslint-config": "^2.0.0",
     "@types/axios": "~0.14.0",
     "@types/navigation": "5.1.0",
