@@ -25,6 +25,7 @@ export const RouteName = {
 	PACKAGESERVICE: 'PACKAGESERVICE',
 	MAP:'MAP',
 	FORGOT_PASSWORD: 'FORGOT_PASSWORD',
+	PREMESIE: 'PREMESIE'
 
 }
 export const FieldName = {

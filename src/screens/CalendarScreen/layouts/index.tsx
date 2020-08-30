@@ -26,6 +26,7 @@ import { compose } from 'redux';
 import ReadOnlyText from 'components/ReadOnlyText';
 import { DialogMessage, MessageType } from 'models/message';
 import LoadingSpine from 'components/LoadingSpine';
+import { RouteName } from 'constant';
 interface State {
     message?: DialogMessage
 }
@@ -37,20 +38,17 @@ const Layout = (props: UIProps) => {
     useEffect(() => {
         props.Loading();
         ActionCreators.Loading(dispatch);
-
     }, [])
     useEffect(() => {
         if (props.message && props.message.display) {
             if (props.message.type != MessageType.Loading) {
                 if (props.message.type == MessageType.Success) {
                     alertDefaultTitle.show(props.message?.message ? props.message.message : 'Đặt chỗ thành công vui lòng kiếm trả trong Lịch đặt', 'OK');
-
                 }
                 else {
                     alertDefaultTitle.show(props.message?.message ? props.message.message : 'Đặt chỗ thất bại, vui lòng liên hệ quản trị', 'OK');
                 }
             }
-
         }
     }, [props.message])
 
@@ -82,6 +80,12 @@ const Layout = (props: UIProps) => {
             <Header text='Chọn thời gian' navigation={navigation} >
             </Header>
             <ScrollWrapper showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false}>
+                <Wrapper>
+                    <TextTitle>Thông tin shop</TextTitle>
+                    <Button uistyle={{ marginHorizontal: 0, marginVertical: 20 }} text='Hoàn tất' onPress={() => {
+                        navigation.navigate(RouteName.PREMESIE);
+                    }}></Button>
+                </Wrapper>
                 <Wrapper>
                     <TextTitle>Dịch vụ đã chọn:</TextTitle>
                 </Wrapper>
@@ -135,7 +139,7 @@ const Layout = (props: UIProps) => {
                                 props.CouponValid(state.coupon)
                             }
                         }}>
-                            <TextTitle style={{  color: 'white', textAlign:'center', alignSelf:'center' }}>Áp dụng</TextTitle>
+                            <TextTitle style={{ color: 'white', textAlign: 'center', alignSelf: 'center' }}>Áp dụng</TextTitle>
                         </ButtonStyled>
                     </CouponStyled>
                 </TextWrapper>
@@ -150,12 +154,12 @@ const Layout = (props: UIProps) => {
                     }
                 }}></Button>
             </ScrollWrapper>
-         
+
             {
                 (props.message?.display && props.message.type == MessageType.Loading) &&
                 <LoadingSpine />
             }
-           
+
         </Container>
     );
 }

@@ -157,9 +157,7 @@ const data = response.data;
 
         })();
     },
-
     FieldChange: (fieldName: string, fieldValue: any): ThunkAction<KnowAction> => (dispatch, getState) => {
-
         dispatch({
             type: ActionType.FIELD_CHANGE,
             fieldName: fieldName,
@@ -177,7 +175,6 @@ export const Reducer: ReduxReducer<State, KnowAction> =
         let action;
         switch (incomingAction.type) {
             case ActionType.LOADING:
-
                 return {
                     ...state,
                     commited: false,

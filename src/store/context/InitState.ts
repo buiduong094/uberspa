@@ -12,9 +12,7 @@ export interface ContextState {
     user?: User,
     loading?: boolean,
     active?: boolean,
-    inactiveMessage?: string,
-    activeCode?: string,
-    activeBody?: any,
+  
 
     searchName?: string // search shop by name
     fieldImage?: string,
@@ -30,11 +28,6 @@ export const InitState: ContextState =
     locale: 'VN',
     loading: false,
     active: false,
-    inactiveMessage: 'Bạn cần kích hoạt tài khoản \n để xác thực chứng thư.',
-    activeBody: {
-        agreementUUID: "",
-        relyingPartyBillCode: "",
-        language: "EN"
-    },
+  
     showCamera: false
 }

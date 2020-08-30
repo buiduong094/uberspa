@@ -23,7 +23,7 @@ const ModalUI = (props: UIProps) => {
             onRequestClose={() => { setVisibleModel(false); }}
         >
             <Container>
-                <HighlightWrapper
+                <HighlightWrapper 
                     underlayColor='#00000077'
                 >
                     <Content>
