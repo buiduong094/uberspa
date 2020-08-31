@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, View, Platform, Dimensions } from "react-native";
+import { StyleSheet, View, Platform, Dimensions, KeyboardAvoidingView } from "react-native";
 import MapboxGL from "@react-native-mapbox-gl/maps";
 import { useEffect } from 'react';
 import styled from 'styled-components/native';
@@ -17,6 +17,7 @@ import TextInputUI from 'components/TextInputUI';
 import { fontFamily } from 'utils/Theme';
 import alertDefaultTitle from 'utils/alertDefaultTitle';
 import { MessageDefine } from 'locales';
+import ReadOnlyText from 'components/ReadOnlyText';
 
 MapboxGL.setAccessToken('pk.eyJ1Ijoic3RldmVubGVlMjgwNiIsImEiOiJja2Fqc20zNGQwZ3Z0Mndtc25meWlhcnltIn0.zcoLesCFvdoih7oTMHMIUA');
 let watchID;
@@ -102,107 +103,118 @@ export default function Layout() {
   const width = Dimensions.get('screen').width;
   const Filter = () => {
 
-    return (<Content>
+    return (
 
-      {
-        state.step == 1 &&
-        <ContentStep>
-          <DialogHeader>
-            <Title text="Địa điểm" titleStyle={{ marginBottom: 10 }}></Title>
+      <Content>
+        <DialogHeader>
+          <Title text="Địa điểm" titleStyle={{ marginBottom: 10 }}></Title>
+          <CloseStyle onPress={() => {
+            ActionCreators.FieldChange(dispatch, 'display', false);
+          }}>
 
             <Icon.Close color='black' size={22} />
-          </DialogHeader>
-          <SearchInput
-            placeHolder=""
-            icon={<Icon.Address size={20} color='#C2C2C2' />}
-          ></SearchInput>
-          <Title text="Dịch vụ" titleStyle={{ marginVertical: 10 }}></Title>
-          <ScrollWrapper showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false}>
-            {
-              state.services &&
-              <ServiceWrapper>
-                {
-                  state.services && state.services.map((service: any, index: number) => (
-                    <ImageButton
-                      source={service.source}
-                      height={20}
-                      width={20}
-                      title={service.title}
-                      type={ImageButtonType.TOUCHOPACITY}
-                      imageStyle={{ backgroundColor: service?.selected ? '#65DF7B20' : '#F4F5F6', padding: 15, borderRadius: 30 }}
-                    ></ImageButton>
-                  ))
-                }
-              </ServiceWrapper>
-            }
-            {
-              state.bookingItems?.length > 0 && state.bookingItems?.map((item) =>
-                <UberItem
-                  uistyle={{ marginBottom: 15 }}
-                  item={item}
-                  type={UberItemType.BOOKINGSERVICE}
-                  childs={item?.childs}
-                  onChildPress={selectService} />
-              )
-            }
+          </CloseStyle>
+        </DialogHeader>
+        {
+          state.step == 1 &&
+          <ContentStep>
+
+            <SearchInput
+              placeHolder=""
+              icon={<Icon.Address size={20} color='#C2C2C2' />}
+            ></SearchInput>
+            <Title text="Dịch vụ" titleStyle={{ marginVertical: 10 }}></Title>
+            <ScrollWrapper showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false}>
+              {
+                state.services &&
+                <ServiceWrapper>
+                  {
+                    state.services && state.services.map((service: any, index: number) => (
+                      <ImageButton
+                        source={service.source}
+                        height={20}
+                        width={20}
+                        title={service.title}
+                        type={ImageButtonType.TOUCHOPACITY}
+                        imageStyle={{ backgroundColor: service?.selected ? '#65DF7B20' : '#F4F5F6', padding: 15, borderRadius: 30 }}
+                      ></ImageButton>
+                    ))
+                  }
+                </ServiceWrapper>
+              }
+              {
+                state.bookingItems?.length > 0 && state.bookingItems?.map((item) =>
+                  <UberItem
+                    uistyle={{ marginBottom: 15 }}
+                    item={item}
+                    type={UberItemType.BOOKINGSERVICE}
+                    childs={item?.childs}
+                    onChildPress={selectService} />
+                )
+              }
+            </ScrollWrapper>
+          </ContentStep>
+        }
+        {
+          state.step == 2 &&
+          <ScrollWrapper>
+
+            <TimeWrapper>
+              <TextInputUI
+                uistyle={{ width: (width - 70) / 2, }}
+                contentstyle={{ backgroundColor: '#F4F5F6' }}
+                placeholder="DD/MM/YYYY"
+                leftIcon={<Icon.Calendar color="#C2C2C2" size={18} />}
+              />
+              <TextInputUI
+                uistyle={{ width: (width - 70) / 2 }}
+                contentstyle={{ backgroundColor: '#F4F5F6' }}
+                placeholder="HH:MM"
+                leftIcon={<Icon.Clock color="#C2C2C2" size={18} />}
+              />
+            </TimeWrapper>
+
+            <ReadOnlyText uistyle={{ marginTop: 15 }} text='Thanh toán tại cơ sở' title='Phương thức thanh toán' ></ReadOnlyText>
+
+
+            <Title text="Ghi chú" titleStyle={{ marginVertical: 10 }}></Title>
+            <TextInputUI
+              placeholder="Nội dung ghi chú"
+              contentstyle={{ backgroundColor: '#F4F5F6' }}
+            />
+            <BookingWrapper>
+              <VoucherWrapper>
+                <VoucherBorder>
+                  <Voucher
+                    source={ImageSource.voucher}
+                    style={{
+                      height: 10,
+                      width: 13,
+                    }}
+                    resizeMode="cover" />
+                </VoucherBorder>
+                <TextInputUI
+                  placeholder="Hình thức thanh toán"
+                  contentstyle={{ backgroundColor: '#F4F5F6' }}
+
+                />
+              </VoucherWrapper>
+              <LoginButton
+                uistyle={{ alignSelf: 'center', width: '60%' }}
+                textstyle={{ fontSize: 18 }}
+                text='ĐẶT NGAY'
+                onPress={onBooking}></LoginButton>
+            </BookingWrapper>
           </ScrollWrapper>
-        </ContentStep>
-      }
-      {
-        state.step == 2 &&
-        <ScrollWrapper>
-          <Title text="Thời gian" titleStyle={{ marginBottom: 10 }}></Title>
-          <TimeWrapper>
-            <TextInputUI
-              uistyle={{ width: (width - 70) / 2, }}
-              contentstyle={{ backgroundColor: '#F4F5F6' }}
-              placeholder="DD/MM/YYYY"
-              leftIcon={<Icon.Calendar color="#C2C2C2" size={18} />}
-            />
-            <TextInputUI
-              uistyle={{ width: (width - 70) / 2 }}
-              contentstyle={{ backgroundColor: '#F4F5F6' }}
-              placeholder="HH:MM"
-              leftIcon={<Icon.Clock color="#C2C2C2" size={18} />}
-            />
-          </TimeWrapper>
-          <Title text="Phương thức thanh toán" titleStyle={{ marginVertical: 10 }}></Title>
-          <TextInputUI
-            placeholder="Hình thức thanh toán"
-            contentstyle={{ backgroundColor: '#F4F5F6' }}
-            leftIcon={<Icon.CreditCard color="#C2C2C2" size={18} />}
-          />
-          <Title text="Ghi chú" titleStyle={{ marginVertical: 10 }}></Title>
-          <TextInputUI
-            placeholder="Nội dung ghi chú"
-            contentstyle={{ backgroundColor: '#F4F5F6' }}
-          />
-          <BookingWrapper>
-            <VoucherWrapper>
-              <VoucherBorder>
-                <Voucher
-                  source={ImageSource.voucher}
-                  style={{
-                    height: 10,
-                    width: 13,
-                  }}
-                  resizeMode="cover" />
-              </VoucherBorder>
-              <VoucherCode>DHABSD</VoucherCode>
-            </VoucherWrapper>
-            <LoginButton
-              uistyle={{ alignSelf: 'center', width: '60%' }}
-              textstyle={{ fontSize: 18 }}
-              text='ĐẶT NGAY'
-              onPress={onBooking}></LoginButton>
-          </BookingWrapper>
-        </ScrollWrapper>
-      }
-    </Content>)
+        }
+      </Content>
+
+    )
 
   }
   return (
     <Container>
+
       <MapboxGL.MapView logoEnabled={false} attributionEnabled={false}
         style={{ flex: 1 }}
         zoomEnabled={true}
@@ -216,14 +228,19 @@ export default function Layout() {
         <Icon.Back size={27}></Icon.Back>
       </BackButton>
 
-        {
-          (state.step == 1 || state.step == 2) &&
-          <ModalUI display={state.display?? true}>
+      {
+        (state.step == 1 || state.step == 2) &&
+        <ModalUI display={state.display ?? true}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS == "ios" ? "padding" : "height"}
+            style={{ flex: 1 }}
+          >
             {
               Filter()
             }
-          </ModalUI>
-        }
+          </KeyboardAvoidingView>
+        </ModalUI>
+      }
       {
         state.step == 3 && state.loadingConfirm &&
         <ConfirmWrapper>
@@ -236,6 +253,7 @@ export default function Layout() {
           <WaitingStyled>Vui lòng đợi.</WaitingStyled>
         </ConfirmWrapper>
       }
+
     </Container>
   );
 }
@@ -352,3 +370,4 @@ color:#FFFF;
 fontSize:18;
 fontFamily: ${fontFamily.medium}
 `;
+const CloseStyle = styled.TouchableOpacity``;
