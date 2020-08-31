@@ -155,6 +155,7 @@ const Layout = (props: UIProps) => {
                                     item={item}
                                     onPress={(r) => {
                                         props.ServiceByShop(item);
+                                        props.FieldChange('shop', item);
                                         navigation.navigate(RouteName.PACKAGESERVICE);
                                     }}
                                     type={UberItemType.SERVICE} />

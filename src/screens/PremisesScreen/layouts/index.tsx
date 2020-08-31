@@ -59,11 +59,19 @@ const Layout = (props: UIProps) => {
             </Content>
             <ScrollWrapper>
                 {
-                    state.services.length > 0 && state.services.map((item: any) =>
+                    state.tabItems[1].selected && state.services.length > 0 && state.services.map((item: any) =>
                         <UberItem
                             uistyle={{ marginBottom: 1, borderRadius: 0 }}
                             item={item}
                             type={UberItemType.SERVICE} />
+                    )
+                }
+                {
+                    state.tabItems[2].selected && state.items.length > 0 && state.items.map((item: any)=>
+                    <UberItem
+                    uistyle={{marginBottom: 1, borderRadius: 0}}
+                    item={item}
+                    type={UberItemType.BRANCH}/>
                     )
                 }
             </ScrollWrapper>

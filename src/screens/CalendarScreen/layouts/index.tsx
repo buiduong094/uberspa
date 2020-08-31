@@ -14,7 +14,7 @@ import ModalComponent from 'components/Modal';
 import CircleState from 'components/CircleState';
 import { TimeStage } from 'models/calendar';
 import TextArea from 'components/TextArea';
-import { TimeLine, Button, TextInputUI } from 'components';
+import { TimeLine, Button, TextInputUI, ServiceItem, UberItem } from 'components';
 import * as Icon from 'constant/icons';
 import alertDefaultTitle from 'utils/alertDefaultTitle';
 import DateUI from 'components/DateUI';
@@ -26,9 +26,10 @@ import { compose } from 'redux';
 import ReadOnlyText from 'components/ReadOnlyText';
 import { DialogMessage, MessageType } from 'models/message';
 import LoadingSpine from 'components/LoadingSpine';
-import { RouteName } from 'constant';
+import { RouteName, UberItemType } from 'constant';
 interface State {
-    message?: DialogMessage
+    message?: DialogMessage,
+    shop?: any,
 }
 type UIProps = State & typeof ServiceAction;
 
@@ -82,9 +83,16 @@ const Layout = (props: UIProps) => {
             <ScrollWrapper showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false}>
                 <Wrapper>
                     <TextTitle>Thông tin shop</TextTitle>
-                    <Button uistyle={{ marginHorizontal: 0, marginVertical: 20 }} text='Hoàn tất' onPress={() => {
-                        navigation.navigate(RouteName.PREMESIE);
-                    }}></Button>
+                </Wrapper>
+                <Wrapper>
+                    <UberItem
+                        onPress={() => {
+                            navigation.navigate(RouteName.PREMESIE);
+                        }}
+                        uistyle={{ marginBottom: 15, }}
+                        item={props.shop}
+                        type={UberItemType.SERVICE}
+                    />
                 </Wrapper>
                 <Wrapper>
                     <TextTitle>Dịch vụ đã chọn:</TextTitle>
@@ -164,7 +172,7 @@ const Layout = (props: UIProps) => {
     );
 }
 const mapStateToProps = (state: ApplicationState) => ({
-    services: state.ServiceState.shopServices,
+    shop: state.ServiceState.shop,
     message: state.ServiceState.message
 })
 
