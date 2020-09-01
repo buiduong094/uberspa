@@ -107,9 +107,11 @@ const Layout = (props: UIProps) => {
                     </FlexStyled>
 
                     <ServiceStyled >
+                        
                         <ImageButton onPress={() => {
 
                         }} height={220} width={width / 3} source={ImageSource.clinic} ></ImageButton>
+                     
                         <WrapperStyled style={{ marginLeft: 10 }}>
                             <ImageButton onPress={() => {
 
@@ -123,8 +125,9 @@ const Layout = (props: UIProps) => {
                                 }} height={100} width={width / 3} source={ImageSource.salon} ></ImageButton>
                             </WrapperStyled>
                         </WrapperStyled>
+                      
                     </ServiceStyled>
-
+                    
                 </WrapperStyled>
 
 

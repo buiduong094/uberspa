@@ -10,11 +10,23 @@ import { useNavigation } from '@react-navigation/native';
 import { Dimensions } from 'react-native';
 import { ImageSource } from 'assets';
 import { fontFamily } from 'utils/Theme';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { ActionCreators as ServiceAction } from 'store/service';
+import { ApplicationState } from 'store/configureAction';
+import { stat } from 'fs';
 
-type UIProps = {
-    navigation?: any,
-    style?: any,
+interface State{
+    shop?: any,
+    style?: any
 }
+
+// type UIProps = {
+//     navigation?: any,
+//     style?: any,
+// }
+
+type UIProps = State & typeof ServiceAction;
 
 const Layout = (props: UIProps) => {
 
@@ -35,6 +47,7 @@ const Layout = (props: UIProps) => {
 
         ActionCreators.FieldChange(dispatch, 'tabItems', tabLists);
     }
+
     return (
         <Container style={style} >
             <BackgroundImage source={ImageSource.background}>
@@ -44,7 +57,7 @@ const Layout = (props: UIProps) => {
                         backColor="#FFF"
                     />
                     <WrapperStyled>
-                        <Logo source={{ uri: 'https://benhvienthucuc.vn/wp-content/themes/benh-vien-thu-cuc-vn/assets/images/sec12_1.png' }} />
+                        <Logo source={{ uri:  props.shop?.logo ?? 'https://benhvienthucuc.vn/wp-content/themes/benh-vien-thu-cuc-vn/assets/images/sec12_1.png' }} />
                         <TitleStyled>Thẩm mỹ viện thu cúc</TitleStyled>
                         <Button text='Theo dõi ' uistyle={{ width: 146, height: 46, marginTop: 15 }} onPress={() => {
                         }}></Button>
@@ -59,7 +72,7 @@ const Layout = (props: UIProps) => {
             </Content>
             <ScrollWrapper>
                 {
-                    state.tabItems[1].selected && state.services.length > 0 && state.services.map((item: any) =>
+                    state.tabItems[1].selected && state.services?.length > 0 && state.services?.map((item: any) =>
                         <UberItem
                             uistyle={{ marginBottom: 1, borderRadius: 0 }}
                             item={item}
@@ -67,7 +80,7 @@ const Layout = (props: UIProps) => {
                     )
                 }
                 {
-                    state.tabItems[2].selected && state.items.length > 0 && state.items.map((item: any)=>
+                    state.tabItems[2].selected && state.items?.length > 0 && state.items?.map((item: any)=>
                     <UberItem
                     uistyle={{marginBottom: 1, borderRadius: 0}}
                     item={item}
@@ -76,9 +89,22 @@ const Layout = (props: UIProps) => {
                 }
             </ScrollWrapper>
         </Container >
-    )
+    );
 }
-export default Layout;
+
+const mapStateToProps = (state: ApplicationState) => ({
+    shop: state.ServiceState.shop,
+})
+
+const mapDispatchToProps = {
+    ...ServiceAction
+};
+
+const withConnect = connect(
+    mapStateToProps,
+    mapDispatchToProps
+);
+export default compose(withConnect)(Layout as any)
 const Container = styled.View`
 flex:1;
 

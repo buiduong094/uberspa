@@ -17,11 +17,20 @@ import TextInputUI from 'components/TextInputUI';
 import { fontFamily } from 'utils/Theme';
 import alertDefaultTitle from 'utils/alertDefaultTitle';
 import { MessageDefine } from 'locales';
+import { ApplicationState } from 'store/configureAction';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { ActionCreators as ServiceAction } from 'store/service';
+
+interface State {
+
+}
+type UIProps = State & typeof ServiceAction;
 
 MapboxGL.setAccessToken('pk.eyJ1Ijoic3RldmVubGVlMjgwNiIsImEiOiJja2Fqc20zNGQwZ3Z0Mndtc25meWlhcnltIn0.zcoLesCFvdoih7oTMHMIUA');
 let watchID;
 
-export default function Layout() {
+const Layout = (props: UIProps) => {
   const [state, dispatch] = React.useReducer(reducer, InitState)
   const navigation = useNavigation();
   useEffect(() => {
@@ -102,7 +111,8 @@ export default function Layout() {
   const width = Dimensions.get('screen').width;
   const Filter = () => {
 
-    return (<Content>
+    return (
+    <Content>
 
       {
         state.step == 1 &&
@@ -110,7 +120,7 @@ export default function Layout() {
           <DialogHeader>
             <Title text="Địa điểm" titleStyle={{ marginBottom: 10 }}></Title>
 
-            <Icon.Close color='black' size={22} />
+            <Icon.Close color='black' size={22}/>
           </DialogHeader>
           <SearchInput
             placeHolder=""
@@ -239,7 +249,19 @@ export default function Layout() {
     </Container>
   );
 }
+const mapStateToProps = (state: ApplicationState) => ({
+  
+})
 
+const mapDispatchToProps = {
+  ...ServiceAction
+};
+
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps
+);
+export default compose(withConnect)(Layout as any)
 const Container = styled.View`
   flex: 1;
   width:100%;
