@@ -8,11 +8,12 @@ export interface State {
     hasCoupon?: boolean,
     couponValid?: boolean,
     message?: DialogMessage,
-    commited?: boolean
-
+    commited?: boolean,
+    listShop?: any[],
+    selectedService?: any
 }
 export const InitState: State =
 {
-
+    listShop: []
     
 }

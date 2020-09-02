@@ -8,6 +8,7 @@ import { ThunkAction } from 'store/configureAction';
 import { client } from 'api/client';
 import { formatDate } from 'utils/dateUltil';
 import { DialogMessage, MessageType } from 'models/message';
+import { SERVER_KEY } from 'constant';
 
 
 
@@ -57,6 +58,27 @@ export const ActionCreators = {
         })();
     },
     ShopByService: (): ThunkAction<KnowAction> => (dispatch, getState) => {
+        const queryBody = {
+            server_key: SERVER_KEY,
+            service_id: getState().ServiceState.selectedService?.id,
+            latitude: 20.958021,
+            longitude: 107.091785
+        };
+        (async () => {
+            const response = await client.post(Endpoint.SHOP_BY_SERVICE, queryBody);
+            if (response && response.status == 200) {
+
+                let realData = response?.data?.data?.listShop??[];
+                realData.forEach(element => {
+                    element.logo = element?.icon
+                });
+                dispatch({
+                    type: ActionType.FIELD_CHANGE,
+                    fieldName: 'listShop',
+                    fieldValue: realData,
+                });
+            }
+        })();
     },
     ServiceByShop: (shop: any): ThunkAction<KnowAction> => (dispatch, getState) => {
         (async () => {
@@ -79,7 +101,7 @@ export const ActionCreators = {
             }
         })();
     },
-    Booking: (date: CalendarDate, time: CalendarTime,coupon?:string, description?: string): ThunkAction<KnowAction> => (dispatch, getState) => {
+    Booking: (date: CalendarDate, time: CalendarTime, coupon?: string, description?: string): ThunkAction<KnowAction> => (dispatch, getState) => {
         (async () => {
             let message: DialogMessage = {
                 type: MessageType.Loading,
@@ -100,10 +122,10 @@ export const ActionCreators = {
                 date_time_booking_out: `${bookingDate} ${bookingTime[1]}`,
                 shop_id: reduxState.shop.id,
                 description: description,
-                coupon : coupon
-               
+                coupon: coupon
+
             }
-          
+
             let response = await client.post(Endpoint.BOOKING, booking);
 
 
@@ -135,21 +157,21 @@ export const ActionCreators = {
             })
             const response = await client.post(Endpoint.COUPON_VALID, { ma_giam_gia: coupon });
             if (response && response.status == 200) {
-              
+
                 if (response && response.status == 200) {
-const data = response.data;
+                    const data = response.data;
                     if (data.status == '200') {
                         message.type = MessageType.Success;
                     }
-                    else{
+                    else {
                         message.type = MessageType.Error;
-                        message.message  =data;
+                        message.message = data;
                     }
                     dispatch({
                         type: ActionType.COMITED_FORM,
                         message: message,
-    
-    
+
+
                     })
                 }
 
