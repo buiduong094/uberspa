@@ -52,45 +52,13 @@ const ServiceItem = (props: UIProps) => {
                                 item?.name &&
                                 <TextStyled>{item?.name}</TextStyled>
                             }
-                            {
-                                item?.address && type == UberItemType.SERVICE &&
-                                <SubTitleStyled>{item?.address}</SubTitleStyled>
-                            }
-                            {
-                                type == UberItemType.BOOKING &&
-                                <BookingTitleStyled >{item?.bookingName ? item.bookingName : item.name}</BookingTitleStyled>
-                            }
-                            {
-                                item?.bookingDate && type == UberItemType.BOOKING &&
-                                <BookingDateTitleStyled >{item?.bookingDate}</BookingDateTitleStyled>
-                            }
+                            
                             {
                                 item?.description && type == UberItemType.BRANCH &&
                                 <SubTitleStyled numberOfLines={2}>{item?.description}</SubTitleStyled>
                             }
-                            {
-                                item?.timeWorking && type == UberItemType.BRANCH &&
-                                <WorkingtimeTitleStyled numberOfLines={1}>{item?.timeWorking}</WorkingtimeTitleStyled>
-                            }
-                            {
-                                item && item?.distance !== undefined && type == UberItemType.SERVICE &&
-                                <ContentWrapper>
-                                    <Icon.MapMaker color='#9B9B9B' size={10}></Icon.MapMaker>
-                                    <DistanceTitleStyled>{item?.distance ?? 0} KM </DistanceTitleStyled>
-                                </ContentWrapper>
-                            }
-                            {
-                                item?.message && type == UberItemType.CHAT &&
-                                <MessageStyled numberOfLines={2}>{item?.message}</MessageStyled>
-                            }
-                            {
-                                item?.last_message?.text && type == UberItemType.CHAT &&
-                                <MessageStyled numberOfLines={2}>{item?.last_message?.text}</MessageStyled>
-                            }
-                            {
-                                item?.description && type == UberItemType.NOTIFICATION &&
-                                <SubTitleStyled numberOfLines={2}>{item?.description}</SubTitleStyled>
-                            }
+                            
+                            
                             {
                                 item?.description && type == UberItemType.PACKAGESERVICE &&
                                 <PackageDescriptStyled numberOfLines={1}>{item?.description}</PackageDescriptStyled>
@@ -103,10 +71,9 @@ const ServiceItem = (props: UIProps) => {
                         </View>
 
 
-                        {
-                            type == UberItemType.PACKAGESERVICE && item?.price && selected &&
-                            <PriceActiveStyled>{item?.price}</PriceActiveStyled>
-                        }
+                     
+                            <PriceActiveStyled>{Intl.NumberFormat('vi-VN').format(item?.price)}</PriceActiveStyled>
+                        
 
                     </Content>
                 </Wrapper>
