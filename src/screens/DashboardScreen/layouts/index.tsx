@@ -23,8 +23,8 @@ import Geolocation from '@react-native-community/geolocation';
 import alertDefaultTitle from 'utils/alertDefaultTitle';
 import { ActionCreators as ServiceAction } from 'store/service';
 interface State {
-
-
+    activesService?: any[],
+    selectedService?: any
 }
 type UIProps = State & typeof ServiceAction;
 const Layout = (props: UIProps) => {
@@ -69,6 +69,9 @@ const Layout = (props: UIProps) => {
     }
 
     const width = Dimensions.get('window').width - 60;
+
+    console.log(props.activesService);
+
     return (
         <Container >
             <Welcome>
@@ -107,39 +110,39 @@ const Layout = (props: UIProps) => {
                     </FlexStyled>
 
                     <ServiceStyled >
-                        
-                        <ImageButton onPress={() => {
 
+                        <ImageButton onPress={() => {
+                            props.FieldChange('selectedService', (props.activesService ?? [])?.length > 3 ? (props.activesService ?? [])[3] : {})
                         }} height={220} width={width / 3} source={ImageSource.clinic} ></ImageButton>
-                     
+
                         <WrapperStyled style={{ marginLeft: 10 }}>
                             <ImageButton onPress={() => {
-
+                                props.FieldChange('selectedService', (props.activesService ?? [])?.length > 2 ? (props.activesService ?? [])[2] : {})
                             }} height={100} width={((width / 3) * 2) + 10} source={ImageSource.spa} ></ImageButton>
                             <WrapperStyled style={{ flexDirection: 'row', marginTop: 15 }}>
                                 <ImageButton onPress={() => {
-
+                                    props.FieldChange('selectedService', (props.activesService ?? [])?.length > 1 ? (props.activesService ?? [])[1] : {})
                                 }} height={100} width={width / 3} source={ImageSource.nail} containerStyle={{ marginRight: 15 }} ></ImageButton>
                                 <ImageButton onPress={() => {
-
+                                    props.FieldChange('selectedService', (props.activesService ?? [])?.length > 0 ? (props.activesService ?? [])[0] : {})
                                 }} height={100} width={width / 3} source={ImageSource.salon} ></ImageButton>
                             </WrapperStyled>
                         </WrapperStyled>
-                      
+
                     </ServiceStyled>
-                    
+
                 </WrapperStyled>
 
 
-
-                <LoginButton
-                    uistyle={{ marginVertical: 20, alignSelf: 'center', width: 130 }}
-                    textstyle={{ fontSize: 16 }}
-                    text='ĐẶT NGAY'
-                    onPress={() => {
-                        navigation.navigate(RouteName.BOOKING);
-                    }}></LoginButton>
-
+                {props.selectedService &&
+                    <LoginButton
+                        uistyle={{ marginVertical: 20, alignSelf: 'center', width: 130 }}
+                        textstyle={{ fontSize: 16 }}
+                        text='ĐẶT NGAY'
+                        onPress={() => {
+                            navigation.navigate(RouteName.BOOKING);
+                        }}></LoginButton>
+                }
 
                 <WrapperStyled>
                     <FlexStyled>
@@ -172,7 +175,8 @@ const Layout = (props: UIProps) => {
 }
 
 const mapStateToProps = (state: ApplicationState) => ({
-
+    activesService: state.ServiceState.activeServices,
+    selectedService: state.ServiceState.selectedService
 })
 
 const mapDispatchToProps = {
