@@ -17,12 +17,24 @@ import TextInputUI from 'components/TextInputUI';
 import { fontFamily } from 'utils/Theme';
 import alertDefaultTitle from 'utils/alertDefaultTitle';
 import { MessageDefine } from 'locales';
+<<<<<<< HEAD
 import ReadOnlyText from 'components/ReadOnlyText';
+=======
+import { ApplicationState } from 'store/configureAction';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { ActionCreators as ServiceAction } from 'store/service';
+
+interface State {
+
+}
+type UIProps = State & typeof ServiceAction;
+>>>>>>> origin/features/bookingdetail
 
 MapboxGL.setAccessToken('pk.eyJ1Ijoic3RldmVubGVlMjgwNiIsImEiOiJja2Fqc20zNGQwZ3Z0Mndtc25meWlhcnltIn0.zcoLesCFvdoih7oTMHMIUA');
 let watchID;
 
-export default function Layout() {
+const Layout = (props: UIProps) => {
   const [state, dispatch] = React.useReducer(reducer, InitState)
   const navigation = useNavigation();
   useEffect(() => {
@@ -104,6 +116,10 @@ export default function Layout() {
   const Filter = () => {
 
     return (
+<<<<<<< HEAD
+=======
+    <Content>
+>>>>>>> origin/features/bookingdetail
 
       <Content>
         <DialogHeader>
@@ -112,6 +128,7 @@ export default function Layout() {
             ActionCreators.FieldChange(dispatch, 'display', false);
           }}>
 
+<<<<<<< HEAD
             <Icon.Close color='black' size={22} />
           </CloseStyle>
         </DialogHeader>
@@ -178,6 +195,57 @@ export default function Layout() {
 
 
             <Title text="Ghi chú" titleStyle={{ marginVertical: 10 }}></Title>
+=======
+            <Icon.Close color='black' size={22}/>
+          </DialogHeader>
+          <SearchInput
+            placeHolder=""
+            icon={<Icon.Address size={20} color='#C2C2C2' />}
+          ></SearchInput>
+          <Title text="Dịch vụ" titleStyle={{ marginVertical: 10 }}></Title>
+          <ScrollWrapper showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false}>
+            {
+              state.services &&
+              <ServiceWrapper>
+                {
+                  state.services && state.services.map((service: any, index: number) => (
+                    <ImageButton
+                      source={service.source}
+                      height={20}
+                      width={20}
+                      title={service.title}
+                      type={ImageButtonType.TOUCHOPACITY}
+                      imageStyle={{ backgroundColor: service?.selected ? '#65DF7B20' : '#F4F5F6', padding: 15, borderRadius: 30 }}
+                    ></ImageButton>
+                  ))
+                }
+              </ServiceWrapper>
+            }
+            {
+              state.bookingItems?.length > 0 && state.bookingItems?.map((item) =>
+                <UberItem
+                  uistyle={{ marginBottom: 15 }}
+                  item={item}
+                  type={UberItemType.BOOKINGSERVICE}
+                  childs={item?.childs}
+                  onChildPress={selectService} />
+              )
+            }
+          </ScrollWrapper>
+        </ContentStep>
+      }
+      {
+        state.step == 2 &&
+        <ScrollWrapper>
+          <Title text="Thời gian" titleStyle={{ marginBottom: 10 }}></Title>
+          <TimeWrapper>
+            <TextInputUI
+              uistyle={{ width: (width - 70) / 2, }}
+              contentstyle={{ backgroundColor: '#F4F5F6' }}
+              placeholder="DD/MM/YYYY"
+              leftIcon={<Icon.Calendar color="#C2C2C2" size={18} />}
+            />
+>>>>>>> origin/features/bookingdetail
             <TextInputUI
               placeholder="Nội dung ghi chú"
               contentstyle={{ backgroundColor: '#F4F5F6' }}
@@ -257,7 +325,19 @@ export default function Layout() {
     </Container>
   );
 }
+const mapStateToProps = (state: ApplicationState) => ({
+  
+})
 
+const mapDispatchToProps = {
+  ...ServiceAction
+};
+
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps
+);
+export default compose(withConnect)(Layout as any)
 const Container = styled.View`
   flex: 1;
   width:100%;
