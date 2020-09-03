@@ -14,10 +14,11 @@ type UIProps = {
     children?: any,
     step?: number,
     resetStep?: Function
-    backColor?: string
+    backColor?: string,
+    leftIcon?: any
 }
 const Header = (props: UIProps) => {
-    const { style, children, text, navigation, titleStyle, backColor } = props;
+    const { style, children, text, navigation, titleStyle, backColor, leftIcon } = props;
     return (
         <Container style={style} >
             <Wrapper>
@@ -30,8 +31,11 @@ const Header = (props: UIProps) => {
                         </BackStyled>
                     }
                     {
-                        props.text &&
-
+                        leftIcon &&
+                        <LeftImage resizeMode='stretch' source={{ uri: leftIcon ?? 'https://benhvienthucuc.vn/wp-content/themes/benh-vien-thu-cuc-vn/assets/images/sec12_1.png' }}></LeftImage>
+                    }
+                    {
+                        text &&
                         <TitleWrapper
                             numberOfLines={1}
                             lineBreakMode="tail"
@@ -83,4 +87,8 @@ flex:1;
 fontFamily: ${fontFamily.bold}
 `;
 const StyledRight = styled.View`
+`;
+const LeftImage = styled.Image`
+height:30;
+width:30;
 `;

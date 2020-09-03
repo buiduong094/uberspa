@@ -133,6 +133,7 @@ const Layout = (props: UIProps) => {
             <Container>
                 <Header
                     text={props.conversationSelected?.name ?? "Chi tiết trò chuyện"}
+                    leftIcon={props.conversationSelected?.avatar}
                     titleStyle={{ marginLeft: -30 }}
                     navigation={navigation}>
                 </Header>
