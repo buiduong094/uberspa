@@ -27,6 +27,7 @@ import ReadOnlyText from 'components/ReadOnlyText';
 import { DialogMessage, MessageType } from 'models/message';
 import LoadingSpine from 'components/LoadingSpine';
 import { RouteName, UberItemType } from 'constant';
+import { fontFamily } from 'utils/Theme';
 interface State {
     message?: DialogMessage,
     shop?: any,
@@ -75,6 +76,19 @@ const Layout = (props: UIProps) => {
 
     }
 
+    const Stars = () => {
+        const stars = new Array<any>();
+        for (let i = 0; i < 5; i++) {
+            let color = '#E0E0E0';
+            if (props.shop?.rating && i < props.shop?.rating) {
+                color = '#F5A623';
+            }
+            stars.push(
+                <Icon.Star size={10} color={color} />)
+        }
+        return stars;
+    }
+
     return (
 
         <Container>
@@ -85,14 +99,23 @@ const Layout = (props: UIProps) => {
                     <TextTitle>Thông tin shop</TextTitle>
                 </Wrapper>
                 <Wrapper>
-                    <UberItem
-                        onPress={() => {
-                            navigation.navigate(RouteName.PREMESIE);
-                        }}
-                        uistyle={{ marginBottom: 15, }}
-                        item={props.shop}
-                        type={UberItemType.SERVICE}
-                    />
+                    <BtnStyle onPress={() => {
+                        navigation.navigate(RouteName.PREMESIE);
+                    }}>
+                        <ImageStyled source={{ uri: props.shop?.logo ?? 'https://benhvienthucuc.vn/wp-content/themes/benh-vien-thu-cuc-vn/assets/images/sec12_1.png' }} />
+                        <ContentShop>
+                            <TextStyled>{props.shop?.name}</TextStyled>
+                            <SubTitleStyled numberOfLines={2}>{props.shop?.address}</SubTitleStyled>
+                            <Row>
+                                <StarWrapper>
+                                    {
+                                        Stars()
+                                    }
+                                </StarWrapper>
+                                <StarTitleStyled>{props.shop?.star}</StarTitleStyled>
+                            </Row>
+                        </ContentShop>
+                    </BtnStyle>
                 </Wrapper>
                 <Wrapper>
                     <TextTitle>Dịch vụ đã chọn:</TextTitle>
@@ -193,6 +216,14 @@ const Container = styled.View`
   height:100%;
 `;
 
+const BtnStyle = styled.TouchableOpacity`
+justifyContent:space-between;
+align-content:center;
+align-items:center;
+paddingHorizontal:15;
+paddingVertical:15;
+flex-direction: row
+`;
 
 const ScrollWrapper = styled.ScrollView`
 
@@ -203,8 +234,6 @@ const TextTitle = styled.Text`
 
 const Row = styled.View`
 flex-direction:row;
-marginTop:15px;
-justifyContent:space-between;
 `;
 const Wrapper = styled.View`
 flex:1;
@@ -233,4 +262,36 @@ background: #65DF7B;
 borderRadius:5px;
  height:48px;
  justifyContent:center;
+`;
+const ImageStyled = styled.Image`
+width: 80;
+height: 80;
+backgroundColor: #FFF;
+marginBottom: 10
+`;
+const StarWrapper = styled.View`
+flex-direction:row;
+alignItems:center;
+`;
+const StarTitleStyled = styled.Text`
+fontSize:12px;
+fontFamily: ${fontFamily.regular};
+color:#9B9B9B;
+`;
+const ContentShop = styled.View`
+flex-direction: column;
+marginLeft: 10;
+align-content:center;
+`;
+const SubTitleStyled = styled.Text`
+fontSize:14px;
+fontFamily: ${fontFamily.regular};
+flexWrap: wrap;
+color:#9B9B9B;`;
+const TextStyled = styled.Text`
+color:#000000;
+fontSize:16;
+width: 200px;
+marginBottom:5px;
+fontFamily: ${fontFamily.semibold}
 `;

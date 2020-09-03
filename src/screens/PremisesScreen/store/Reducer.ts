@@ -1,6 +1,6 @@
 
 import { ActionType } from './ActionType';
-
+import { Endpoint } from 'api/endpoint';
 import { client, setToken } from 'api/client';
 import { IState } from './InitState';
 
@@ -40,6 +40,17 @@ export const ActionCreators = {
         })();
 
     },
+    GetIntroduce: async (dispatch: React.Dispatch<KnownAction>) => {
+        Promise.all([client.post(Endpoint.GET_INTRODUCE, {})]).then(([response]) => {
+            if (response && response.status == 200) {
+                let realData = response?.data?.data;
+                dispatch({
+                    type: ActionType.RECEIVE_INTRODUCE,
+                    data: realData
+                });
+            }
+        })
+    },
     RequestItems: (dispatch: React.Dispatch<KnownAction>, state: IState) => {
     },
     FieldChange: (dispatch: React.Dispatch<KnownAction>, fieldName: string, fieldValue: any) => {
@@ -65,7 +76,12 @@ export const reducer = (state: IState, incomingAction: KnownAction): IState => {
                 ...state,
                 [action.fieldName]: action.fieldValue
             };
-
+        case ActionType.RECEIVE_INTRODUCE:
+            action = incomingAction as ReceivedAction;
+            return {
+                ...state,
+                introduce: action.data
+            }
         default:
             return state
     }

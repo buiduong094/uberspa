@@ -5,10 +5,12 @@ import { BookingItem } from "models/booking";
 
 export interface IState {
   tabItems?: Array<TagItem>,
-  services: Array<UberService>
-  items: Array<BookingItem>
+  services: Array<UberService>,
+  items: Array<BookingItem>,
+  introduce?: any
 }
 export const InitState: IState = {
+  introduce: [],
   tabItems: [
     {
       selected: true,
