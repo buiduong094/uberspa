@@ -84,7 +84,7 @@ export const SignInScreen = (props: UIProps) => {
     }} accessible={false}>
       <Container>
         <KeyboardAvoidingView behavior="position" enabled>
-          <Image style={{height:80, width:80}} source={ImageSource.logo}></Image>
+          <Image style={{height:80, width:80, marginBottom: 10, borderRadius:5}} source={ImageSource.logo}></Image>
           <Title>Chào mừng bạn quay trở lại</Title>
           <SubTitle>Đăng nhập để tiếp tục</SubTitle>
           {
