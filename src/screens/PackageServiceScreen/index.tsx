@@ -13,7 +13,8 @@ import { compose } from 'redux';
 
 interface State {
 
-    services?: any[]
+    services?: any[],
+    selectedService?: any
 }
 type UIProps = State & typeof ServiceAction;
 
@@ -34,7 +35,9 @@ const Layout = (props: UIProps) => {
                 {
                     props.services && props.services?.map((item) =>
                         <ServiceItem
+                            selected={props.selectedService ? (props.selectedService.id == item.id) : false}
                             onPress={() => {
+                                console.warn(item);
                                 props.FieldChange('bookService', item);
                             }}
                             uistyle={{ marginBottom: 15, }}
@@ -51,7 +54,8 @@ const Layout = (props: UIProps) => {
     )
 }
 const mapStateToProps = (state: ApplicationState) => ({
-    services: state.ServiceState.shopServices
+    services: state.ServiceState.shopServices,
+    selectedService: state.ServiceState.bookService
 })
 
 const mapDispatchToProps = {
