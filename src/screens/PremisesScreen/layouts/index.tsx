@@ -15,8 +15,10 @@ import { compose } from 'redux';
 import { ActionCreators as ServiceAction } from 'store/service';
 import { ApplicationState } from 'store/configureAction';
 import { stat } from 'fs';
+import HTML from 'react-native-render-html';
+import { block } from 'react-native-reanimated';
 
-interface State{
+interface State {
     shop?: any,
     style?: any
 }
@@ -34,6 +36,10 @@ const Layout = (props: UIProps) => {
     const [state, dispatch] = useReducer(reducer, InitState);
     const { style } = props;
 
+    useEffect(() => {
+        ActionCreators.GetIntroduce(dispatch);
+    }, [])
+
     const onTabItemSelected = (item: TagItem, index: number) => {
         let tabLists = [...state.tabItems ?? []];
         tabLists.forEach((s, i) => {
@@ -47,6 +53,9 @@ const Layout = (props: UIProps) => {
 
         ActionCreators.FieldChange(dispatch, 'tabItems', tabLists);
     }
+    const width = () => {
+        Dimensions.get('window').width
+    }
 
     return (
         <Container style={style} >
@@ -57,8 +66,8 @@ const Layout = (props: UIProps) => {
                         backColor="#FFF"
                     />
                     <WrapperStyled>
-                        <Logo source={{ uri:  props.shop?.logo ?? 'https://benhvienthucuc.vn/wp-content/themes/benh-vien-thu-cuc-vn/assets/images/sec12_1.png' }} />
-                        <TitleStyled>Thẩm mỹ viện thu cúc</TitleStyled>
+                        <Logo source={{ uri: props.shop?.logo ?? 'https://benhvienthucuc.vn/wp-content/themes/benh-vien-thu-cuc-vn/assets/images/sec12_1.png' }} />
+                        <TitleStyled>{props.shop?.name}</TitleStyled>
                         <Button text='Theo dõi ' uistyle={{ width: 146, height: 46, marginTop: 15 }} onPress={() => {
                         }}></Button>
                     </WrapperStyled>
@@ -72,7 +81,34 @@ const Layout = (props: UIProps) => {
             </Content>
             <ScrollWrapper>
                 {
-                    state.tabItems[1].selected && state.services?.length > 0 && state.services?.map((item: any) =>
+                    (state.tabItems ?? [])[0].selected && state.introduce &&
+                    <HTML html={state.introduce?.description}
+                        imagesInitialDimensions={{ width: Dimensions.get('screen').width - 20, height: (Dimensions.get('screen').width - 20) * 3 / 4 }}
+                        alterNode={(node) => {
+                            const { name, parent } = node;
+                            if (name === 'img') {
+                                let srcImg = node.attribs.src;
+                                let widthImg = Dimensions.get('screen').width - 20;
+                                let heightImg = (Dimensions.get('screen').width - 20) * 3 / 4;
+
+                                node.attribs = { ...(node.attribs || {}), style: 'marginBottom:10', src: srcImg, width: widthImg, height: heightImg };
+                                return node;
+                            }
+                            if (name === 'p') {
+
+                                node.attribs = { ...(node.attribs || {}), style: 'fontSize:' + 14};
+                                return node;
+                            }
+                        }}
+                        tagsStyles={{
+                            p: {marginTop: 40, lineHeight: 14},
+                            h2: {lineHeight: 25},
+                            figcaption: {lineHeight: 14}
+                        }}
+                    />
+                }
+                {
+                    (state.tabItems ?? [])[1].selected && state.services?.length > 0 && state.services?.map((item: any) =>
                         <UberItem
                             uistyle={{ marginBottom: 1, borderRadius: 0 }}
                             item={item}
@@ -80,11 +116,11 @@ const Layout = (props: UIProps) => {
                     )
                 }
                 {
-                    state.tabItems[2].selected && state.items?.length > 0 && state.items?.map((item: any)=>
-                    <UberItem
-                    uistyle={{marginBottom: 1, borderRadius: 0}}
-                    item={item}
-                    type={UberItemType.BRANCH}/>
+                    (state.tabItems ?? [])[2].selected && state.items?.length > 0 && state.items?.map((item: any) =>
+                        <UberItem
+                            uistyle={{ marginBottom: 1, borderRadius: 0 }}
+                            item={item}
+                            type={UberItemType.BRANCH} />
                     )
                 }
             </ScrollWrapper>

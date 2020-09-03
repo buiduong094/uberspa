@@ -10,10 +10,12 @@ export interface State {
     message?: DialogMessage,
     commited?: boolean,
     listShop?: any[],
-    selectedService?: any
+    selectedService?: any,
+    introduce?: any[],
 }
 export const InitState: State =
 {
-    listShop: []
+    listShop: [],
+    introduce: []
     
 }
