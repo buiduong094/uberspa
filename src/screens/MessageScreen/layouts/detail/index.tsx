@@ -15,9 +15,11 @@ import { User } from 'models/user';
 import { ApplicationState } from 'store/configureAction';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { ConversationItem } from 'models/conversation';
 
 interface UIProps {
     user?: User,
+    conversationSelected?: ConversationItem
 }
 const Layout = (props: UIProps) => {
     const navigation = useNavigation();
@@ -33,15 +35,15 @@ const Layout = (props: UIProps) => {
     }, []);
 
     const sendMessage = () => {
-        const message = {
-            _id: '1',
-            created: new Date().toDateString(),
-            message: state.message,
-            // avatar: props.user?.avatar,
-            // sender: props.user?.email,
-            sender: 'abc',
-            messageType: '1',
-            supporter: '0'
+        const message: Message = {
+            // _id: '1',
+            // created: new Date().toDateString(),
+            // message: state.message,
+            // // avatar: props.user?.avatar,
+            // // sender: props.user?.email,
+            // sender: 'abc',
+            // messageType: '1',
+            // supporter: '0'
         }
         Keyboard.dismiss();
         if (state.message && state.message != null) {
@@ -52,6 +54,7 @@ const Layout = (props: UIProps) => {
     const goIndex = () => {
         flatListRef.current?.scrollToIndex({ animated: true, index: state.messageItems.length - 1 });
     };
+    console.warn('sss', props.conversationSelected)
 
     const onCameraImageChange = (sources: any) => {
         // const images = state.warning ? state.warning['IMG_NOIDUNGBAOCAO'] : [];
@@ -95,7 +98,7 @@ const Layout = (props: UIProps) => {
                         </WrapText>
                     </WrapperModal>
                     <WrapperModal
-                        onPress={() => { 
+                        onPress={() => {
                             ActionCreators.FIELD_CHANGE(dispatch, 'showModal', false);
                             ActionCreators.FIELD_CHANGE(dispatch, 'showVideo', true);
                         }}>
@@ -129,7 +132,7 @@ const Layout = (props: UIProps) => {
         >
             <Container>
                 <Header
-                    text='Chi tiết trò chuyện'
+                    text={props.conversationSelected?.name ?? "Chi tiết trò chuyện"}
                     titleStyle={{ marginLeft: -30 }}
                     navigation={navigation}>
                 </Header>
@@ -198,6 +201,7 @@ const Layout = (props: UIProps) => {
 
 const mapStateToProps = (state: ApplicationState) => ({
     user: state.ContextState.user,
+    conversationSelected: state.ContextState.conversationItem
 })
 
 const mapDispatchToProps = {

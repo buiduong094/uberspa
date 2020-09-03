@@ -1,7 +1,6 @@
 export const ActionType = {
     LOADING: "conversation/LOADING",
     LOADED: "conversation/LOADED",
-    SELECT_CONVERSATION : "conversation/SELECT_CONVERSATION",
     SEND_MESSAGE: "conversation/SEND_MESSAGE",
     CHANGE_TEXT: "conversation/CHANGE_TEXT",
     SHOW_MODAL: "conversation/SHOW_MODAL",

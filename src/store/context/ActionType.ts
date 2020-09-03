@@ -8,5 +8,6 @@ export const ActionType = {
     LOGGEDIN: 'context/LOGGEDIN',
     RETRIEVECODE :'context/RETRIEVECODE',
     LOGOUT: 'context/LOGOUT',
-    FIELD_CHANGE: 'context/FIELD_CHANGE'
+    FIELD_CHANGE: 'context/FIELD_CHANGE',
+    SELECT_CONVERSATION: 'context/SELECT_CONVERSATION'
 }
