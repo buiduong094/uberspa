@@ -7,6 +7,7 @@ import { ImageSource } from 'assets';
 import { UberItemType } from 'constant';
 import { TagItem } from "models/tag";
 import { Tag } from 'components';
+// import {Intl} from ''
 interface UIProps {
     onPress?: Function,
 
@@ -71,8 +72,8 @@ const ServiceItem = (props: UIProps) => {
                         </View>
 
 
-                     
-                            <PriceActiveStyled>{Intl.NumberFormat('vi-VN').format(item?.price)}</PriceActiveStyled>
+                        <PriceActiveStyled>{(item?.price)}</PriceActiveStyled>
+                            {/* <PriceActiveStyled>{Intl.NumberFormat('vi-VN').format(item?.price)}</PriceActiveStyled> */}
                         
 
                     </Content>
