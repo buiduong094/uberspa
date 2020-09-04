@@ -23,7 +23,8 @@ import { compose } from 'redux';
 import { ActionCreators as ServiceAction } from 'store/service';
 
 interface State {
-  listShop?: any[]
+  listShop?: any[],
+  services?: any[]
 }
 type UIProps = State & typeof ServiceAction;
 
@@ -31,7 +32,8 @@ MapboxGL.setAccessToken('pk.eyJ1Ijoic3RldmVubGVlMjgwNiIsImEiOiJja2Fqc20zNGQwZ3Z0
 let watchID;
 
 const Layout = (props: UIProps) => {
-  const [state, dispatch] = React.useReducer(reducer, InitState)
+  const [state, dispatch] = React.useReducer(reducer, InitState);
+  const [isExpand, setIsExpand] = React.useState(false);
   const navigation = useNavigation();
   useEffect(() => {
     props.ShopByService();
@@ -147,14 +149,26 @@ const Layout = (props: UIProps) => {
                   }
                 </ServiceWrapper>
               }
-              {
-                props.listShop && props.listShop.length > 0 && props.listShop?.map((item) =>
+               {
+                props.listShop && props.listShop.length > 0 && props.listShop?.map((item, index) =>
+                  isExpand ?
                   <UberItem
-                    uistyle={{ marginBottom: 15 }}
-                    item={item}
-                    type={UberItemType.BOOKINGSERVICE}
-                    childs={item?.childs}
-                    onChildPress={selectService} />
+                      isExpand={!isExpand}
+                      uistyle={{ marginBottom: 15 }}
+                      item={item}
+                      type={UberItemType.BOOKINGSERVICE}
+                      childs={props.services}
+                      onRightPress={() => { setIsExpand(!isExpand) }}
+                      onChildPress={selectService} />:
+                    <UberItem
+                      isExpand={!isExpand}
+                      uistyle={{ marginBottom: 15 }}
+                      item={item}
+                      type={UberItemType.BOOKINGSERVICE}
+                      onRightPress={() => { setIsExpand(!isExpand) }}
+                      onChildPress={selectService}
+                      onPress={props.ServiceByShop(item)} />
+                    
                 )
               }
             </ScrollWrapper>
@@ -252,7 +266,8 @@ const Layout = (props: UIProps) => {
   );
 }
 const mapStateToProps = (state: ApplicationState) => ({
-  listShop: state.ServiceState.listShop
+  listShop: state.ServiceState.listShop,
+  services: state.ServiceState.shopServices
 })
 
 const mapDispatchToProps = {
