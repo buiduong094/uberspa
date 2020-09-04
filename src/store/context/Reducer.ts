@@ -6,6 +6,7 @@ import { ActionType } from './ActionType';
 import { ThunkAction } from 'store/configureAction';
 import { User } from 'models/user';
 import { client } from 'api/client';
+import { ConversationItem } from 'models/conversation';
 
 
 interface ChangeConnectAction {
@@ -35,7 +36,12 @@ interface FieldChangeAction {
     fieldValue?: any
 }
 
-export type KnowAction = ChangeUserAction | ChangeLoggedAction | ChangeConnectAction | ChangeVersionAction | RetrieveCodeAction | FieldChangeAction;
+interface SelectConversationAction {
+    type: string,
+    item: ConversationItem
+}
+
+export type KnowAction = ChangeUserAction | ChangeLoggedAction | ChangeConnectAction | ChangeVersionAction | RetrieveCodeAction | FieldChangeAction | SelectConversationAction;
 
 export const ActionCreators = {
     Loading: (): ThunkAction<KnowAction> => (dispatch, getState) => {
@@ -126,6 +132,12 @@ export const ActionCreators = {
         }
 
     },
+    SelectConversation: (item: ConversationItem): ThunkAction<KnowAction> => (dispatch, getState) => {
+        dispatch({
+            type: ActionType.SELECT_CONVERSATION,
+            item: item
+        });
+    },
 }
 
 export const Reducer: ReduxReducer<ContextState, KnowAction> =
@@ -181,6 +193,12 @@ export const Reducer: ReduxReducer<ContextState, KnowAction> =
                 return {
                     ...state,
                     [action.fieldName]: action.fieldValue
+                }
+            case ActionType.SELECT_CONVERSATION:
+                action = incomingAction as SelectConversationAction;
+                return {
+                    ...state,
+                    conversationItem: action.item
                 }
             default:
                 return state;

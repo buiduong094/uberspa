@@ -56,7 +56,6 @@ const Layout = (props: UIProps) => {
     let THONGBAO = checked ? 0 : 1;
     ActionCreators.Update(dispatch, { is_notification: THONGBAO }, true);
   };
-
   return (
     <Container>
       <Header text='CÁ NHÂN'>
@@ -94,14 +93,11 @@ const Layout = (props: UIProps) => {
               <TextStyled >Nhận thông báo</TextStyled>
             </NotifiWrapper>
             <Switch
-            disabled={true}
               trackColor={{ false: "#767577", true: "#81b0ff" }}
               thumbColor={checked ? "#f5dd4b" : "#f4f3f4"}
               ios_backgroundColor="#3e3e3e"
               onValueChange={onCheckedChange}
-              value={true}
-           
-              
+              value={checked}
             />
           </NotifiToggle>
           <NextButtonLayout
