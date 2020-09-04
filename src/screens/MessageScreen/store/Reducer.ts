@@ -29,10 +29,6 @@ interface CommitedAction {
     isLoggedIn: boolean
 }
 
-interface SelectConversationAction {
-    type: string,
-    item: ConversationItem
-}
 interface SendMessageAction {
     type: string,
     message: Message
@@ -59,7 +55,7 @@ interface ReceivedItemsAction {
     dataItems: any;
 }
 
-type KnownAction = RequestAction | ReceivedAction | CommitAction | CommitedAction | SelectConversationAction | SendMessageAction | ChangeTextAction | ShowModalAction | RequestItemsAction | ReceivedItemsAction | FieldChangeAction;
+type KnownAction = RequestAction | ReceivedAction | CommitAction | CommitedAction  | SendMessageAction | ChangeTextAction | ShowModalAction | RequestItemsAction | ReceivedItemsAction | FieldChangeAction;
 
 
 export const ActionCreators = {
@@ -70,12 +66,6 @@ export const ActionCreators = {
         (async () => {
 
         })();
-    },
-    SelectConversation: (dispatch: React.Dispatch<KnownAction>, item: ConversationItem) => {
-        dispatch({
-            type: ActionType.SELECT_CONVERSATION,
-            item: item
-        });
     },
     SendMessage : (dispatch: React.Dispatch<KnownAction>, message: Message) => {
         dispatch({
@@ -129,12 +119,6 @@ export const reducer = (state: IState, incomingAction: KnownAction): IState => {
             return {
                 ...state,
             };
-        case ActionType.SELECT_CONVERSATION:
-            action = incomingAction as SelectConversationAction;
-            return {
-                ...state,
-                conversationItem: action.item
-            }
         case ActionType.SEND_MESSAGE:
             action = incomingAction as SendMessageAction;
             let msgItem = [...state.messageItems]

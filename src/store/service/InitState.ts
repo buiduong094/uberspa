@@ -1,4 +1,5 @@
 import { DialogMessage } from "models/message";
+import { ConversationItem } from "models/conversation";
 
 export interface State {
     shop?: any,
@@ -11,7 +12,7 @@ export interface State {
     commited?: boolean,
     listShop?: any[],
     selectedService?: any,
-    introduce?: any[],
+    introduce?: any[]
 }
 export const InitState: State =
 {

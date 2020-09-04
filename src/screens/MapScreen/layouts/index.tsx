@@ -286,7 +286,6 @@ const Container = styled.View`
   height:100%;
 `;
 const Content = styled.View`
-
 width:100%;
 bottom:0;
 background-color: #FFFF;
@@ -295,7 +294,6 @@ borderRadius:10;
 `;
 const ContentStep = styled.View``;
 const ScrollWrapper = styled.ScrollView`
-
 `;
 const DialogHeader = styled.View`
 flexDirection:row;

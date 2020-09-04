@@ -11,8 +11,14 @@ import { convertHeight } from 'utils/convertSize';
 import { ActionCreators } from 'screens/MessageScreen/store/Reducer';
 import { ConversationItem } from 'models/conversation';
 import { FlatList, ActivityIndicator } from 'react-native';
-
-const Layout = () => {
+import { ApplicationState } from 'store/configureAction';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { ActionCreators as ReduxAction } from 'store/context';
+interface State {
+}
+type UIProps = State & typeof ReduxAction;
+const Layout = (props: UIProps) => {
   const navigation = useNavigation();
   const [state, dispatch] = useReducer(reducer, InitState);
 
@@ -20,13 +26,15 @@ const Layout = () => {
     ActionCreators.REQUEST_ITEMS(dispatch, 'conversations');
   }, []);
   useEffect(() => {
-    console.log('item', state.conversations);
+    console.warn('item', state.conversations);
   }, [state.conversations]);
 
   const goDetail = (item: ConversationItem) => {
-    ActionCreators.SelectConversation(dispatch, item);
+    props.SelectConversation(item);
     navigation.navigate(RouteName.MESSAGE);
   };
+
+  const  _keyExtractor = (item: ConversationItem, index) => index.toString();
   return (
     <Container>
       <Header text="HỘI THOẠI"></Header>
@@ -41,15 +49,16 @@ const Layout = () => {
         ) : (
           <FlatList
             data={state.conversations}
-            renderItem={({item}) => (
+            renderItem={({item, index}) => (
               <UberItem
+                key={index}
                 uistyle={{marginBottom: 1, borderRadius: 0}}
                 item={item}
                 type={UberItemType.CHAT}
                 onPress={goDetail}
               />
             )}
-            keyExtractor={(item) => item.id ?? ''}
+            keyExtractor={_keyExtractor}
             showsHorizontalScrollIndicator={false}
           />
         )}
@@ -57,7 +66,19 @@ const Layout = () => {
     </Container>
   );
 };
-export default Layout;
+
+const mapStateToProps = (state: ApplicationState) => ({
+})
+
+const mapDispatchToProps = {
+  ...ReduxAction
+};
+
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps
+);
+export default compose(withConnect)(Layout as any)
 const Container = styled.View`
     flex: 1;
   width:100%;

@@ -19,7 +19,7 @@ interface UIProps {
     onChildPress?: Function
 }
 
-const NotificationItem = (props: UIProps) => {
+const UberItem = (props: UIProps) => {
     const { onPress, onRightPress, uistyle, type, item, childs, isExpand, selected, onChildPress } = props;
     const Stars = () => {
         const stars = new Array<any>();
@@ -134,17 +134,7 @@ const NotificationItem = (props: UIProps) => {
                                 <DueDateStyled numberOfLines={1}>Hạn sử dụng: {item?.expired_date}</DueDateStyled>
                             }
                         </View>
-                        {
-                            type == UberItemType.SERVICE &&
-                            <RightOpacityWrapper onPress={() => { if (onRightPress) onRightPress(); }}>
-                                <ImageStyled
-                                    style={{ height: 20, width: 14 }}
-                                    resizeMode='stretch'
-                                    source={ImageSource.bookmark}
-                                >
-                                </ImageStyled>
-                            </RightOpacityWrapper>
-                        }
+                    
                         {
                             type == UberItemType.BOOKINGSERVICE &&
                             <RightOpacityWrapper onPress={() => { if (onRightPress) onRightPress(); }}>
@@ -193,7 +183,7 @@ const NotificationItem = (props: UIProps) => {
         </Container >
     )
 }
-export default NotificationItem;
+export default UberItem;
 const Container = styled.View`
 flex:1;
 backgroundColor:white;

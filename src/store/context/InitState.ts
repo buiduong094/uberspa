@@ -1,5 +1,6 @@
 import { User } from 'models/user';
 import { Theme } from "utils/Theme";
+import { ConversationItem } from 'models/conversation';
 
 export interface ContextState {
     isConnection: boolean,
@@ -12,12 +13,11 @@ export interface ContextState {
     user?: User,
     loading?: boolean,
     active?: boolean,
-  
-
     searchName?: string // search shop by name
     fieldImage?: string,
-    showCamera?: boolean
-
+    showCamera?: boolean,
+    conversationItem?: ConversationItem, // cuộc hội thoại dc chọn
+    activeCode?: any
 }
 export const InitState: ContextState =
 {

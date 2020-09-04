@@ -50,7 +50,7 @@ const Layout = (props: UIProps) => {
                 s.selected = false;
             }
         })
-
+     
         ActionCreators.FieldChange(dispatch, 'tabItems', tabLists);
     }
     const width = () => {

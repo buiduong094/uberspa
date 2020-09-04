@@ -34,15 +34,10 @@ export const RegisterScreen = (props: UIProps) => {
     useEffect(() => {
         if (state.commited && state.message) {
             const msg = state.message?.message || '';
-          alertDefaultTitle.show(msg, 'Đóng');
+            alertDefaultTitle.show(msg, 'Đóng');
         }
-      }, [state.commited])
+    }, [state.commited])
 
-    // useEffect(() => {
-    //     if(state.isSuccess) {
-    //         nextStep()
-    //     }
-    // }, [state.isSuccess])
 
     const formik = useFormik({
         enableReinitialize: true,
@@ -51,7 +46,7 @@ export const RegisterScreen = (props: UIProps) => {
         onSubmit: (values) => {
             if (formik.isValid) {
                 ActionCreators.REGISTER(dispatch, values as RegisterModel);
-                // nextStep();
+
             }
         }
     });
@@ -71,10 +66,7 @@ export const RegisterScreen = (props: UIProps) => {
         if (fieldName === 'password') return <Icon.Lock color="#C2C2C2" size={18} />;
         if (fieldName === 'confirm_password') return <Icon.Lock color="#C2C2C2" size={18} />;
     }
-    const nextStep = () => {
-        let step = state.step;
-        ActionCreators.ChangeStep(dispatch, step + 1);
-    }
+
 
     const formControl = () => {
         return (
@@ -121,7 +113,7 @@ export const RegisterScreen = (props: UIProps) => {
     }
 
     return (
-        <WrapperContent>
+        <Container>
             <BackButton onPress={() => navigation.goBack()}>
                 <Icon.Back size={27}></Icon.Back>
             </BackButton>
@@ -131,7 +123,7 @@ export const RegisterScreen = (props: UIProps) => {
 
                 {
                     state.step === 1 ?
-                        <Container>
+                        <Register showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false}>
                             <KeyboardAvoidingView behavior="position" enabled>
                                 <Image source={ImageSource.logo}></Image>
                                 <Title>Đăng ký tài khoản mới</Title>
@@ -150,7 +142,7 @@ export const RegisterScreen = (props: UIProps) => {
                                     Đồng nghĩa với đăng nhập bạn đã chấp thuận với <TextStyled>điều khoản</TextStyled> và <TextStyled>chính sách</TextStyled> của chúng thôi
                         </TermStyled>
                             </KeyboardAvoidingView>
-                        </Container>
+                        </Register>
                         :
                         <VerificationScreen
                             refCode={refCode}
@@ -160,7 +152,7 @@ export const RegisterScreen = (props: UIProps) => {
                         />
                 }
             </TouchableWithoutFeedback>
-        </WrapperContent >
+        </Container >
     )
 }
 const mapStateToProps = (state: ApplicationState) => ({
@@ -180,7 +172,7 @@ const withConnect = connect(
 
 export default compose(withConnect)(RegisterScreen as any);
 
-const WrapperContent = styled.View`
+const Container = styled.View`
 justify-content:center;
 flex: 1;
 `;
@@ -198,13 +190,13 @@ const SubTitle = styled.Text`
     fontFamily: ${fontFamily.medium};
   
 `;
-const Container = styled.View`
-    flex: 1;
+const Register = styled.ScrollView`
+  
     background-color: #F6FBFB;
     padding:20px;
 `;
-const WrapperForm = styled.ScrollView`
-maxHeight: 50%;
+const WrapperForm = styled.View`
+
 `;
 const TextStyled = styled.Text`
 textDecorationLine:underline;
