@@ -20,10 +20,17 @@ const MessageItem = (props: UIProps) => {
 
     let date = new Date(item.time ?? new Date().toDateString());
 
-    const formarDate = (date: Date) => {
-        let result = '';
-        result = ('0' + date.getHours()).substr(-2) + ":" + ('0' + date.getMinutes()).substr(-2);
-        return result
+    // const formarDate = (date: Date) => {
+    //     let result = '';
+    //     result = ('0' + date.getHours()).substr(-2) + ":" + ('0' + date.getMinutes()).substr(-2);
+    //     return result
+    // }
+
+    const formarDate = (time) => {
+        let date = new Date(time * 1000)
+        let hours = date.getHours()
+        let minutes = "0" + date.getMinutes()
+        return hours + ':' + minutes.substr(-2)
     }
 
     const DEFAULT_WIDTH_IMAGE = 250;
