@@ -7,7 +7,7 @@ import { ImageSource } from 'assets';
 import { UberItemType } from 'constant';
 import { TagItem } from "models/tag";
 import { Tag } from 'components';
-// import {Intl} from ''
+
 interface UIProps {
     onPress?: Function,
 
@@ -21,7 +21,9 @@ interface UIProps {
 
 const ServiceItem = (props: UIProps) => {
     const { onPress, uistyle, type, item, selected } = props;
-
+    const currencyFormat = (num) => {
+        return num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.") + ' đ'
+      }
     return (
         <Container style={[{ backgroundColor: props.selected ? '#65DF7B20' : 'white' }, uistyle]}>
             <MainContainer onPress={() => {
@@ -34,7 +36,7 @@ const ServiceItem = (props: UIProps) => {
                         resizeMode='stretch'
                         source={{ uri: item?.logo ?? 'https://benhvienthucuc.vn/wp-content/themes/benh-vien-thu-cuc-vn/assets/images/sec12_1.png' }}></ImageStyled>
 
-                  
+
                     <Content>
                         <View style={{ flex: 1 }}>
                             {
@@ -43,15 +45,14 @@ const ServiceItem = (props: UIProps) => {
                             }
 
 
-                            <PackageDescriptStyled style={{flex:1}} numberOfLines={1}>{item?.description}</PackageDescriptStyled>
+                            <PackageDescriptStyled style={{ flex: 1 }} numberOfLines={1}>{item?.description}</PackageDescriptStyled>
 
 
 
                         </View>
 
 
-                        <PriceActiveStyled style={{ color: props.selected ? '#65DF7B' : 'black', right:0, textAlign:'right' }} >{(item?.price)}</PriceActiveStyled>
-                        {/* <PriceActiveStyled>{Intl.NumberFormat('vi-VN').format(item?.price)}</PriceActiveStyled> */}
+                        <PriceActiveStyled style={{ color: props.selected ? '#65DF7B' : 'black', right: 0, textAlign: 'right' }} >{currencyFormat(parseFloat(item?.price))}</PriceActiveStyled>
 
 
                     </Content>

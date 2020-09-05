@@ -50,7 +50,7 @@ const TimeLine = (props: UIProps) => {
         }
     }
     return (
-        <Container style={{ backgroundColor: BackgroundColorStyled(), borderColor: ColorStyled() }} onPress={() => {
+        <Container style={{ backgroundColor: BackgroundColorStyled(), borderColor: ColorStyled(), margin: 5 }} onPress={() => {
             if (props.onPress) {
                 props.onPress(props.item, props.index)
             }

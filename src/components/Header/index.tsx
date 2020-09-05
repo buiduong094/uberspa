@@ -64,7 +64,7 @@ const Wrapper = styled.View`
 flex-direction:row;
 align-items:center;
 justify-content:space-between;
-padding:22px 16px 12px 15px;
+padding:42px 15px 20px 15px;
 `;
 const Content = styled.View`
 
