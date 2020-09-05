@@ -104,6 +104,7 @@ const Layout = (props: UIProps) => {
                             p: {marginTop: 20, lineHeight: 25},
                             h2: {lineHeight: 25},
                             figcaption: {lineHeight: 25},
+                            textDecorationLine: "solid",
                         }}
                     />
                 }
