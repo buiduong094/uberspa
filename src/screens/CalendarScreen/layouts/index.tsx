@@ -220,8 +220,6 @@ const BtnStyle = styled.TouchableOpacity`
 justifyContent:space-between;
 align-content:center;
 align-items:center;
-paddingHorizontal:15;
-paddingVertical:15;
 flex-direction: row;
 flex:1;
 `;
@@ -268,7 +266,6 @@ const ImageStyled = styled.Image`
 width: 80;
 height: 80;
 backgroundColor: #FFF;
-marginBottom: 10
 `;
 const StarWrapper = styled.View`
 flex-direction:row;
@@ -281,15 +278,14 @@ color:#9B9B9B;
 `;
 const ContentShop = styled.View`
 flex-direction: column;
-marginLeft: 10;
+paddingHorizontal: 15;
 align-content:center;
-marginHorizontal: 15px;
 `;
 const SubTitleStyled = styled.Text`
 fontSize:14px;
 fontFamily: ${fontFamily.regular};
 flexWrap: wrap;
-marginRight: 50;
+marginRight: 50px;
 color:#9B9B9B;`;
 const TextStyled = styled.Text`
 color:#000000;
