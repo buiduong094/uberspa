@@ -14,6 +14,7 @@ import { Message, GetChatEnum, MessageTypeEnum } from '../../../models/message/i
 import { Endpoint } from 'api/endpoint';
 import { SERVER_KEY } from 'constant';
 import { stat } from 'fs';
+import { CameraItem } from 'components/Camera/PhotoSelect';
 interface RequestAction {
     type: string,
 }
@@ -69,13 +70,27 @@ export const ActionCreators = {
     SendMessage: async (
         dispatch: React.Dispatch<KnownAction>,
         type: MessageTypeEnum,
-        message: Message) => {
-        const params = {
-            server_key: SERVER_KEY,
-            to_id: message.to_id,
-            text: unescape(encodeURIComponent(message.text ?? "")) // mã hóa nếu có emoj
-        }
-        let response = await client.post(Endpoint.SEND_MESSAGE, params);
+        message: Message,
+        images?: CameraItem[]
+    ) => {
+        // const body = {
+        //     server_key: SERVER_KEY,
+        //     to_id: message.to_id,
+        //     text: unescape(encodeURIComponent(message.text ?? "")) // mã hóa nếu có emoj
+        // }
+        let formData = new FormData();
+        formData.append('server_key', SERVER_KEY)
+        formData.append('to_id', (message.to_id ?? 0).toString())
+        formData.append('text', unescape(encodeURIComponent(message.text ?? "")))
+        const params = new Headers({
+            "Content-Type": "multipart/form-data"
+        })
+        // if ((images ?? []).length > 0) {
+        //     images?.forEach((image, index) => {
+        //         formData.append('', )
+        //     })
+        // }
+        let response = await client.post(Endpoint.SEND_MESSAGE, formData, params);
         if (response && response.status === 200) {
             const data = response?.data.data;
             dispatch({
@@ -114,21 +129,21 @@ export const ActionCreators = {
         dispatch({
             type: ActionType.REQUEST_ITEMS,
         });
-        let params = {
+        let body = {
         }
         let URL = "";
         if (type === GetChatEnum.CONVERSATIONS) {
             URL = Endpoint.GET_LIST_MESSAGE;
-            params = {
-                ...params,
+            body = {
+                ...body,
                 server_key: SERVER_KEY,
                 limit: pageSize,
                 time_order: timeFrom
             }
         } else if (type === GetChatEnum.MESSAGES) {
             URL = Endpoint.GET_MESSAGE;
-            params = {
-                ...params,
+            body = {
+                ...body,
                 server_key: SERVER_KEY,
                 limit: pageSize,
                 time_order: timeFrom,
@@ -136,7 +151,7 @@ export const ActionCreators = {
             }
         }
 
-        let response = await client.post(URL, params);
+        let response = await client.post(URL, body);
         if (response && response.status === 200) {
             const data = response?.data.data;
             dispatch({
@@ -197,7 +212,7 @@ export const reducer = (state: IState, incomingAction: KnownAction): IState => {
             if (action.typeGet === GetChatEnum.CONVERSATIONS) {
                 let data = action.dataItems as Array<ConversationItem>;
                 let listConversation = new Array<ConversationItem>();
-               
+
                 if (state.timeFrom === 0) {
                     listConversation = data;
                 } else {

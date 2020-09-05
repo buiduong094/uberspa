@@ -40,11 +40,11 @@ const Layout = (props: UIProps) => {
     const sendMessage = () => {
         const message: Message = {
             text: state.message,
-            to_id: props.conversationSelected?.to_id
+            to_id: props.conversationSelected?.to_id,
         }
         Keyboard.dismiss();
         if (state.message && state.message != null) {
-            ActionCreators.SendMessage(dispatch, MessageTypeEnum.TEXT, message);
+            ActionCreators.SendMessage(dispatch, MessageTypeEnum.TEXT, message, state.images);
         }
         goIndex()
     }
@@ -114,6 +114,7 @@ const Layout = (props: UIProps) => {
                         onPress={() => {
                             ActionCreators.FIELD_CHANGE(dispatch, 'showModal', false);
                             ActionCreators.FIELD_CHANGE(dispatch, 'showCamera', true);
+                            // ActionCreators.FIELD_CHANGE(dispatch, 'images', []);
                         }}>
                         <WrapImage>
                             <Icon.Image size={25} color="#FFF" />
@@ -127,6 +128,7 @@ const Layout = (props: UIProps) => {
                         onPress={() => {
                             ActionCreators.FIELD_CHANGE(dispatch, 'showModal', false);
                             ActionCreators.FIELD_CHANGE(dispatch, 'showVideo', true);
+                            // ActionCreators.FIELD_CHANGE(dispatch, 'images', []);
                         }}>
                         <WrapImage>
                             <Icon.Video size={25} color="#FFF" />
