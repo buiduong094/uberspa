@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, View, Platform, Dimensions } from "react-native";
+import { StyleSheet, View, Platform, Dimensions, TouchableOpacity } from "react-native";
 import MapboxGL from "@react-native-mapbox-gl/maps";
 import { useEffect } from 'react';
 import styled from 'styled-components/native';
@@ -23,7 +23,8 @@ import { compose } from 'redux';
 import { ActionCreators as ServiceAction } from 'store/service';
 
 interface State {
-  listShop?: any[]
+  listShop?: any[],
+  services?: any[]
 }
 type UIProps = State & typeof ServiceAction;
 
@@ -31,7 +32,8 @@ MapboxGL.setAccessToken('pk.eyJ1Ijoic3RldmVubGVlMjgwNiIsImEiOiJja2Fqc20zNGQwZ3Z0
 let watchID;
 
 const Layout = (props: UIProps) => {
-  const [state, dispatch] = React.useReducer(reducer, InitState)
+  const [state, dispatch] = React.useReducer(reducer, InitState);
+
   const navigation = useNavigation();
   useEffect(() => {
     props.ShopByService();
@@ -121,8 +123,11 @@ const Layout = (props: UIProps) => {
           <ContentStep>
             <DialogHeader>
               <Title text="Địa điểm" titleStyle={{ marginBottom: 10 }}></Title>
-
-              <Icon.Close color='black' size={22} />
+              <TouchableOpacity onPress={() => {
+                ActionCreators.FieldChange(dispatch, 'display', false)
+              }}>
+                <Icon.Close color='black' size={22} />
+              </TouchableOpacity>
             </DialogHeader>
             <SearchInput
               placeHolder=""
@@ -148,13 +153,18 @@ const Layout = (props: UIProps) => {
                 </ServiceWrapper>
               }
               {
-                props.listShop && props.listShop.length > 0 && props.listShop?.map((item) =>
+                props.listShop && props.listShop.length > 0 && props.listShop?.map((item, index) =>
+
                   <UberItem
+
                     uistyle={{ marginBottom: 15 }}
                     item={item}
                     type={UberItemType.BOOKINGSERVICE}
-                    childs={item?.childs}
+                    childs={props.services}
+
                     onChildPress={selectService} />
+
+
                 )
               }
             </ScrollWrapper>
@@ -200,7 +210,18 @@ const Layout = (props: UIProps) => {
                     }}
                     resizeMode="cover" />
                 </VoucherBorder>
-                <VoucherCode>DHABSD</VoucherCode>
+                <TextInputUI
+                  placeholder="Mã giảm giá"
+                  uistyle={{ flex: 1 }}
+                  textValue={state.coupon}
+                  contentstyle={{ borderRadius: 5 }}
+
+                  type="text"
+                  keyboardType="default"
+                  onChangeText={(coupon) => {
+                    ActionCreators.FieldChange(dispatch, 'coupon', coupon)
+                  }}
+                />
               </VoucherWrapper>
               <LoginButton
                 uistyle={{ alignSelf: 'center', width: '60%' }}
@@ -252,7 +273,8 @@ const Layout = (props: UIProps) => {
   );
 }
 const mapStateToProps = (state: ApplicationState) => ({
-  listShop: state.ServiceState.listShop
+  listShop: state.ServiceState.listShop,
+  services: state.ServiceState.shopServices
 })
 
 const mapDispatchToProps = {
