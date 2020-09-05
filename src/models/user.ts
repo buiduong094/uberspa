@@ -4,7 +4,8 @@ export interface User {
     name?: string,
     phone?: string,
     avatar?: any, // source profile image
-    is_notification?: NotifyReceiveType
+    is_notification?: NotifyReceiveType,
+    id?: number
 }
 export interface ChangeInfoUser {
     name: string,
@@ -12,6 +13,7 @@ export interface ChangeInfoUser {
     address: string,
     birth_day: string,
     gender: string,
+    id?: number
 }
 
 export interface ChangePassword {

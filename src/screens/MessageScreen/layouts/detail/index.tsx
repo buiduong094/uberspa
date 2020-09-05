@@ -7,10 +7,9 @@ import { reducer } from '../../store/Reducer';
 import { InitState } from '../../store/InitState';
 import { UberItem, MessageItem, TextInputUI, ModalUI, Camera } from 'components';
 import { UberItemType } from 'constant';
-import { convertHeight } from 'utils/convertSize';
 import { ActionCreators } from 'screens/MessageScreen/store/Reducer';
-import { Message } from 'models/message';
-import { Dimensions, KeyboardAvoidingView, Platform, Keyboard, FlatList, TextInput } from 'react-native';
+import { Message, GetChatEnum, MessageTypeEnum } from 'models/message';
+import { Dimensions, KeyboardAvoidingView, Platform, Keyboard, FlatList, TextInput, ActivityIndicator } from 'react-native';
 import { User } from 'models/user';
 import { ApplicationState } from 'store/configureAction';
 import { connect } from 'react-redux';
@@ -24,37 +23,32 @@ interface UIProps {
 const Layout = (props: UIProps) => {
     const navigation = useNavigation();
     const [state, dispatch] = useReducer(reducer, InitState);
-    const flatListRef = useRef<FlatList | null>(null)
+    const flatListRef = useRef<FlatList | null>(null);
     useEffect(() => {
         if (state.isSent) {
             ActionCreators.ChangeText(dispatch, '')
         }
     }, [state.isSent]);
+
     useEffect(() => {
-        ActionCreators.REQUEST_ITEMS(dispatch, 'messageItems')
+        ActionCreators.REQUEST_ITEMS(dispatch, GetChatEnum.MESSAGES, state.timeFrom, state.pageSize, props.conversationSelected?.to_id);
     }, []);
 
     const sendMessage = () => {
         const message: Message = {
-            // _id: '1',
-            // created: new Date().toDateString(),
-            // message: state.message,
-            // // avatar: props.user?.avatar,
-            // // sender: props.user?.email,
-            // sender: 'abc',
-            // messageType: '1',
-            // supporter: '0'
+            text: state.message,
+            to_id: props.conversationSelected?.to_id
         }
         Keyboard.dismiss();
         if (state.message && state.message != null) {
-            ActionCreators.SendMessage(dispatch, message)
+            ActionCreators.SendMessage(dispatch, MessageTypeEnum.TEXT, message);
         }
         goIndex()
     }
+
     const goIndex = () => {
-        flatListRef.current?.scrollToIndex({ animated: true, index: state.messageItems.length - 1 });
+        flatListRef.current?.scrollToIndex({ animated: true, index: 0 });
     };
-    console.warn('sss', props.conversationSelected)
 
     const onCameraImageChange = (sources: any) => {
         // const images = state.warning ? state.warning['IMG_NOIDUNGBAOCAO'] : [];
@@ -71,6 +65,29 @@ const Layout = (props: UIProps) => {
         // const cloneImages = [...images ?? [], sources];
         // ActionCreators.FIELD_CHANGE(dispatch, 'warning.IMG_NOIDUNGBAOCAO', cloneImages);
         ActionCreators.FIELD_CHANGE(dispatch, 'showCamera', false);
+    }
+
+    let _keyExtractor = (item: any, index: any) => index.toString();
+
+    const _renderItem = ({ item, index }) => (
+        <MessageItem
+            uistyle={{ marginTop: 10, marginBottom: 20 }}
+            isMyMessage={item?.from_id == props.user?.id ? true : false}
+            item={item}
+        />
+    )
+    const viewabilityConfig = {
+        minimumViewTime: 500,
+        viewAreaCoveragePercentThreshold: 150,
+    }
+
+    const onEndReach = () => {
+        // if (!state.onEndReachedCalledDuringMomentum) {
+            if (state.canLoadMore) {
+                ActionCreators.FIELD_CHANGE(dispatch, 'onEndReachedCalledDuringMomentum', false);
+                ActionCreators.REQUEST_ITEMS(dispatch, GetChatEnum.MESSAGES, state.timeFrom, state.pageSize, props.conversationSelected?.to_id);
+            }
+        // }
     }
 
     const ShowModal = () => {
@@ -137,19 +154,20 @@ const Layout = (props: UIProps) => {
                     titleStyle={{ marginLeft: -30 }}
                     navigation={navigation}>
                 </Header>
+                {state.loading && (
+                    <ActivityIndicator style={{ marginTop: 5 }} size="small" />
+                )}
                 <FlatList
-                    style={{ paddingHorizontal: 15 }}
-                    data={state.messageItems}
-                    renderItem={({ item }) => (
-                        <MessageItem
-                            uistyle={{ marginTop: 10, marginBottom: 20 }}
-                            isMyMessage={item?.supporter == '0' ? true : false}
-                            item={item}
-                        />
-                    )}
                     ref={flatListRef}
-                    keyExtractor={item => item.index}
-
+                    keyExtractor={_keyExtractor}
+                    inverted
+                    style={{ paddingHorizontal: 15 }}
+                    viewabilityConfig={viewabilityConfig}
+                    onEndReachedThreshold={0.5}
+                    onMomentumScrollBegin={() => { ActionCreators.FIELD_CHANGE(dispatch, 'onEndReachedCalledDuringMomentum', false); }}
+                    data={state.messageItems}
+                    renderItem={_renderItem}
+                    onEndReached={onEndReach}
                 />
                 <InputMessage>
                     <WrapPlus onPress={() => {
@@ -196,7 +214,7 @@ const Layout = (props: UIProps) => {
                     ></Camera>
                 }
             </Container >
-        </KeyboardAvoidingView>
+        </KeyboardAvoidingView >
     );
 }
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components/native';
 import { fontFamily } from 'utils/Theme';
-import { Message } from 'models/message';
+import { Message, FileItem } from 'models/message';
 import { Dimensions, Image, ImageBase } from 'react-native';
 import * as Icon from 'constant/icons';
 import { ImageSource } from 'assets';
@@ -9,7 +9,6 @@ interface UIProps {
     children?: any,
     uistyle?: any,
     isMyMessage: boolean,
-    showAvatar?: boolean
     item: Message,
     onDownloadFile?: Function,
     onViewImage?: Function,
@@ -19,21 +18,69 @@ interface UIProps {
 const MessageItem = (props: UIProps) => {
     const { children, onPress, uistyle, isMyMessage, item } = props;
 
-    let date = new Date(item.created ?? new Date().toDateString());
+    let date = new Date(item.time ?? new Date().toDateString());
+
+    const formarDate = (date: Date) => {
+        let result = '';
+        result = ('0' + date.getHours()).substr(-2) + ":" + ('0' + date.getMinutes()).substr(-2);
+        return result
+    }
+
+    const DEFAULT_WIDTH_IMAGE = 250;
+
+    const getSizeImage = (url: string) => {
+        Image.getSize(url,
+            (success: number) => {
+                let ratio = success / DEFAULT_WIDTH_IMAGE;
+                let heightImage = DEFAULT_WIDTH_IMAGE;
+                heightImage = DEFAULT_WIDTH_IMAGE * ratio;
+                return heightImage;
+            },
+            (error) => { })
+        return DEFAULT_WIDTH_IMAGE;
+    }
+    // const getSizeImage = (url: string) => {
+    //     Image.getSize(url, (width, height) => {
+    //         let ratio = height / width;
+    //         let heightImage = DEFAULT_WIDTH_IMAGE;
+    //         heightImage = DEFAULT_WIDTH_IMAGE * ratio;
+    //         console.warn('het', heightImage)
+    //         return heightImage
+
+    //     }, (err)=>{
+
+    //     });
+    // }
+
 
     return (
         <Container style={uistyle}>
             {
                 isMyMessage == true ?
                     <MyMessageWrapper>
-                        <TimeStyled>{('0' + date.getHours()).substr(-2) + ":" + ('0' + date.getMinutes()).substr(-2)}</TimeStyled>
+                        <TimeStyled>{formarDate(date)}</TimeStyled>
                         <MyMessage>
                             <MyMessageText>{item.text}</MyMessageText>
+                            {
+                                (item.files ?? [])?.length > 0 && item.files?.map((file: FileItem, index: number) => (
+                                    <Image
+                                        source={{ uri: file.image_url }}
+                                        height={getSizeImage(file.image_url ?? "")}
+                                        width={100}
+                                        style={{
+                                            height: getSizeImage(file.image_url ?? ""),
+                                            width: DEFAULT_WIDTH_IMAGE,
+                                            marginTop: 5,
+                                            borderRadius: 5
+                                        }}
+                                    />
+                                ))
+                            }
                         </MyMessage>
                     </MyMessageWrapper>
                     :
                     <PartnerMessageWrapper>
-                        <TimeStyled>{('0' + date.getHours()).substr(-2) + ":" + ('0' + date.getMinutes()).substr(-2)}</TimeStyled>
+                        <TimeStyled>{formarDate(date)}</TimeStyled>
                         <PartnerMessage>
                             <PartnerMessageText>{item.text}</PartnerMessageText>
                         </PartnerMessage>
@@ -93,3 +140,5 @@ fontSize:16;
 fontFamily: ${fontFamily.regular};
 color: #FFFF;
 `;
+const ImageWrapper = styled.Image`
+`

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from 'react';
+import React, { useState, useEffect, useReducer, useRef } from 'react';
 import styled from 'styled-components/native';
 import Header from 'components/Header';
 import { useNavigation } from '@react-navigation/native';
@@ -10,31 +10,56 @@ import { UberItemType, RouteName } from 'constant';
 import { convertHeight } from 'utils/convertSize';
 import { ActionCreators } from 'screens/MessageScreen/store/Reducer';
 import { ConversationItem } from 'models/conversation';
-import { FlatList, ActivityIndicator } from 'react-native';
+import { FlatList, ActivityIndicator, RefreshControl } from 'react-native';
 import { ApplicationState } from 'store/configureAction';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { ActionCreators as ReduxAction } from 'store/context';
+import { GetChatEnum } from 'models/message';
 interface State {
 }
 type UIProps = State & typeof ReduxAction;
 const Layout = (props: UIProps) => {
   const navigation = useNavigation();
   const [state, dispatch] = useReducer(reducer, InitState);
+  const flatListRef = useRef<FlatList | null>(null);
 
   useEffect(() => {
-    ActionCreators.REQUEST_ITEMS(dispatch, 'conversations');
+    ActionCreators.REQUEST_ITEMS(dispatch, GetChatEnum.CONVERSATIONS, state.timeFrom, state.pageSize);
   }, []);
-  useEffect(() => {
-    console.warn('item', state.conversations);
-  }, [state.conversations]);
 
   const goDetail = (item: ConversationItem) => {
     props.SelectConversation(item);
     navigation.navigate(RouteName.MESSAGE);
   };
 
-  const  _keyExtractor = (item: ConversationItem, index) => index.toString();
+  const onEndReach = () => {
+    // if (!state.onEndReachedCalledDuringMomentum) {
+      if (state.canLoadMore) {
+        ActionCreators.FIELD_CHANGE(dispatch, 'onEndReachedCalledDuringMomentum', false);
+        ActionCreators.REQUEST_ITEMS(dispatch, GetChatEnum.CONVERSATIONS, state.timeFrom, state.pageSize);
+      }
+    // }
+  }
+
+  const onRefresh = () => {
+    ActionCreators.REQUEST_ITEMS(dispatch, GetChatEnum.CONVERSATIONS, state.timeFrom, state.pageSize);
+    ActionCreators.FIELD_CHANGE(dispatch, 'timeFrom', 0);
+  }
+
+
+  const _keyExtractor = (item: ConversationItem, index) => index.toString();
+
+  const _renderItem = ({ item, index }) => (
+    <UberItem
+      key={index}
+      uistyle={{ marginBottom: 1, borderRadius: 0 }}
+      item={item}
+      type={UberItemType.CHAT}
+      onPress={goDetail}
+    />
+  )
+
   return (
     <Container>
       <Header text="HỘI THOẠI"></Header>
@@ -44,24 +69,22 @@ const Layout = (props: UIProps) => {
             <TextNotFound>Bạn không có cuộc hội thoại nào!</TextNotFound>
           </NotFoundWrapper>
         )}
-        {state.loading ? (
-          <ActivityIndicator style={{marginTop: 5}}size="small" />
-        ) : (
-          <FlatList
-            data={state.conversations}
-            renderItem={({item, index}) => (
-              <UberItem
-                key={index}
-                uistyle={{marginBottom: 1, borderRadius: 0}}
-                item={item}
-                type={UberItemType.CHAT}
-                onPress={goDetail}
-              />
-            )}
-            keyExtractor={_keyExtractor}
-            showsHorizontalScrollIndicator={false}
-          />
-        )}
+        <FlatList
+          ref={flatListRef}
+          keyExtractor={_keyExtractor}
+          onEndReachedThreshold={0.5}
+          onMomentumScrollBegin={() => { ActionCreators.FIELD_CHANGE(dispatch, 'onEndReachedCalledDuringMomentum', false); }}
+          showsHorizontalScrollIndicator={false}
+          data={state.conversations}
+          renderItem={_renderItem}
+          onEndReached={onEndReach}
+          refreshControl={
+            <RefreshControl
+              refreshing={state.loading ?? false}
+              onRefresh={onRefresh}
+            />
+          }
+        />
       </ScrollWrapper>
     </Container>
   );

@@ -1,3 +1,5 @@
+import conversation from "screens/MessageScreen/layouts/conversation";
+
 export enum MessageType {
     Success,
     Pending,
@@ -34,10 +36,10 @@ export interface Message {
     notification_id?: number,
     created_at?: string,
     updated_at?: string,
-    files?: File[]
+    files?: FileItem[]
 }
 
-export interface File {
+export interface FileItem {
     id?: number,
     message_id?: number,
     cretae_user_id?: number,
@@ -46,4 +48,16 @@ export interface File {
     video_url?: string,
     created_at?: string,
     updated_at?: string
+}
+
+export enum GetChatEnum {
+    CONVERSATIONS,
+    MESSAGES
+}
+
+export enum MessageTypeEnum {
+    TEXT,
+    IMAGE,
+    VIDEO,
+    FILE
 }
