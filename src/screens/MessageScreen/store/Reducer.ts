@@ -163,6 +163,7 @@ export const reducer = (state: IState, incomingAction: KnownAction): IState => {
                 let decodeMessage = decodeURIComponent(escape(sendedMessage.text ?? ""));
                 sendedMessage.text = decodeMessage;
             } catch (error) {
+                sendedMessage.text = sendedMessage.text;
             }
             listMessage.unshift(sendedMessage)
             return {
@@ -220,6 +221,7 @@ export const reducer = (state: IState, incomingAction: KnownAction): IState => {
                         let decodeMessage = decodeURIComponent(escape(item.text ?? "")); // giải mã
                         item.text = decodeMessage;
                     } catch (error) {
+                        item.text = item.text;
                     }
                 });
                 if (state.timeFrom === 0) {

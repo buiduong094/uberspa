@@ -47,6 +47,7 @@ const UberItem = (props: UIProps) => {
             decodeMessage = decodeURIComponent(escape(message ?? ""));
             return decodeMessage;
         } catch (error) {
+            return message;
         }
         return decodeMessage;
     }
