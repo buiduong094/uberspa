@@ -45,24 +45,22 @@ const ImageScroll = (props: UIProps) => {
                                 width: source.url.includes('mp4') ? 200 : 80,
                                 height: source.url.includes('mp4') ? 200 : 80,
                             }}
-                            key={index} onPress={() => {
+                            key={index}
+                            onPress={() => {
                                 let originSource = source.url.replace('&width=80&height=80', '');
                                 if (source.url.includes('mp4')) {
                                     originSource = source.url.replace('&width=200&height=200', '')
                                 }
                                 setShowPreview(true);
                                 setPreview(originSource)
-
                             }}>
-                            <ImageStyled style={{
-
-                                width: source.url.includes('mp4') ? 200 : 80,
-                                height: source.url.includes('mp4') ? 200 : 80,
-
-                            }} source={{
-                                uri: source.url,
-                            }}
-
+                            <ImageStyled
+                                style={{
+                                    width: source.url.includes('mp4') ? 200 : 80,
+                                    height: source.url.includes('mp4') ? 200 : 80,
+                                }} source={{
+                                    uri: source.url,
+                                }}
                             />
                             {
                                 props.formMode != FormMode.Detail &&

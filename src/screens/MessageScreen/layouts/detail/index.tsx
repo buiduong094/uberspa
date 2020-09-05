@@ -7,15 +7,17 @@ import { reducer } from '../../store/Reducer';
 import { InitState } from '../../store/InitState';
 import { UberItem, MessageItem, TextInputUI, ModalUI, Camera } from 'components';
 import { UberItemType } from 'constant';
-import { convertHeight } from 'utils/convertSize';
 import { ActionCreators } from 'screens/MessageScreen/store/Reducer';
-import { Message } from 'models/message';
-import { Dimensions, KeyboardAvoidingView, Platform, Keyboard, FlatList, TextInput } from 'react-native';
+import { Message, GetChatEnum, MessageTypeEnum } from 'models/message';
+import { Dimensions, KeyboardAvoidingView, Platform, Keyboard, FlatList, View, ActivityIndicator } from 'react-native';
 import { User } from 'models/user';
 import { ApplicationState } from 'store/configureAction';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { ConversationItem } from 'models/conversation';
+import { CameraItem } from 'components/Camera/PhotoSelect';
+import ImageScroll from 'components/ImageScroll';
+import { FormMode } from 'models/form';
 
 interface UIProps {
     user?: User,
@@ -24,53 +26,77 @@ interface UIProps {
 const Layout = (props: UIProps) => {
     const navigation = useNavigation();
     const [state, dispatch] = useReducer(reducer, InitState);
-    const flatListRef = useRef<FlatList | null>(null)
+    const flatListRef = useRef<FlatList | null>(null);
     useEffect(() => {
         if (state.isSent) {
             ActionCreators.ChangeText(dispatch, '')
         }
     }, [state.isSent]);
+
     useEffect(() => {
-        ActionCreators.REQUEST_ITEMS(dispatch, 'messageItems')
+        ActionCreators.REQUEST_ITEMS(dispatch, GetChatEnum.MESSAGES, state.timeFrom, state.pageSize, props.conversationSelected?.to_id);
     }, []);
 
     const sendMessage = () => {
         const message: Message = {
-            // _id: '1',
-            // created: new Date().toDateString(),
-            // message: state.message,
-            // // avatar: props.user?.avatar,
-            // // sender: props.user?.email,
-            // sender: 'abc',
-            // messageType: '1',
-            // supporter: '0'
+            text: state.message,
+            to_id: props.conversationSelected?.to_id,
         }
         Keyboard.dismiss();
         if (state.message && state.message != null) {
-            ActionCreators.SendMessage(dispatch, message)
+            ActionCreators.SendMessage(dispatch, MessageTypeEnum.TEXT, message, state.images);
         }
         goIndex()
     }
+
     const goIndex = () => {
-        flatListRef.current?.scrollToIndex({ animated: true, index: state.messageItems.length - 1 });
+        flatListRef.current?.scrollToIndex({ animated: true, index: 0 });
     };
-    console.warn('sss', props.conversationSelected)
 
-    const onCameraImageChange = (sources: any) => {
-        // const images = state.warning ? state.warning['IMG_NOIDUNGBAOCAO'] : [];
-        // let cloneImages = [...images ?? []];
-        // cloneImages = cloneImages.concat(sources);
-
-        // ActionCreators.FIELD_CHANGE(dispatch, 'warning.IMG_NOIDUNGBAOCAO', cloneImages);
-        // ActionCreators.FIELD_CHANGE(dispatch, 'showCamera', false);
+    /**
+     * Chọn ảnh
+     * @param sources 
+     */
+    const onCameraImageChange = (sources: CameraItem[]) => {
+        let cloneImages = [...state.images ?? [], ...sources];
+        ActionCreators.FIELD_CHANGE(dispatch, 'images', cloneImages);
         ActionCreators.FIELD_CHANGE(dispatch, 'showCamera', false);
     }
 
+    console.warn('images', state.images)
+
+    /**
+     * Chụp ảnh
+     * @param sources 
+     */
     const onCameraTakeImage = (sources: any) => {
         // const images = state.warning ? state.warning['IMG_NOIDUNGBAOCAO'] : [];
         // const cloneImages = [...images ?? [], sources];
         // ActionCreators.FIELD_CHANGE(dispatch, 'warning.IMG_NOIDUNGBAOCAO', cloneImages);
         ActionCreators.FIELD_CHANGE(dispatch, 'showCamera', false);
+    }
+
+    let _keyExtractor = (item: any, index: any) => index.toString();
+
+    const _renderItem = ({ item, index }) => (
+        <MessageItem
+            uistyle={{ marginTop: 10, marginBottom: 20 }}
+            isMyMessage={item?.from_id == props.user?.id ? true : false}
+            item={item}
+        />
+    )
+    const viewabilityConfig = {
+        minimumViewTime: 500,
+        viewAreaCoveragePercentThreshold: 150,
+    }
+
+    const onEndReach = () => {
+        // if (!state.onEndReachedCalledDuringMomentum) {
+        if (state.canLoadMore) {
+            ActionCreators.FIELD_CHANGE(dispatch, 'onEndReachedCalledDuringMomentum', false);
+            ActionCreators.REQUEST_ITEMS(dispatch, GetChatEnum.MESSAGES, state.timeFrom, state.pageSize, props.conversationSelected?.to_id);
+        }
+        // }
     }
 
     const ShowModal = () => {
@@ -88,6 +114,7 @@ const Layout = (props: UIProps) => {
                         onPress={() => {
                             ActionCreators.FIELD_CHANGE(dispatch, 'showModal', false);
                             ActionCreators.FIELD_CHANGE(dispatch, 'showCamera', true);
+                            // ActionCreators.FIELD_CHANGE(dispatch, 'images', []);
                         }}>
                         <WrapImage>
                             <Icon.Image size={25} color="#FFF" />
@@ -101,6 +128,7 @@ const Layout = (props: UIProps) => {
                         onPress={() => {
                             ActionCreators.FIELD_CHANGE(dispatch, 'showModal', false);
                             ActionCreators.FIELD_CHANGE(dispatch, 'showVideo', true);
+                            // ActionCreators.FIELD_CHANGE(dispatch, 'images', []);
                         }}>
                         <WrapImage>
                             <Icon.Video size={25} color="#FFF" />
@@ -137,41 +165,60 @@ const Layout = (props: UIProps) => {
                     titleStyle={{ marginLeft: -30 }}
                     navigation={navigation}>
                 </Header>
+                {state.loading && (
+                    <ActivityIndicator style={{ marginTop: 5 }} size="small" />
+                )}
                 <FlatList
-                    style={{ paddingHorizontal: 15 }}
-                    data={state.messageItems}
-                    renderItem={({ item }) => (
-                        <MessageItem
-                            uistyle={{ marginTop: 10, marginBottom: 20 }}
-                            isMyMessage={item?.supporter == '0' ? true : false}
-                            item={item}
-                        />
-                    )}
                     ref={flatListRef}
-                    keyExtractor={item => item.index}
-
+                    keyExtractor={_keyExtractor}
+                    inverted
+                    style={{ paddingHorizontal: 15 }}
+                    viewabilityConfig={viewabilityConfig}
+                    onEndReachedThreshold={0.5}
+                    onMomentumScrollBegin={() => { ActionCreators.FIELD_CHANGE(dispatch, 'onEndReachedCalledDuringMomentum', false); }}
+                    data={state.messageItems}
+                    renderItem={_renderItem}
+                    onEndReached={onEndReach}
                 />
-                <InputMessage>
-                    <WrapPlus onPress={() => {
-                        ActionCreators.ShowModal(dispatch, true)
-                    }}>
-                        <Icon.Plus size={25} color="#AFAFAF" />
-                    </WrapPlus>
-                    <TextInputUI
-                        placeholder="Nội dung trò chuyện"
-                        uistyle={{ flex: 1 }}
-                        contentstyle={{ borderWidth: 0 }}
-                        type="text"
-                        keyboardType="default"
-                        onChangeText={(message) => {
-                            ActionCreators.ChangeText(dispatch, message)
-                        }}
-                        textValue={state.message}
-                    />
-                    <SendIcon onPress={sendMessage}>
-                        <Icon.Send size={26} color="#65DF7B"></Icon.Send>
-                    </SendIcon>
-                </InputMessage>
+                <View>
+                    {
+                        state.images && (state.images ?? []).length > 0 &&
+                        <ImageScroll
+                            formMode={FormMode.AddNew}
+                            onRemove={(index: number) => {
+                                const cloneImages = [...state.images ?? []];
+                                cloneImages.splice(index, 1);
+
+                                ActionCreators.FIELD_CHANGE(dispatch, 'images', cloneImages);
+                            }}
+                            onPress={() => {
+                                ActionCreators.FIELD_CHANGE(dispatch, 'showCamera', true);
+                            }}
+                            sources={state.images}
+                        />
+                    }
+                    <InputMessage>
+                        <WrapPlus onPress={() => {
+                            ActionCreators.ShowModal(dispatch, true)
+                        }}>
+                            <Icon.Plus size={25} color="#AFAFAF" />
+                        </WrapPlus>
+                        <TextInputUI
+                            placeholder="Nội dung trò chuyện"
+                            uistyle={{ flex: 1 }}
+                            contentstyle={{ borderWidth: 0 }}
+                            type="text"
+                            keyboardType="default"
+                            onChangeText={(message) => {
+                                ActionCreators.ChangeText(dispatch, message)
+                            }}
+                            textValue={state.message}
+                        />
+                        <SendIcon onPress={sendMessage}>
+                            <Icon.Send size={26} color="#65DF7B"></Icon.Send>
+                        </SendIcon>
+                    </InputMessage>
+                </View>
                 {ShowModal()}
                 {
                     state.showCamera &&
@@ -196,7 +243,7 @@ const Layout = (props: UIProps) => {
                     ></Camera>
                 }
             </Container >
-        </KeyboardAvoidingView>
+        </KeyboardAvoidingView >
     );
 }
 
@@ -274,6 +321,8 @@ marginTop: 15;
 marginLeft: 10;
 `;
 const RemoveIcon = styled.TouchableOpacity`
+paddingVertical:5;
+paddingHorizontal:5
 `;
 const TitleStyled = styled.Text`
 fontSize: 20;
@@ -285,4 +334,3 @@ width: 90%;
 const ContentWrapper = styled.View`
 backgroundColor: #20232A;
 `;
-

@@ -15,7 +15,7 @@ import { reducer } from '../store/Reducer';
 import { InitState } from '../store/InitState';
 import { ActionCreators } from '../store/Reducer';
 import { ImageSource } from 'assets'
-import { Dimensions, TouchableOpacity } from 'react-native';
+import { Dimensions, TouchableOpacity, Platform } from 'react-native';
 import { fontFamily } from 'utils/Theme';
 import clientPermision from 'utils/clientPermission';
 import DeviceInfo from "react-native-device-info";
@@ -47,6 +47,15 @@ const Layout = (props: UIProps) => {
         //     }
         // })
         ActionCreators.REQUEST_NEAR_BY_SERVICES(dispatch, 0, 0);
+        if (Platform.OS == 'android') {
+            clientPermision.Camera().then(permissionCamera => {
+                if (permissionCamera) {
+                    clientPermision.AccessStorage().then(permissionStorage => {
+
+                    });
+                }
+            });
+        }
     }, [])
 
     const CurrentLocation = async () => {

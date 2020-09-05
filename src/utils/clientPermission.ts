@@ -43,18 +43,18 @@ const ClientPermission = class {
                     PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
                     {
                         title: 'Quyền truy cập bộ nhớ',
-                        message: 'Cấp quyền truy cập bộ nhớ để chọn ảnh và file ghi âm!',
+                        message: 'Cấp quyền truy cập bộ nhớ để chọn ảnh và video!',
                         buttonPositive: 'ok',
                     },
                 );
                 if (grantedWrite !== PermissionsAndroid.RESULTS.GRANTED) {
-                    alertDefaultTitle.show('Cấp quyền truy cập bộ nhớ để chọn ảnh và file ghi âm!', 'Đồng ý');
+                    alertDefaultTitle.show('Cấp quyền truy cập bộ nhớ để chọn ảnh và video!', 'Đồng ý');
                     return false;
                 }
                 return true;
             }
         } catch (err) {
-            alertDefaultTitle.show('Cấp quyền truy cập bộ nhớ để chọn ảnh và file ghi âm!', 'Đồng ý');
+            alertDefaultTitle.show('Cấp quyền truy cập bộ nhớ để chọn ảnh và video!', 'Đồng ý');
             return false;
         }
     }

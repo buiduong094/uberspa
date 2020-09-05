@@ -93,8 +93,8 @@ const Layout = (props: UIProps) => {
               <TextStyled >Nhận thông báo</TextStyled>
             </NotifiWrapper>
             <Switch
-              trackColor={{ false: "#767577", true: "#81b0ff" }}
-              thumbColor={checked ? "#f5dd4b" : "#f4f3f4"}
+              trackColor={{ false: "#767577", true: "#65DF7B" }}
+              // thumbColor={checked ? "#65DF7B" : "#f4f3f4"}
               ios_backgroundColor="#3e3e3e"
               onValueChange={onCheckedChange}
               value={checked}

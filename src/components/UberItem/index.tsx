@@ -40,6 +40,17 @@ const UberItem = (props: UIProps) => {
         let minutes = "0" + date.getMinutes()
         return hours + ':' + minutes.substr(-2)
     }
+
+    const decodeMessage = (message: string): string => {
+        let decodeMessage = '';
+        try {
+            decodeMessage = decodeURIComponent(escape(message ?? ""));
+            return decodeMessage;
+        } catch (error) {
+            return message;
+        }
+        return decodeMessage;
+    }
     return (
         <Container style={uistyle}>
             <MainContainer onPress={() => {
@@ -104,7 +115,7 @@ const UberItem = (props: UIProps) => {
                             }
                             {
                                 item?.last_message?.text && type == UberItemType.CHAT &&
-                                <MessageStyled numberOfLines={2}>{item?.last_message?.text}</MessageStyled>
+                                <MessageStyled numberOfLines={2}>{decodeMessage(item?.last_message?.text)}</MessageStyled>
                             }
                             {
                                 item?.description && type == UberItemType.NOTIFICATION &&
