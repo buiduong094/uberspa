@@ -50,7 +50,7 @@ const ServiceItem = (props: UIProps) => {
                         </View>
 
 
-                        <PriceActiveStyled style={{ color: props.selected ? '#65DF7B' : 'black', right:0, borderWidth:1, textAlign:'right' }} >{(item?.price)}</PriceActiveStyled>
+                        <PriceActiveStyled style={{ color: props.selected ? '#65DF7B' : 'black', right:0, textAlign:'right' }} >{(item?.price)}</PriceActiveStyled>
                         {/* <PriceActiveStyled>{Intl.NumberFormat('vi-VN').format(item?.price)}</PriceActiveStyled> */}
 
 
@@ -105,9 +105,7 @@ color:#9B9B9B;
 const PriceActiveStyled = styled.Text`
 fontSize:14px;
 fontFamily: ${fontFamily.bold};
-
 flexWrap:wrap;
 flex:1;
-marginLeft:100;
 alignSelf: center
 `;

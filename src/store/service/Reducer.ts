@@ -48,6 +48,7 @@ export const ActionCreators = {
 
             if (response && response.data.status == 200) {
                 let data = response.data.data.listServices as Array<any>;
+                console.warn(data);
                 dispatch({
                     type: ActionType.FIELD_CHANGE,
                     fieldName: 'activeServices',
@@ -69,9 +70,8 @@ export const ActionCreators = {
             if (response && response.status == 200) {
 
                 let realData = response?.data?.data?.listShop??[];
-                realData.forEach(element => {
-                    element.logo = element?.icon
-                });
+                console.warn(realData)
+               
                 dispatch({
                     type: ActionType.FIELD_CHANGE,
                     fieldName: 'listShop',

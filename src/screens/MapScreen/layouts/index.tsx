@@ -21,10 +21,12 @@ import { ApplicationState } from 'store/configureAction';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { ActionCreators as ServiceAction } from 'store/service';
+import ShopItem from 'components/ShopItem';
 
 interface State {
   listShop?: any[],
-  services?: any[]
+  services?: any[],
+  shopService?: any[]
 }
 type UIProps = State & typeof ServiceAction;
 
@@ -38,7 +40,7 @@ const Layout = (props: UIProps) => {
   useEffect(() => {
     props.ShopByService();
 
-    ActionCreators.Loading(dispatch, state.bodySearch);
+    // ActionCreators.Loading(dispatch, state.bodySearch);
     if (Platform.OS == 'android')
       MapboxGL.setTelemetryEnabled(true);
     DeviceInfo.isLocationEnabled().then((enabled: boolean) => {
@@ -129,24 +131,23 @@ const Layout = (props: UIProps) => {
                 <Icon.Close color='black' size={22} />
               </TouchableOpacity>
             </DialogHeader>
-            <SearchInput
-              placeHolder=""
-              icon={<Icon.Address size={20} color='#C2C2C2' />}
-            ></SearchInput>
+
             <Title text="Dịch vụ" titleStyle={{ marginVertical: 10 }}></Title>
-            <ScrollWrapper showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false}>
+            <ScrollWrapper >
               {
-                state.services &&
-                <ServiceWrapper>
+                props.services &&
+                <ServiceWrapper horizontal>
                   {
-                    state.services && state.services.map((service: any, index: number) => (
+                    props.services && props.services.map((service: any, index: number) => (
                       <ImageButton
-                        source={service.source}
+
+                        source={service.logo}
                         height={20}
                         width={20}
-                        title={service.title}
+                       
+                        title={service.name}
                         type={ImageButtonType.TOUCHOPACITY}
-                        imageStyle={{ backgroundColor: service?.selected ? '#65DF7B20' : '#F4F5F6', padding: 15, borderRadius: 30 }}
+                        imageStyle={{ backgroundColor: service?.selected ? '#65DF7B25' : '#F4F5F6', padding: 15, borderRadius: 30 }}
                       ></ImageButton>
                     ))
                   }
@@ -155,13 +156,13 @@ const Layout = (props: UIProps) => {
               {
                 props.listShop && props.listShop.length > 0 && props.listShop?.map((item, index) =>
 
-                  <UberItem
+                  <ShopItem
 
-                    uistyle={{ marginBottom: 15 }}
+
                     item={item}
-                    type={UberItemType.BOOKINGSERVICE}
-                    childs={props.services}
 
+                    childs={props.shopService}
+                    onRightPress={() => { props.ServiceByShop(item) }}
                     onChildPress={selectService} />
 
 
@@ -248,10 +249,15 @@ const Layout = (props: UIProps) => {
       <BackButton onPress={goBack}>
         <Icon.Back size={27}></Icon.Back>
       </BackButton>
+      <SearchInput
+        onSubmitEditing={() => { ActionCreators.FieldChange(dispatch, 'display', false) }}
+        placeHolder=""
+        icon={<Icon.Address size={20} color='#C2C2C2' />}
+      ></SearchInput>
 
       {
         (state.step == 1 || state.step == 2) &&
-        <ModalUI display={state.display ?? true}>
+        <ModalUI display={state.display ?? true} height='60%'>
           {
             Filter()
           }
@@ -274,7 +280,8 @@ const Layout = (props: UIProps) => {
 }
 const mapStateToProps = (state: ApplicationState) => ({
   listShop: state.ServiceState.listShop,
-  services: state.ServiceState.shopServices
+  shopService: state.ServiceState.shopServices,
+  services: state.ServiceState.activeServices
 })
 
 const mapDispatchToProps = {
@@ -297,7 +304,8 @@ width:100%;
 bottom:0;
 background-color: #FFFF;
 padding:15px;
-borderRadius:10;
+borderTopStartRadius:10;
+borderTopEndRadius:10;
 `;
 const ContentStep = styled.View``;
 const ScrollWrapper = styled.ScrollView`
@@ -314,10 +322,8 @@ const BackButton = styled.TouchableOpacity`
 position: absolute;
 padding:42px 15px 20px 15px;
 `;
-const ServiceWrapper = styled.View`
-flexDirection:row;
-alignItems:center;
-justifyContent:space-between;
+const ServiceWrapper = styled.ScrollView`
+
 `;
 const TimeWrapper = styled.View`
 flexDirection:row;
@@ -345,12 +351,7 @@ justifyContent:center;
 `;
 const Voucher = styled.Image`
 `;
-const VoucherCode = styled.Text`
-color:#65DF7B;
-fontSize:14;
-fontFamily: ${fontFamily.semibold};
-marginLeft:5;
-`;
+
 
 const ConfirmWrapper = styled.View`
 position: absolute;

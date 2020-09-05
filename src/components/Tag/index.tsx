@@ -8,6 +8,8 @@ import { fontFamily } from 'utils/Theme';
 export interface UIProps {
     style?: any,
     item?: TagItem,
+    label?:string,
+    selected?: boolean,
     onPress?: Function,
 }
 
@@ -15,17 +17,17 @@ const Tag = (props: UIProps) => {
     return (
         <Container style={props.style}>
             <ContentWrapper
-                style={props.item?.selected ? styles.active : styles.inactive}
+                style={props.selected ? styles.active : styles.inactive}
                 onPress={() => {
                     if (props.onPress) {
                         const selectItem = {
                             ...props.item,
-                            selected: !props.item?.selected
+                            selected: !props.selected
                         }
                         props.onPress(selectItem);
                     }
                 }}>
-                <TextStyled style={props.item?.selected ? styles.activeText : styles.inactiveText}>{props.item?.label}</TextStyled>
+                <TextStyled style={props.selected ? styles.activeText : styles.inactiveText}>{props.label}</TextStyled>
             </ContentWrapper>
 
 
@@ -63,20 +65,24 @@ const styles = StyleSheet.create(
 
 const Container = styled.View`
     flex:1;
+    minWidth:80px;
+   
 `;
 const ContentWrapper = styled.TouchableOpacity`
-   
+   flex:1;
     border-radius: 30;
     background-color: #3CAA6D;
     justify-content: center;
     align-items:center;
     align-content:center;
     height: 40;
+    paddingHorizontal:10px;
 `;
 
 
 const TextStyled = styled.Text`
     color: #778CA2;
+    flex:1;
     paddingVertical:10px;
     fontSize: 14;
 `;

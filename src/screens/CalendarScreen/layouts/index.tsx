@@ -222,7 +222,8 @@ align-content:center;
 align-items:center;
 paddingHorizontal:15;
 paddingVertical:15;
-flex-direction: row
+flex-direction: row;
+flex:1;
 `;
 
 const ScrollWrapper = styled.ScrollView`
@@ -282,11 +283,13 @@ const ContentShop = styled.View`
 flex-direction: column;
 marginLeft: 10;
 align-content:center;
+marginHorizontal: 15px;
 `;
 const SubTitleStyled = styled.Text`
 fontSize:14px;
 fontFamily: ${fontFamily.regular};
 flexWrap: wrap;
+marginRight: 50;
 color:#9B9B9B;`;
 const TextStyled = styled.Text`
 color:#000000;

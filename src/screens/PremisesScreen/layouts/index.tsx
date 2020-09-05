@@ -53,9 +53,7 @@ const Layout = (props: UIProps) => {
      
         ActionCreators.FieldChange(dispatch, 'tabItems', tabLists);
     }
-    const width = () => {
-        Dimensions.get('window').width
-    }
+
 
     return (
         <Container style={style} >
@@ -68,7 +66,7 @@ const Layout = (props: UIProps) => {
                     <WrapperStyled>
                         <Logo source={{ uri: props.shop?.logo ?? 'https://benhvienthucuc.vn/wp-content/themes/benh-vien-thu-cuc-vn/assets/images/sec12_1.png' }} />
                         <TitleStyled>{props.shop?.name}</TitleStyled>
-                        <Button text='Theo dõi ' uistyle={{ width: 146, height: 46, marginTop: 15 }} onPress={() => {
+                        <Button text='Theo dõi ' uistyle={{ width: 156, height: 46, marginTop: 9 }} onPress={() => {
                         }}></Button>
                     </WrapperStyled>
                 </BackgroundInner>
@@ -82,7 +80,7 @@ const Layout = (props: UIProps) => {
             <ScrollWrapper>
                 {
                     (state.tabItems ?? [])[0].selected && state.introduce &&
-                    <HTML html={state.introduce?.description}
+                    <HTML html={state.introduce?.description} containerStyle={{padding: 16 ,backgroundColor: '#fff'}}
                         imagesInitialDimensions={{ width: Dimensions.get('screen').width - 20, height: (Dimensions.get('screen').width - 20) * 3 / 4 }}
                         alterNode={(node) => {
                             const { name, parent } = node;
@@ -101,9 +99,9 @@ const Layout = (props: UIProps) => {
                             }
                         }}
                         tagsStyles={{
-                            p: {marginTop: 40, lineHeight: 14},
+                            p: {marginTop: 20, lineHeight: 25},
                             h2: {lineHeight: 25},
-                            figcaption: {lineHeight: 14}
+                            figcaption: {lineHeight: 25},
                         }}
                     />
                 }
@@ -162,7 +160,7 @@ const Logo = styled.Image`
 width: 80;
 height: 80;
 backgroundColor: #FFF;
-marginBottom: 10
+marginBottom: 9px;
 `;
 const TitleStyled = styled.Text`
 textTransform: uppercase;

@@ -37,7 +37,7 @@ const Layout = (props: UIProps) => {
                         <ServiceItem
                             selected={props.selectedService ? (props.selectedService.id == item.id) : false}
                             onPress={() => {
-                                console.warn(item);
+                              
                                 props.FieldChange('bookService', item);
                             }}
                             uistyle={{ marginBottom: 15, }}

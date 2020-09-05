@@ -11,13 +11,14 @@ export interface IState {
     services?: Array<UberService>;
     bookingItems: Array<UberService>;
     loadingConfirm: boolean;
-    bodySearch: {}
+    bodySearch: {},
+    coupon?: string,
 }
 export const InitState: IState = {
     display: true,
-   
+    coupon: '',
     step: 1,
-    
+
     bookingItems: [
         {
             logo: 'https://benhvienthucuc.vn/wp-content/themes/benh-vien-thu-cuc-vn/assets/images/sec12_1.png',

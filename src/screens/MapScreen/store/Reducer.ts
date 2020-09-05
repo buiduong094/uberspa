@@ -48,7 +48,7 @@ export const ActionCreators = {
             .then(([response]) => {
                 if (response && response.status == 200) {
                     let realData = response?.data?.data?.listServices;
-                    console.warn('responseJson', realData)
+                 
                     dispatch({
                         type: ActionType.RECEIVED_ITEMS,
                         data: realData,
