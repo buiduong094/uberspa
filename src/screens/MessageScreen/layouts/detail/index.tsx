@@ -9,12 +9,15 @@ import { UberItem, MessageItem, TextInputUI, ModalUI, Camera } from 'components'
 import { UberItemType } from 'constant';
 import { ActionCreators } from 'screens/MessageScreen/store/Reducer';
 import { Message, GetChatEnum, MessageTypeEnum } from 'models/message';
-import { Dimensions, KeyboardAvoidingView, Platform, Keyboard, FlatList, TextInput, ActivityIndicator } from 'react-native';
+import { Dimensions, KeyboardAvoidingView, Platform, Keyboard, FlatList, View, ActivityIndicator } from 'react-native';
 import { User } from 'models/user';
 import { ApplicationState } from 'store/configureAction';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { ConversationItem } from 'models/conversation';
+import { CameraItem } from 'components/Camera/PhotoSelect';
+import ImageScroll from 'components/ImageScroll';
+import { FormMode } from 'models/form';
 
 interface UIProps {
     user?: User,
@@ -50,16 +53,22 @@ const Layout = (props: UIProps) => {
         flatListRef.current?.scrollToIndex({ animated: true, index: 0 });
     };
 
-    const onCameraImageChange = (sources: any) => {
-        // const images = state.warning ? state.warning['IMG_NOIDUNGBAOCAO'] : [];
-        // let cloneImages = [...images ?? []];
-        // cloneImages = cloneImages.concat(sources);
-
-        // ActionCreators.FIELD_CHANGE(dispatch, 'warning.IMG_NOIDUNGBAOCAO', cloneImages);
-        // ActionCreators.FIELD_CHANGE(dispatch, 'showCamera', false);
+    /**
+     * Chọn ảnh
+     * @param sources 
+     */
+    const onCameraImageChange = (sources: CameraItem[]) => {
+        let cloneImages = [...state.images ?? [], ...sources];
+        ActionCreators.FIELD_CHANGE(dispatch, 'images', cloneImages);
         ActionCreators.FIELD_CHANGE(dispatch, 'showCamera', false);
     }
 
+    console.warn('images', state.images)
+
+    /**
+     * Chụp ảnh
+     * @param sources 
+     */
     const onCameraTakeImage = (sources: any) => {
         // const images = state.warning ? state.warning['IMG_NOIDUNGBAOCAO'] : [];
         // const cloneImages = [...images ?? [], sources];
@@ -83,10 +92,10 @@ const Layout = (props: UIProps) => {
 
     const onEndReach = () => {
         // if (!state.onEndReachedCalledDuringMomentum) {
-            if (state.canLoadMore) {
-                ActionCreators.FIELD_CHANGE(dispatch, 'onEndReachedCalledDuringMomentum', false);
-                ActionCreators.REQUEST_ITEMS(dispatch, GetChatEnum.MESSAGES, state.timeFrom, state.pageSize, props.conversationSelected?.to_id);
-            }
+        if (state.canLoadMore) {
+            ActionCreators.FIELD_CHANGE(dispatch, 'onEndReachedCalledDuringMomentum', false);
+            ActionCreators.REQUEST_ITEMS(dispatch, GetChatEnum.MESSAGES, state.timeFrom, state.pageSize, props.conversationSelected?.to_id);
+        }
         // }
     }
 
@@ -169,27 +178,45 @@ const Layout = (props: UIProps) => {
                     renderItem={_renderItem}
                     onEndReached={onEndReach}
                 />
-                <InputMessage>
-                    <WrapPlus onPress={() => {
-                        ActionCreators.ShowModal(dispatch, true)
-                    }}>
-                        <Icon.Plus size={25} color="#AFAFAF" />
-                    </WrapPlus>
-                    <TextInputUI
-                        placeholder="Nội dung trò chuyện"
-                        uistyle={{ flex: 1 }}
-                        contentstyle={{ borderWidth: 0 }}
-                        type="text"
-                        keyboardType="default"
-                        onChangeText={(message) => {
-                            ActionCreators.ChangeText(dispatch, message)
-                        }}
-                        textValue={state.message}
-                    />
-                    <SendIcon onPress={sendMessage}>
-                        <Icon.Send size={26} color="#65DF7B"></Icon.Send>
-                    </SendIcon>
-                </InputMessage>
+                <View>
+                    {
+                        state.images && (state.images ?? []).length > 0 &&
+                        <ImageScroll
+                            formMode={FormMode.AddNew}
+                            onRemove={(index: number) => {
+                                const cloneImages = [...state.images ?? []];
+                                cloneImages.splice(index, 1);
+
+                                ActionCreators.FIELD_CHANGE(dispatch, 'images', cloneImages);
+                            }}
+                            onPress={() => {
+                                ActionCreators.FIELD_CHANGE(dispatch, 'showCamera', true);
+                            }}
+                            sources={state.images}
+                        />
+                    }
+                    <InputMessage>
+                        <WrapPlus onPress={() => {
+                            ActionCreators.ShowModal(dispatch, true)
+                        }}>
+                            <Icon.Plus size={25} color="#AFAFAF" />
+                        </WrapPlus>
+                        <TextInputUI
+                            placeholder="Nội dung trò chuyện"
+                            uistyle={{ flex: 1 }}
+                            contentstyle={{ borderWidth: 0 }}
+                            type="text"
+                            keyboardType="default"
+                            onChangeText={(message) => {
+                                ActionCreators.ChangeText(dispatch, message)
+                            }}
+                            textValue={state.message}
+                        />
+                        <SendIcon onPress={sendMessage}>
+                            <Icon.Send size={26} color="#65DF7B"></Icon.Send>
+                        </SendIcon>
+                    </InputMessage>
+                </View>
                 {ShowModal()}
                 {
                     state.showCamera &&
@@ -292,6 +319,8 @@ marginTop: 15;
 marginLeft: 10;
 `;
 const RemoveIcon = styled.TouchableOpacity`
+paddingVertical:5;
+paddingHorizontal:5
 `;
 const TitleStyled = styled.Text`
 fontSize: 20;
@@ -303,4 +332,3 @@ width: 90%;
 const ContentWrapper = styled.View`
 backgroundColor: #20232A;
 `;
-
