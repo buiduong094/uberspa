@@ -114,12 +114,10 @@ const UberItem = (props: UIProps) => {
                                 <MessageStyled numberOfLines={2}>{item?.message}</MessageStyled>
                             }
                             {
-                                item?.last_message?.text !== null && item?.last_message?.text !== "" && type == UberItemType.CHAT &&
-                                <MessageStyled numberOfLines={2}>{decodeMessage(item?.last_message?.text ?? "")}</MessageStyled>
-                            }
-                            {
-                                item?.last_message?.item?.last_message?.text !== "" && type == UberItemType.CHAT &&
-                                <FileStyled numberOfLines={1}>File ảnh/ media</FileStyled>
+                                (type === UberItemType.CHAT && item?.last_message?.text !== null && item?.last_message?.text !== "") ?
+                                    <MessageStyled numberOfLines={2}>{decodeMessage(item?.last_message?.text ?? "")}</MessageStyled>
+                                    :
+                                    <FileStyled numberOfLines={1}>Tập tin ảnh/media</FileStyled>
                             }
                             {
                                 item?.description && type == UberItemType.NOTIFICATION &&
