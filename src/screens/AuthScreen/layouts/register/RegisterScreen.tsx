@@ -125,7 +125,7 @@ export const RegisterScreen = (props: UIProps) => {
                     state.step === 1 ?
                         <Register showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false}>
                             <KeyboardAvoidingView behavior="position" enabled>
-                                <Image source={ImageSource.logo}></Image>
+                                <Image style={{ height: 80, width: 80, marginBottom: 10, borderRadius: 5 }} source={ImageSource.logo}></Image>
                                 <Title>Đăng ký tài khoản mới</Title>
                                 <SubTitle>Quý khách vui lòng hoàn tất các thông tin sau để sử dụng các dịch vụ trên UberOne</SubTitle>
                                 {
@@ -207,8 +207,9 @@ fontSize: 14;
 const TermStyled = styled.Text`
 color:#9B9B9B;
 textAlign:center;
-marginTop:15px;
-fontFamily: ${fontFamily.regular}
+marginTop: 15;
+marginBottom: 30;
+fontFamily: ${fontFamily.regular};
 `;
 const WrapperVerify = styled.View`
 flex-direction:row;
