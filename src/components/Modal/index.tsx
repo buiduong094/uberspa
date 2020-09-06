@@ -23,7 +23,7 @@ const ModalUI = (props: UIProps) => {
             onRequestClose={() => { setVisibleModel(false); }}
         >
             <Container>
-                <HighlightWrapper 
+                <HighlightWrapper
                     underlayColor='#00000077'
                 >
                     <Content>
@@ -35,9 +35,9 @@ const ModalUI = (props: UIProps) => {
                             }}
                         >
                             <View pointerEvents={allowPointerEvents ? 'auto' : 'none'}>
-                                <ModalContent>
-                                    {props.children}
-                                </ModalContent>
+
+                                {props.children}
+
                             </View>
                         </Animated.View>
                     </Content>
@@ -60,9 +60,9 @@ const HighlightWrapper = styled.TouchableHighlight`
 
 `;
 
-const ModalContent = styled.View`
-
-`;
 const Content = styled.View`
 flex:1;
+alignContent:flex-end;
+bottom:0
+
 `;

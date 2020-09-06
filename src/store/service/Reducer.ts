@@ -101,6 +101,47 @@ export const ActionCreators = {
             }
         })();
     },
+    MapBooking: (date: string, time: string, coupon?: string, description?: string): ThunkAction<KnowAction> => (dispatch, getState) => {
+        (async () => {
+            let message: DialogMessage = {
+                type: MessageType.Loading,
+                display: true,
+            }
+            dispatch({
+                type: ActionType.FIELD_CHANGE,
+                fieldName: 'message',
+                fieldValue: message
+            })
+            const state = getState().ServiceState;
+           
+            let booking = {
+                services_id: state.bookService.shop_services_id,
+                date_time_booking_in: `${date} ${time}`,
+                date_time_booking_out:'',
+                shop_id: state.shop.id,
+                description: description,
+                coupon: coupon
+
+            }
+
+            let response = await client.post(Endpoint.BOOKING, booking);
+
+
+            if (response && response.status == 200) {
+
+                if (response.data.status == '200') {
+                    message.type = MessageType.Success;
+                }
+                dispatch({
+                    type: ActionType.COMITED_FORM,
+                    message: message,
+
+
+                })
+            }
+        })();
+
+    },
     Booking: (date: CalendarDate, time: CalendarTime, coupon?: string, description?: string): ThunkAction<KnowAction> => (dispatch, getState) => {
         (async () => {
             let message: DialogMessage = {
@@ -112,15 +153,15 @@ export const ActionCreators = {
                 fieldName: 'message',
                 fieldValue: message
             })
-            const reduxState = getState().ServiceState;
+            const state = getState().ServiceState;
             let bookingTime = time.key.split('-');
             let bookingDate = formatDate(date.tDate, 'yyyy-MM-dd');
 
             let booking = {
-                services_id: reduxState.bookService.shop_services_id,
+                services_id: state.bookService.shop_services_id,
                 date_time_booking_in: `${bookingDate} ${bookingTime[0]}`,
                 date_time_booking_out: `${bookingDate} ${bookingTime[1]}`,
-                shop_id: reduxState.shop.id,
+                shop_id: state.shop.id,
                 description: description,
                 coupon: coupon
 

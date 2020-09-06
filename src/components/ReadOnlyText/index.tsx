@@ -7,7 +7,8 @@ export interface ReadOnlyUIProps {
     titlestyle?: any,
     contentstyle?: any,
     title?: string,
-    numberOfLines?: number
+    numberOfLines?: number,
+    containerStyle?: any;
 }
 const ReadOnlyText = (props: ReadOnlyUIProps) => {
     const { text, title, uistyle, titlestyle, numberOfLines = 1, contentstyle } = props;
@@ -16,7 +17,7 @@ const ReadOnlyText = (props: ReadOnlyUIProps) => {
         <Container style={uistyle}>
 
             {title && <TitleStyled style={titlestyle}>{title}</TitleStyled>}
-            <Wrapper>
+            <Wrapper style={props.containerStyle}>
                 <TextStyled style={contentstyle} numberOfLines={numberOfLines}>{text}</TextStyled>
             </Wrapper>
         </Container>
@@ -43,6 +44,7 @@ const TextStyled = styled.Text`
     textAlignVertical: center;
 `;
 const TitleStyled = styled.Text`
-
-fontFamily: ${fontFamily.regular};
+color: #000000;
+fontSize:16;
+fontFamily: ${fontFamily.bold}
 padding-bottom:10px;`;

@@ -22,11 +22,15 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { ActionCreators as ServiceAction } from 'store/service';
 import ShopItem from 'components/ShopItem';
+import ReadOnlyText from 'components/ReadOnlyText';
+import { MessageType, DialogMessage } from 'models/message';
 
 interface State {
+  message?: DialogMessage,
   listShop?: any[],
   services?: any[],
-  shopService?: any[]
+  shopServices?: any[],
+  shopChoice?: any
 }
 type UIProps = State & typeof ServiceAction;
 
@@ -56,7 +60,18 @@ const Layout = (props: UIProps) => {
     // CurrentLocation();
 
   }, [])
-
+  useEffect(() => {
+    if (props.message && props.message.display) {
+        if (props.message.type != MessageType.Loading) {
+            if (props.message.type == MessageType.Success) {
+                alertDefaultTitle.show(props.message?.message ? props.message.message : 'Đặt chỗ thành công vui lòng kiếm trả trong Lịch đặt', 'OK');
+            }
+            else {
+                alertDefaultTitle.show(props.message?.message ? props.message.message : 'Đặt chỗ thất bại, vui lòng liên hệ quản trị', 'OK');
+            }
+        }
+    }
+}, [props.message])
   // const CurrentLocation = async () => {
 
   //   Geolocation.getCurrentPosition(
@@ -104,12 +119,8 @@ const Layout = (props: UIProps) => {
   const onBooking = () => {
     alertDefaultTitle.show(MessageDefine.CREATE_BOOKING, 'Đóng', () => { }, 'Đồng ý', () => {
       let step = state.step;
-      ActionCreators.ChangeStep(dispatch, step + 1);
-      ActionCreators.FieldChange(dispatch, 'loadingConfirm', true);
-      setTimeout(() => {
-        ActionCreators.FieldChange(dispatch, 'loadingConfirm', false);
-        ActionCreators.ChangeStep(dispatch, 1);
-      }, 2000);
+      props.MapBooking(state.date, state.time ?? '', state.coupon, state.description)
+     
     });
 
   }
@@ -119,18 +130,18 @@ const Layout = (props: UIProps) => {
 
     return (
       <Content>
-
+        <DialogHeader>
+          <Title text="Địa điểm" titleStyle={{ marginBottom: 10 }}></Title>
+          <TouchableOpacity onPress={() => {
+            ActionCreators.FieldChange(dispatch, 'display', false)
+          }}>
+            <Icon.Close color='black' size={22} />
+          </TouchableOpacity>
+        </DialogHeader>
         {
           state.step == 1 &&
           <ContentStep>
-            <DialogHeader>
-              <Title text="Địa điểm" titleStyle={{ marginBottom: 10 }}></Title>
-              <TouchableOpacity onPress={() => {
-                ActionCreators.FieldChange(dispatch, 'display', false)
-              }}>
-                <Icon.Close color='black' size={22} />
-              </TouchableOpacity>
-            </DialogHeader>
+
 
             <Title text="Dịch vụ" titleStyle={{ marginVertical: 10 }}></Title>
             <ScrollWrapper >
@@ -141,10 +152,10 @@ const Layout = (props: UIProps) => {
                     props.services && props.services.map((service: any, index: number) => (
                       <ImageButton
 
-                        source={service.logo}
+                        source={ImageSource.nail}
                         height={20}
                         width={20}
-                       
+
                         title={service.name}
                         type={ImageButtonType.TOUCHOPACITY}
                         imageStyle={{ backgroundColor: service?.selected ? '#65DF7B25' : '#F4F5F6', padding: 15, borderRadius: 30 }}
@@ -157,14 +168,10 @@ const Layout = (props: UIProps) => {
                 props.listShop && props.listShop.length > 0 && props.listShop?.map((item, index) =>
 
                   <ShopItem
-
-
                     item={item}
-
-                    childs={props.shopService}
+                    childs={item.id == props.shopChoice?.id ? props.shopServices : []}
                     onRightPress={() => { props.ServiceByShop(item) }}
                     onChildPress={selectService} />
-
 
                 )
               }
@@ -189,47 +196,38 @@ const Layout = (props: UIProps) => {
                 leftIcon={<Icon.Clock color="#C2C2C2" size={18} />}
               />
             </TimeWrapper>
-            <Title text="Phương thức thanh toán" titleStyle={{ marginVertical: 10 }}></Title>
-            <TextInputUI
-              placeholder="Hình thức thanh toán"
-              contentstyle={{ backgroundColor: '#F4F5F6' }}
-              leftIcon={<Icon.CreditCard color="#C2C2C2" size={18} />}
-            />
+            <ReadOnlyText containerStyle={{ borderRadius: 24, height: 48 }} uistyle={{ marginTop: 15, }} text='Thanh toán tại cơ sở' title='Phương thức thanh toán' ></ReadOnlyText>
+
             <Title text="Ghi chú" titleStyle={{ marginVertical: 10 }}></Title>
             <TextInputUI
               placeholder="Nội dung ghi chú"
-              contentstyle={{ backgroundColor: '#F4F5F6' }}
-            />
-            <BookingWrapper>
-              <VoucherWrapper>
-                <VoucherBorder>
-                  <Voucher
-                    source={ImageSource.voucher}
-                    style={{
-                      height: 10,
-                      width: 13,
-                    }}
-                    resizeMode="cover" />
-                </VoucherBorder>
-                <TextInputUI
-                  placeholder="Mã giảm giá"
-                  uistyle={{ flex: 1 }}
-                  textValue={state.coupon}
-                  contentstyle={{ borderRadius: 5 }}
 
-                  type="text"
-                  keyboardType="default"
-                  onChangeText={(coupon) => {
-                    ActionCreators.FieldChange(dispatch, 'coupon', coupon)
-                  }}
-                />
-              </VoucherWrapper>
-              <LoginButton
-                uistyle={{ alignSelf: 'center', width: '60%' }}
-                textstyle={{ fontSize: 18 }}
-                text='ĐẶT NGAY'
-                onPress={onBooking}></LoginButton>
-            </BookingWrapper>
+            />
+
+            <Title text="Mã giảm giá" titleStyle={{ marginVertical: 10 }}></Title>
+            <TextInputUI
+              placeholder="Mã giảm giá"
+              uistyle={{ flex: 1 }}
+              textValue={state.coupon}
+              leftIcon={<Voucher
+                source={ImageSource.voucher}
+                style={{
+                  height: 10,
+                  width: 13,
+                }}
+                resizeMode="cover" />}
+
+              type="text"
+              keyboardType="default"
+              onChangeText={(coupon) => {
+                ActionCreators.FieldChange(dispatch, 'coupon', coupon)
+              }}
+            />
+            <LoginButton
+              uistyle={{ marginTop: 10 }}
+              textstyle={{ fontSize: 18 }}
+              text='ĐẶT NGAY'
+              onPress={onBooking}></LoginButton>
           </ScrollWrapper>
         }
       </Content>)
@@ -258,30 +256,23 @@ const Layout = (props: UIProps) => {
       {
         (state.step == 1 || state.step == 2) &&
         <ModalUI display={state.display ?? true} height='60%'>
+
           {
             Filter()
           }
+
         </ModalUI>
       }
-      {
-        state.step == 3 && state.loadingConfirm &&
-        <ConfirmWrapper>
-          <BorderConfirmLarge>
-            <BorderConfirmSmall>
-              <Avatar source={ImageSource.nail} resizeMode="cover" />
-            </BorderConfirmSmall>
-          </BorderConfirmLarge>
-          <WaitingStyled>Đang chờ xác nhận từ thẩm mỹ viện.</WaitingStyled>
-          <WaitingStyled>Vui lòng đợi.</WaitingStyled>
-        </ConfirmWrapper>
-      }
+      
     </Container>
   );
 }
 const mapStateToProps = (state: ApplicationState) => ({
   listShop: state.ServiceState.listShop,
-  shopService: state.ServiceState.shopServices,
-  services: state.ServiceState.activeServices
+  shopServices: state.ServiceState.shopServices,
+  services: state.ServiceState.activeServices,
+  shopChoice: state.ServiceState.shop,
+  message: state.ServiceState.message
 })
 
 const mapDispatchToProps = {
@@ -300,6 +291,7 @@ const Container = styled.View`
   height:100%;
 `;
 const Content = styled.View`
+height:100%;
 width:100%;
 bottom:0;
 background-color: #FFFF;
@@ -331,24 +323,7 @@ alignItems:center;
 justifyContent:space-between;
 flex:1
 `;
-const BookingWrapper = styled.View`
-flexDirection:row;
-alignItems:center;
-justifyContent:space-between;
-marginTop:10;
-`;
-const VoucherWrapper = styled.View`
-flexDirection:row;
-alignItems:center;
-`
-const VoucherBorder = styled.View`
-backgroundColor: #65DF7B20;
-paddingVertical:10;
-paddingHorizontal:10;
-borderRadius:20;
-alignItems:center;
-justifyContent:center;
-`;
+
 const Voucher = styled.Image`
 `;
 
