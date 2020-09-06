@@ -61,7 +61,7 @@ const UberItem = (props: UIProps) => {
                     <ImageStyled
                         style={{ height: 56, width: 56, alignSelf: 'flex-start' }}
                         resizeMode='stretch'
-                        source={{ uri:  item?.logo ?? 'https://benhvienthucuc.vn/wp-content/themes/benh-vien-thu-cuc-vn/assets/images/sec12_1.png' }}></ImageStyled>
+                        source={{ uri: item?.logo ?? 'https://benhvienthucuc.vn/wp-content/themes/benh-vien-thu-cuc-vn/assets/images/sec12_1.png' }}></ImageStyled>
 
                     {
                         type == UberItemType.VOUCHER &&
@@ -114,8 +114,12 @@ const UberItem = (props: UIProps) => {
                                 <MessageStyled numberOfLines={2}>{item?.message}</MessageStyled>
                             }
                             {
-                                item?.last_message?.text && type == UberItemType.CHAT &&
-                                <MessageStyled numberOfLines={2}>{decodeMessage(item?.last_message?.text)}</MessageStyled>
+                                item?.last_message?.text !== null && item?.last_message?.text !== "" && type == UberItemType.CHAT &&
+                                <MessageStyled numberOfLines={2}>{decodeMessage(item?.last_message?.text ?? "")}</MessageStyled>
+                            }
+                            {
+                                item?.last_message?.item?.last_message?.text !== "" && type == UberItemType.CHAT &&
+                                <FileStyled numberOfLines={1}>File ảnh/ media</FileStyled>
                             }
                             {
                                 item?.description && type == UberItemType.NOTIFICATION &&
@@ -145,7 +149,7 @@ const UberItem = (props: UIProps) => {
                                 <DueDateStyled numberOfLines={1}>Hạn sử dụng: {item?.expired_date}</DueDateStyled>
                             }
                         </View>
-                    
+
                         {
                             type == UberItemType.BOOKINGSERVICE &&
                             <RightOpacityWrapper onPress={() => { if (onRightPress) onRightPress(); }}>
@@ -290,6 +294,11 @@ color:#9B9B9B;`;
 const MessageStyled = styled.Text`
 fontSize:14px;
 fontFamily: ${fontFamily.medium};
+color:#9B9B9B;
+`;
+const FileStyled = styled.Text`
+fontSize:14px;
+fontFamily: ${fontFamily.mediumItalic};
 color:#9B9B9B;
 `;
 

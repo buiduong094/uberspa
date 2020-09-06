@@ -6,7 +6,7 @@ export interface IState {
   conversations: Array<ConversationItem>,
   conversationItem?: ConversationItem,
   messageItems: Array<Message>,
-  message?: string,
+  message: string,
   isSent?: boolean,
   showModal?: boolean,
   loading: boolean,
@@ -20,6 +20,7 @@ export interface IState {
   videos?: CameraItem[]
 }
 export const InitState: IState = {
+  message: "",
   conversations: [],
   messageItems: [],
   isSent: false,

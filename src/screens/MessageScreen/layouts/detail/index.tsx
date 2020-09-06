@@ -44,9 +44,9 @@ const Layout = (props: UIProps) => {
             to_id: props.conversationSelected?.to_id,
         }
         Keyboard.dismiss();
-        if (state.message && state.message != null) {
+        // if (state.message && state.message != null) {
             ActionCreators.SendMessage(dispatch, MessageTypeEnum.TEXT, message, [...state.images ?? [], ...state.videos ?? []]);
-        }
+        // }
         goIndex()
     }
 
@@ -244,9 +244,13 @@ const Layout = (props: UIProps) => {
                             }}
                             textValue={state.message}
                         />
-                        <SendIcon onPress={sendMessage}>
-                            <Icon.Send size={26} color="#65DF7B"></Icon.Send>
-                        </SendIcon>
+                        {
+                            // state.message && (state?.message ?? "").length > 0 &&
+                            // (state.message.length > 0 || (state.images ?? []).length > 0 || (state.videos ?? []).length > 0) &&
+                            <SendIcon onPress={sendMessage}>
+                                <Icon.Send size={26} color="#65DF7B"></Icon.Send>
+                            </SendIcon>
+                        }
                     </InputMessage>
                 </View>
                 {ShowModal()}

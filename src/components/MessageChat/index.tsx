@@ -5,6 +5,7 @@ import { Message, FileItem } from 'models/message';
 import { Dimensions, Image, ImageBase } from 'react-native';
 import * as Icon from 'constant/icons';
 import { ImageSource } from 'assets';
+import VideoList from 'components/VideoList';
 interface UIProps {
     children?: any,
     uistyle?: any,
@@ -59,6 +60,32 @@ const MessageItem = (props: UIProps) => {
     //     });
     // }
 
+    const renderFile = (file: FileItem): JSX.Element => {
+        if (file.image_url && file.image_url !== "") {
+            return (
+                <Image
+                    source={{ uri: file.image_url }}
+                    height={getSizeImage(file.image_url ?? "")}
+                    width={100}
+                    style={{
+                        height: getSizeImage(file.image_url ?? ""),
+                        width: DEFAULT_WIDTH_IMAGE,
+                        marginTop: 5,
+                        borderRadius: 5
+                    }}
+                />
+            )
+        } else if (file.video_url && file.video_url !== "") {
+            let sources = new Array<string>();
+            sources.push(file.video_url);
+            return (
+                <VideoList
+                    containerStyle={{ marginTop: 10 }}
+                    sources={sources ?? []} />
+            )
+        }
+        return <></>
+    }
 
     return (
         <Container style={uistyle}>
@@ -70,17 +97,7 @@ const MessageItem = (props: UIProps) => {
                             <MyMessageText>{item.text}</MyMessageText>
                             {
                                 (item.files ?? [])?.length > 0 && item.files?.map((file: FileItem, index: number) => (
-                                    <Image
-                                        source={{ uri: file.image_url }}
-                                        height={getSizeImage(file.image_url ?? "")}
-                                        width={100}
-                                        style={{
-                                            height: getSizeImage(file.image_url ?? ""),
-                                            width: DEFAULT_WIDTH_IMAGE,
-                                            marginTop: 5,
-                                            borderRadius: 5
-                                        }}
-                                    />
+                                    renderFile(file)
                                 ))
                             }
                         </MyMessage>
@@ -90,6 +107,11 @@ const MessageItem = (props: UIProps) => {
                         <TimeStyled>{formarDate(date)}</TimeStyled>
                         <PartnerMessage>
                             <PartnerMessageText>{item.text}</PartnerMessageText>
+                            {
+                                (item.files ?? [])?.length > 0 && item.files?.map((file: FileItem, index: number) => (
+                                    renderFile(file)
+                                ))
+                            }
                         </PartnerMessage>
                     </PartnerMessageWrapper>
             }

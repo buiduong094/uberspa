@@ -75,6 +75,11 @@ export const ActionCreators = {
         message: Message,
         images?: CameraItem[]
     ) => {
+        // dispatch({
+        //     type: ActionType.FIELD_CHANGE,
+        //     fieldName: 'loading',
+        //     fieldValue: true
+        // });
         let formData = new FormData();
         formData.append('server_key', SERVER_KEY)
         formData.append('to_id', (message.to_id ?? 0).toString())
