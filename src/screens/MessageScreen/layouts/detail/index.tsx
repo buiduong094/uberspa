@@ -58,6 +58,7 @@ const Layout = (props: UIProps) => {
      * @param sources 
      */
     const onCameraImageChange = (sources: CameraItem[]) => {
+        console.warn('ja')
         let cloneImages = [...state.images ?? [], ...sources];
         ActionCreators.FIELD_CHANGE(dispatch, 'images', cloneImages);
         ActionCreators.FIELD_CHANGE(dispatch, 'showCamera', false);
@@ -237,7 +238,7 @@ const Layout = (props: UIProps) => {
                     <Camera
                         type={2}
                         onClose={() => {
-                            ActionCreators.FIELD_CHANGE(dispatch, 'showCamera', false);
+                            ActionCreators.FIELD_CHANGE(dispatch, 'showVideo', false);
                         }}
                         onCature={onCameraTakeImage}
                         onSelectImages={onCameraImageChange}
