@@ -70,9 +70,9 @@ const Layout = (props: UIProps) => {
      * @param sources 
      */
     const onCameraTakeImage = (sources: any) => {
-        // const images = state.warning ? state.warning['IMG_NOIDUNGBAOCAO'] : [];
-        // const cloneImages = [...images ?? [], sources];
-        // ActionCreators.FIELD_CHANGE(dispatch, 'warning.IMG_NOIDUNGBAOCAO', cloneImages);
+        let cloneImages = [...state.images ?? []]
+        cloneImages.push(sources);
+        ActionCreators.FIELD_CHANGE(dispatch, 'images', cloneImages);
         ActionCreators.FIELD_CHANGE(dispatch, 'showCamera', false);
     }
 
