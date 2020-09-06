@@ -167,12 +167,13 @@ const Layout = (props: UIProps) => {
         if ((urls ?? []).length > 0) {
             return <VideoList
                 sources={urls ?? []}
-                containerStyle={{ marginTop: 10 }}
+                containerStyle={{ marginLeft: 10 }}
                 onRemove={(index: number) => {
                     const cloneVideos = [...state.videos ?? []];
                     cloneVideos.splice(index, 1);
                     ActionCreators.FIELD_CHANGE(dispatch, 'videos', cloneVideos);
                 }}
+                formMode={FormMode.Detail}
             />
         } else {
             return <></>

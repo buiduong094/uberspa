@@ -9,7 +9,6 @@ import { WebView } from 'react-native-webview';
 import Video from 'react-native-video';
 export interface UIProps {
     sources?: Array<string>,
-
     style?: any,
     allowHiddeCamera?: boolean,
     onPress?: Function,
@@ -27,8 +26,9 @@ const VideoList = (props: UIProps) => {
     const [showPreview, setShowPreview] = useState(false);
 
     const sources = [...props.sources ?? []];
-    //const sources = ['http://app.c4i2.net/c4i2-app/api/v2/file?FileId=82077981-337c-4d2d-af54-ca9dd95a4711&MimeType=video/mp4','http://app.c4i2.net/c4i2-app/api/v2/file?FileId=82077981-337c-4d2d-af54-ca9dd95a4711&MimeType=video/mp4']
     let player: Video;
+
+    console.warn('props.formMode', props.formMode)
 
     return (
         <Container style={props.containerStyle}>
@@ -49,8 +49,8 @@ const VideoList = (props: UIProps) => {
                                     style={{
                                         width: 200,
                                         height: 200,
-                                        alignItems:'center',
-                                        justifyContent:'center'
+                                        alignItems: 'center',
+                                        justifyContent: 'center'
                                     }}
                                     key={index} onPress={() => {
                                         let originSource = source;
@@ -61,21 +61,16 @@ const VideoList = (props: UIProps) => {
                                         allowFileAccess={true}
                                         allowFileAccessFromFileURLs={true}
                                         style={{ height: 200, width: 200 }}
-                                        source={renderedOnce ? {
-                                            uri: source, headers: {
-                                                Authorization: `${token}`
-                                            }
-                                        } : undefined}
-                                        mediaPlaybackRequiresUserAction={false}
-                                        onLoad={updateSource}
+                                        source={{uri: source ?? undefined}}
+                                        mediaPlaybackRequiresUserAction={true}
+                                        // onLoad={updateSource}
                                         domStorageEnabled
                                         startInLoadingState={true}
                                         originWhitelist={[`*`]}
-                                        ref={c => setRefWebView(c)}
                                     /> */}
                                     {
                                         source.includes("http") || source.includes("https") ?
-                                           <Icon.Recorder size={120} color="#FFFF"/>
+                                            <Icon.Recorder size={120} color="#FFFF" />
                                             :
                                             <Video
                                                 style={{ height: 200, width: 200 }}
@@ -96,7 +91,7 @@ const VideoList = (props: UIProps) => {
                                                 }} />
                                     }
                                     {
-                                        props.formMode != FormMode.Detail &&
+                                        props.formMode && props.formMode != FormMode.Detail &&
                                         <ButtonRemove onPress={() => {
                                             if (props.onRemove) {
                                                 props.onRemove(index);
