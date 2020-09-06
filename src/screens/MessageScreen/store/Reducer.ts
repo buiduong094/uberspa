@@ -217,7 +217,8 @@ export const reducer = (state: IState, incomingAction: KnownAction): IState => {
                 ...state,
                 messageItems: listMessage,
                 isSent: true,
-                images: []
+                images: [],
+                videos: []
             }
         case ActionType.CHANGE_TEXT:
             action = incomingAction as ChangeTextAction;

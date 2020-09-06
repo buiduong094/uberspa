@@ -89,9 +89,7 @@ const VideoList = (props: UIProps) => {
                                                 onLoad={(payload) => {
                                                 }}
                                                 source={{
-                                                    uri: source, headers: {
-                                                        Authorization: `${token}`
-                                                    }
+                                                    uri: source
                                                 }}
                                                 ref={(ref: Video) => {
                                                     player = ref;
@@ -136,9 +134,6 @@ const VideoList = (props: UIProps) => {
                                         style={{ height: '100%', width: '100%' }}
                                         source={{
                                             uri: preview,
-                                            headers: {
-                                                Authorization: `${token}`
-                                            },
                                         }}
                                         mediaPlaybackRequiresUserAction={false}
                                         // onLoad={updateSource}
@@ -159,9 +154,6 @@ const VideoList = (props: UIProps) => {
                                         }}
                                         source={{
                                             uri: preview,
-                                            headers: {
-                                                Authorization: `${token}`
-                                            },
                                         }}
                                         ref={(ref: Video) => {
                                         }} />

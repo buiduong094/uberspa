@@ -18,6 +18,7 @@ import { ConversationItem } from 'models/conversation';
 import { CameraItem } from 'components/Camera/PhotoSelect';
 import ImageScroll from 'components/ImageScroll';
 import { FormMode } from 'models/form';
+import VideoList from 'components/VideoList';
 
 interface UIProps {
     user?: User,
@@ -44,7 +45,7 @@ const Layout = (props: UIProps) => {
         }
         Keyboard.dismiss();
         if (state.message && state.message != null) {
-            ActionCreators.SendMessage(dispatch, MessageTypeEnum.TEXT, message, state.images);
+            ActionCreators.SendMessage(dispatch, MessageTypeEnum.TEXT, message, [...state.images ?? [], ...state.videos ?? []]);
         }
         goIndex()
     }
@@ -58,13 +59,20 @@ const Layout = (props: UIProps) => {
      * @param sources 
      */
     const onCameraImageChange = (sources: CameraItem[]) => {
-        console.warn('ja')
         let cloneImages = [...state.images ?? [], ...sources];
         ActionCreators.FIELD_CHANGE(dispatch, 'images', cloneImages);
         ActionCreators.FIELD_CHANGE(dispatch, 'showCamera', false);
     }
 
-    console.warn('images', state.images)
+    /**
+     * Chọn video
+     * @param sources 
+     */
+    const onCameraVideoChange = (sources: CameraItem[]) => {
+        let cloneVideos = [...state.videos ?? [], ...sources];
+        ActionCreators.FIELD_CHANGE(dispatch, 'videos', cloneVideos);
+        ActionCreators.FIELD_CHANGE(dispatch, 'showVideo', false);
+    }
 
     /**
      * Chụp ảnh
@@ -154,6 +162,23 @@ const Layout = (props: UIProps) => {
         )
     }
 
+    const DisplayVideo = () => {
+        let urls = state.videos?.map((item) => { return item.url });
+        if ((urls ?? []).length > 0) {
+            return <VideoList
+                sources={urls ?? []}
+                containerStyle={{ marginTop: 10 }}
+                onRemove={(index: number) => {
+                    const cloneVideos = [...state.videos ?? []];
+                    cloneVideos.splice(index, 1);
+                    ActionCreators.FIELD_CHANGE(dispatch, 'videos', cloneVideos);
+                }}
+            />
+        } else {
+            return <></>
+        }
+    };
+
     return (
         <KeyboardAvoidingView
             style={{ flex: 1, justifyContent: 'flex-end' }}
@@ -190,7 +215,6 @@ const Layout = (props: UIProps) => {
                             onRemove={(index: number) => {
                                 const cloneImages = [...state.images ?? []];
                                 cloneImages.splice(index, 1);
-
                                 ActionCreators.FIELD_CHANGE(dispatch, 'images', cloneImages);
                             }}
                             onPress={() => {
@@ -198,6 +222,10 @@ const Layout = (props: UIProps) => {
                             }}
                             sources={state.images}
                         />
+                    }
+                    {
+                        state.videos && (state.videos ?? []).length > 0 &&
+                        DisplayVideo()
                     }
                     <InputMessage>
                         <WrapPlus onPress={() => {
@@ -241,7 +269,7 @@ const Layout = (props: UIProps) => {
                             ActionCreators.FIELD_CHANGE(dispatch, 'showVideo', false);
                         }}
                         onCature={onCameraTakeImage}
-                        onSelectImages={onCameraImageChange}
+                        onSelectImages={onCameraVideoChange}
                     ></Camera>
                 }
             </Container >
