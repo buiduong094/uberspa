@@ -66,7 +66,7 @@ export const VerificationScreen = (props: UIProps) => {
      */
     useEffect(() => {
         inputRef1?.current?.focus();
-    })
+    },[])
 
 
     const getRefInput = (index: number) => {
@@ -132,7 +132,7 @@ export const VerificationScreen = (props: UIProps) => {
 
     return (
             <Container>
-                <Image source={ImageSource.logo}></Image>
+                <Image style={{height:80, width:80, marginBottom: 10, borderRadius:5}} source={ImageSource.logo}></Image>
                 <Title>Xác nhận tài khoản</Title>
                 <SubTitle>Vui lòng nhập mã xác nhận được gửi tới số điện thoại {props?.phone}</SubTitle>
                 <WrapperVerify>{renderVerify()}</WrapperVerify>

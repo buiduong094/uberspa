@@ -133,7 +133,7 @@ const Layout = (props: UIProps) => {
             {
                 state.step == 3 &&
                 <Container>
-                    <Image source={ImageSource.logo}></Image>
+                    <Image style={{height:80, width:80, marginBottom: 10, borderRadius:5}} source={ImageSource.logo}></Image>
                     <Title>Thiết lập mật khẩu</Title>
                     <SubTitle>Quý khách vui lòng thiết lập lại mật khẩu</SubTitle>
                     {
