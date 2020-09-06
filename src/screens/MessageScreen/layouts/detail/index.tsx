@@ -184,6 +184,7 @@ const Layout = (props: UIProps) => {
                     {
                         state.images && (state.images ?? []).length > 0 &&
                         <ImageScroll
+                            style={{ marginLeft: 10 }}
                             formMode={FormMode.AddNew}
                             onRemove={(index: number) => {
                                 const cloneImages = [...state.images ?? []];

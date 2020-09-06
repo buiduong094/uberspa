@@ -10,11 +10,12 @@ import { IState } from './InitState';
 
 import { User } from 'models/user';
 import { ConversationItem } from 'models/conversation';
-import { Message, GetChatEnum, MessageTypeEnum } from '../../../models/message/index';
+import { Message, GetChatEnum, MessageTypeEnum, FileItem } from '../../../models/message/index';
 import { Endpoint } from 'api/endpoint';
 import { SERVER_KEY } from 'constant';
 import { stat } from 'fs';
 import { CameraItem } from 'components/Camera/PhotoSelect';
+import { Platform } from 'react-native';
 interface RequestAction {
     type: string,
 }
@@ -33,7 +34,8 @@ interface CommitedAction {
 
 interface SendMessageAction {
     type: string,
-    message: Message
+    message: Message,
+    images?: Array<CameraItem>
 }
 interface ChangeTextAction {
     type: string,
@@ -73,29 +75,48 @@ export const ActionCreators = {
         message: Message,
         images?: CameraItem[]
     ) => {
-        // const body = {
-        //     server_key: SERVER_KEY,
-        //     to_id: message.to_id,
-        //     text: unescape(encodeURIComponent(message.text ?? "")) // mã hóa nếu có emoj
-        // }
         let formData = new FormData();
         formData.append('server_key', SERVER_KEY)
         formData.append('to_id', (message.to_id ?? 0).toString())
         formData.append('text', unescape(encodeURIComponent(message.text ?? "")))
         const params = new Headers({
-            "Content-Type": "multipart/form-data"
+            "Content-Type": "multipart/form-data",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "PUT, GET, POST",
+            "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
         })
-        // if ((images ?? []).length > 0) {
-        //     images?.forEach((image, index) => {
-        //         formData.append('', )
-        //     })
-        // }
+        if ((images ?? []).length > 0) {
+            images?.forEach((image, index) => {
+                let f = image.url;
+                const specFilename = f.lastIndexOf("/");
+                let fileName = f.substr(specFilename + 1, f.length);
+                if (!fileName.includes('.')) {
+                    let currentTime = new Date().getMilliseconds();
+                    fileName = `${currentTime}.png`;
+                }
+
+                let realPath = f;
+                if (Platform.OS != 'android') {
+                    realPath = f.replace('file://', '');
+                }
+
+                let fileBlob: any = {
+                    name: fileName,
+                    type: 'image/jpeg',
+                    uri: realPath
+                }
+                formData.append('files[' + index + ']', fileBlob);
+            })
+        }
+
         let response = await client.post(Endpoint.SEND_MESSAGE, formData, params);
         if (response && response.status === 200) {
             const data = response?.data.data;
+            console.warn('data', data)
             dispatch({
                 type: ActionType.SEND_MESSAGE,
-                message: data
+                message: data,
+                images: images
             })
         }
 
@@ -179,6 +200,17 @@ export const reducer = (state: IState, incomingAction: KnownAction): IState => {
                 sendedMessage.text = decodeMessage;
             } catch (error) {
                 sendedMessage.text = sendedMessage.text;
+            }
+
+            sendedMessage.files = new Array<FileItem>();
+            if ((action.images ?? []).length > 0) {
+
+                action.images.forEach((img, index) => {
+                    (sendedMessage.files ?? []).push({
+                        id: index,
+                        image_url: img.url
+                    })
+                })
             }
             listMessage.unshift(sendedMessage)
             return {
