@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "482918193127",
+    "firebase_url": "https://uberspa-bb54c.firebaseio.com",
+    "project_id": "uberspa-bb54c",
+    "storage_bucket": "uberspa-bb54c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:482918193127:android:b4746d4f8866047003cf42",
+        "android_client_info": {
+          "package_name": "com.uberone"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "482918193127-ijufos3ut4jbhivt5fghrafiajebkast.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLPKij5a_T_RuXCmleiqxe9I7w0nvVlkM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "482918193127-ijufos3ut4jbhivt5fghrafiajebkast.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "482918193127-73h75nsqskhcd7s5q3aofbao871h04et.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.goads.uberone"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>482918193127-73h75nsqskhcd7s5q3aofbao871h04et.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.482918193127-73h75nsqskhcd7s5q3aofbao871h04et</string>
+	<key>API_KEY</key>
+	<string>AIzaSyA4mQpl8wuf6LM09Y3prxnN_XTIVUx_eAY</string>
+	<key>GCM_SENDER_ID</key>
+	<string>482918193127</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.goads.uberone</string>
+	<key>PROJECT_ID</key>
+	<string>uberspa-bb54c</string>
+	<key>STORAGE_BUCKET</key>
+	<string>uberspa-bb54c.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:482918193127:ios:0edcc1d52919710b03cf42</string>
+	<key>DATABASE_URL</key>
+	<string>https://uberspa-bb54c.firebaseio.com</string>
+</dict>
+</plist>

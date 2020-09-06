@@ -48,6 +48,7 @@
 		9FC9D0D980AB40D399478678 /* SFUIText-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0A60AE3900954F74AFFB949B /* SFUIText-Semibold.ttf */; };
 		A33715BADFE647E6BFEF1CF4 /* fa-brands-400.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 27E3C1951AFB45209F3E5F82 /* fa-brands-400.ttf */; };
 		AA8618AC1C054613AC2E4C9F /* SF-Pro-Display-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6F828E6AC0834F1A93E1293E /* SF-Pro-Display-MediumItalic.ttf */; };
+		AC64B7A12504AF0B00701EC8 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AC64B7A02504AF0B00701EC8 /* GoogleService-Info.plist */; };
 		AD67B52E3C837C75458CAEC5 /* libPods-UberOne-UberOneTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C3126CD06CCBD6B253738D9E /* libPods-UberOne-UberOneTests.a */; };
 		B916D6735C4C4CDDAF2960CB /* SFUIText-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FC5ED691FAB4470A980C9E4C /* SFUIText-Bold.ttf */; };
 		B966566B66F44A63A58134F1 /* fa-solid.otf in Resources */ = {isa = PBXBuildFile; fileRef = 401CDDBBE5514CF2BEFF2176 /* fa-solid.otf */; };
@@ -136,6 +137,7 @@
 		A220038CD45E6197DAA4310C /* Pods-UberOne-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UberOne-tvOS.release.xcconfig"; path = "Target Support Files/Pods-UberOne-tvOS/Pods-UberOne-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		A3A59A0492C94650827DA0B0 /* SF-Compact-Text-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Compact-Text-Regular.otf"; path = "../src/assets/fonts/SF-Compact-Text-Regular.otf"; sourceTree = "<group>"; };
 		A4B3410C5CE54E9C8273F6B2 /* SF-Pro-Text-Semibold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Text-Semibold.ttf"; path = "../src/assets/fonts/SF-Pro-Text-Semibold.ttf"; sourceTree = "<group>"; };
+		AC64B7A02504AF0B00701EC8 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../GoogleService-Info.plist"; sourceTree = "<group>"; };
 		AF34F55A59CA7EFFEE091EF4 /* Pods-UberOne-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UberOne-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-UberOne-tvOSTests/Pods-UberOne-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B0C79BC1474E493CAF0DA21D /* SF-Pro-Text-SemiboldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SF-Pro-Text-SemiboldItalic.ttf"; path = "../src/assets/fonts/SF-Pro-Text-SemiboldItalic.ttf"; sourceTree = "<group>"; };
 		BD7C4B56A99E4A10B88D7102 /* SFUIText-SemiboldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SFUIText-SemiboldItalic.ttf"; path = "../src/assets/fonts/SFUIText-SemiboldItalic.ttf"; sourceTree = "<group>"; };
@@ -310,6 +312,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				AC64B7A02504AF0B00701EC8 /* GoogleService-Info.plist */,
 				13B07FAE1A68108700A75B9A /* UberOne */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* UberOneTests */,
@@ -498,6 +501,7 @@
 				7C5F9A191F0D4EF9B5BD7485 /* SF-Pro-Display-Light.ttf in Resources */,
 				99694B6A96AC42A7ABCBFD1C /* SF-Pro-Display-LightItalic.ttf in Resources */,
 				80AB90247CF3466CB979CB05 /* SF-Pro-Display-Medium.ttf in Resources */,
+				AC64B7A12504AF0B00701EC8 /* GoogleService-Info.plist in Resources */,
 				AA8618AC1C054613AC2E4C9F /* SF-Pro-Display-MediumItalic.ttf in Resources */,
 				383DAA0282324970B886B0EB /* SF-Pro-Display-Regular.ttf in Resources */,
 				D61F84F627AC497AB922526C /* SF-Pro-Display-RegularItalic.ttf in Resources */,
@@ -944,7 +948,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.nhanlee.uberone;
+				PRODUCT_BUNDLE_IDENTIFIER = com.goads.uberone;
 				PRODUCT_NAME = UberOne;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -968,7 +972,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.nhanlee.uberone;
+				PRODUCT_BUNDLE_IDENTIFIER = com.goads.uberone;
 				PRODUCT_NAME = UberOne;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
