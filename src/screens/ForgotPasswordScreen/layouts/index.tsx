@@ -95,7 +95,7 @@ const Layout = (props: UIProps) => {
             {
                 state.step == 1 &&
                 <Container>
-                    <Image source={ImageSource.logo}></Image>
+                    <Image style={{height:80, width:80, marginBottom: 10, borderRadius:5}} source={ImageSource.logo}></Image>
                     <Title>Khôi phục tài khoản</Title>
                     <SubTitle>Quý khách vui lòng nhập số điện thoại đăng ký tài khoản. Hệ thống sẽ gửi mã xác nhận cho việc khôi phục mật khẩu của quý khách</SubTitle>
                     {
