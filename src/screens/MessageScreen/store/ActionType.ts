@@ -7,4 +7,5 @@ export const ActionType = {
     FIELD_CHANGE: "conversation/FIELD_CHANGE",
     REQUEST_ITEMS: "conversation/REQUEST_ITEMS",
     RECEIVED_ITEMS: "conversation/RECEIVED_ITEMS",
+    CLEAR_MESSAGE: "conversation/CLEAR_MESSAGE"
 }

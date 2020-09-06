@@ -35,7 +35,7 @@ interface CommitedAction {
 interface SendMessageAction {
     type: string,
     message: Message,
-    images?: Array<CameraItem>
+    files?: Array<CameraItem>
 }
 interface ChangeTextAction {
     type: string,
@@ -73,8 +73,13 @@ export const ActionCreators = {
         dispatch: React.Dispatch<KnownAction>,
         type: MessageTypeEnum,
         message: Message,
-        images?: CameraItem[]
+        files?: CameraItem[]
     ) => {
+        dispatch({
+            type: ActionType.FIELD_CHANGE,
+            fieldName: 'loading',
+            fieldValue: true
+        });
         let formData = new FormData();
         formData.append('server_key', SERVER_KEY)
         formData.append('to_id', (message.to_id ?? 0).toString())
@@ -85,8 +90,8 @@ export const ActionCreators = {
             "Access-Control-Allow-Methods": "PUT, GET, POST",
             "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
         })
-        if ((images ?? []).length > 0) {
-            images?.forEach((image, index) => {
+        if ((files ?? []).length > 0) {
+            files?.forEach((image, index) => {
                 let f = image.url;
                 const specFilename = f.lastIndexOf("/");
                 let fileName = f.substr(specFilename + 1, f.length);
@@ -108,15 +113,16 @@ export const ActionCreators = {
                 formData.append('files[' + index + ']', fileBlob);
             })
         }
-
+        dispatch({
+            type: ActionType.CLEAR_MESSAGE
+        });
         let response = await client.post(Endpoint.SEND_MESSAGE, formData, params);
         if (response && response.status === 200) {
             const data = response?.data.data;
-            console.warn('data', data)
             dispatch({
                 type: ActionType.SEND_MESSAGE,
                 message: data,
-                images: images
+                files: files
             })
         }
 
@@ -203,13 +209,19 @@ export const reducer = (state: IState, incomingAction: KnownAction): IState => {
             }
 
             sendedMessage.files = new Array<FileItem>();
-            if ((action.images ?? []).length > 0) {
-
-                action.images.forEach((img, index) => {
-                    (sendedMessage.files ?? []).push({
-                        id: index,
-                        image_url: img.url
-                    })
+            if ((action.files ?? []).length > 0) {
+                action.files.forEach((file, index) => {
+                    if ((file?.url ?? "").includes(".mp4")) {
+                        (sendedMessage.files ?? []).push({
+                            id: index,
+                            video_url: file.url
+                        })
+                    } else {
+                        (sendedMessage.files ?? []).push({
+                            id: index,
+                            image_url: file.url
+                        })
+                    }
                 })
             }
             listMessage.unshift(sendedMessage)
@@ -218,7 +230,8 @@ export const reducer = (state: IState, incomingAction: KnownAction): IState => {
                 messageItems: listMessage,
                 isSent: true,
                 images: [],
-                videos: []
+                videos: [],
+                loading: false
             }
         case ActionType.CHANGE_TEXT:
             action = incomingAction as ChangeTextAction;
@@ -296,7 +309,13 @@ export const reducer = (state: IState, incomingAction: KnownAction): IState => {
                 ...state,
                 [action.fieldName]: action.fieldValue
             };
-
+        case ActionType.CLEAR_MESSAGE:
+            return {
+                ...state,
+                images: [],
+                videos: [],
+                message: ''
+            }
         default:
             return state
     }

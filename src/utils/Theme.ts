@@ -23,7 +23,8 @@ export const fontFamily: fontFamilyType = {
     regular: 'SFProDisplay-Regular',
     bold: 'SFProDisplay-Semibold',
     semibold: 'SFProDisplay-Regular',
-    mediumItalic:'SFProDisplay-Medium'
+    mediumItalic:'SF-Pro-Display-MediumItalic',
+    italic: 'SF-Pro-Text-SemiboldItalic',
     // medium: 'SFCompactText-Medium',
     // regular: 'SFCompactText-Regular',
     // bold: 'SFCompact-Text-Bold',
