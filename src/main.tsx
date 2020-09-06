@@ -7,8 +7,8 @@ import NetInfo from "@react-native-community/netinfo";
 import SwitchScreen from 'screens/SwitchScreen';
 import { ActionType } from 'store/context/ActionType';
 import DeviceInfo from "react-native-device-info";
-
-import {  AppState, AppStateStatus } from 'react-native';
+import firebaseImpl from './firebase/index';
+import { AppState, AppStateStatus } from 'react-native';
 
 const navTheme = {
   ...DefaultTheme,
@@ -42,6 +42,8 @@ export default function App() {
   }
   useEffect(() => {
     Version();
+    firebaseImpl.allowFirebase();
+    firebaseImpl.createNotificationListeners();
     AppState.addEventListener("change", _handleAppStateChange);
 
     return () => {
@@ -50,18 +52,18 @@ export default function App() {
   }, []);
 
   const _handleAppStateChange = (nextAppState: AppStateStatus) => {
-   
+
 
   };
   return (
-   
-      <Provider store={store}>
 
-        <NavigationContainer theme={navTheme}  >
-          <SwitchScreen />
-        </NavigationContainer>
+    <Provider store={store}>
 
-      </Provider>
+      <NavigationContainer theme={navTheme}  >
+        <SwitchScreen />
+      </NavigationContainer>
+
+    </Provider>
 
   );
 }

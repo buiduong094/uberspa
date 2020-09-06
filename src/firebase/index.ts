@@ -2,7 +2,7 @@ import firebase from 'react-native-firebase';
 import AsyncStorage from '@react-native-community/async-storage';
 
 
-class Firebase {
+class FirebaseImpl {
     notificationOpenedListener: Function | undefined;
     notificationListener: any;
     messageListener: any;
@@ -26,15 +26,13 @@ class Firebase {
     }
 
     //3
-    async getToken() {
+    async getToken(key: string) {
 
-        let fcmToken = await AsyncStorage.getItem('fcmToken');
-        if (!fcmToken) {
-            fcmToken = await firebase.messaging().getToken();
-            if (fcmToken) {
-                // user has a device token
-                await AsyncStorage.setItem('fcmToken', fcmToken);
-            }
+
+        let fcmToken = await firebase.messaging().getToken();
+        if (fcmToken) {
+            // user has a device token
+            await AsyncStorage.setItem(key, fcmToken);
         }
 
         return fcmToken;
@@ -45,7 +43,7 @@ class Firebase {
 
     async createNotificationListeners() {
 
-        this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen: any) => {
+        this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
 
             const notification: Notification = notificationOpen.notification;
         });
@@ -78,7 +76,7 @@ class Firebase {
         /*
         * Triggered for data only payload in foreground
         * */
-        this.messageListener = firebase.messaging().onMessage((message:any) => {
+        this.messageListener = firebase.messaging().onMessage((message) => {
 
 
 
@@ -86,4 +84,4 @@ class Firebase {
     }
 
 }
-export default new Firebase;
+export default new FirebaseImpl;

@@ -16,7 +16,8 @@ export interface IState {
   timeFrom: number,
   onEndReachedCalledDuringMomentum: boolean,
   canLoadMore: boolean, //có fetch được tiếp dữ liệu ko?
-  images?: CameraItem[]
+  images?: CameraItem[],
+  videos?: CameraItem[]
 }
 export const InitState: IState = {
   conversations: [],

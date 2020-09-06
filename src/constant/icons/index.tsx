@@ -297,3 +297,8 @@ export const File = (props: UIProps) => {
     const { color, size } = props;
     return (<TextStyled style={{ color: color ? color : '#31383F', fontSize: size }} >&#xf15b;</TextStyled>)
 }
+export const Recorder = (props: UIProps) => {
+    const { color, size } = props;
+    return (<TextStyled style={{ color: color ? color : '#31383F', fontSize: size ? size : 14 }} >&#xf03d;</TextStyled>)
+
+}
