@@ -10,6 +10,7 @@ import Swipeout from 'react-native-swipeout';
 import * as Icon from 'constant/icons';
 import alertDefaultTitle from 'utils/alertDefaultTitle';
 import { MessageDefine } from 'locales';
+import { ActivityIndicator } from 'react-native';
 
 type UIProps = {
   navigation?: any;
@@ -52,7 +53,7 @@ const Layout = (props: UIProps) => {
       backgroundColor: '#FF4F4F',
       onPress: () => {
         alertDefaultTitle.show(MessageDefine.DELETE_BOOKING, 'Đóng', () => { }, 'Đồng ý', () => {
-
+          ActionCreators.CancelBooking(dispatch, state.itemSelected?.id ?? 0)
         });
       }
     },
@@ -89,6 +90,10 @@ const Layout = (props: UIProps) => {
               />
           ))}
       </ScrollWrapper>
+      {
+        state.loading &&
+        <ActivityIndicator style={{ position: 'absolute', top: '50%', left: '50%' }} size="large" />
+      }
     </Container>
   );
 };

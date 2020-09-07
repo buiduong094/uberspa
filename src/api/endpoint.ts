@@ -18,6 +18,7 @@ export const Endpoint = {
     GET_SLIDER: `${BASE_API_URL}/get_image_home`,
     BOOKING_LIST: `${BASE_API_URL}/booking_customer_get_list`,
     BOOKING: `${BASE_API_URL}/customer_booking`,
+    BOOKING_CANCEL: `${BASE_API_URL}/booking_cancel?`,
     SHOP_BY_SERVICE: `${BASE_API_URL}/searh_shop_by_services`,
     GET_INTRODUCE: `${BASE_API_URL}/get_gioithieu`,
 

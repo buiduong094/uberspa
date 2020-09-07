@@ -15,7 +15,7 @@ type UIProps = {
     step?: number,
     resetStep?: Function
     backColor?: string,
-    leftIcon?: any
+    leftIcon?: any,
 }
 const Header = (props: UIProps) => {
     const { style, children, text, navigation, titleStyle, backColor, leftIcon } = props;
@@ -58,20 +58,20 @@ flex-direction:row;
 background-color:white;
 border-bottom-width:1;
 border-color:#E8ECEF;
+width:100%
 `;
 const Wrapper = styled.View`
-
+flex:1;
 flex-direction:row;
 align-items:center;
 justify-content:space-between;
 padding:42px 15px 20px 15px;
+marginRight:20px
 `;
 const Content = styled.View`
-
 flex-direction:row;
 align-content:center;
 align-items:center;
-
 `;
 const BackStyled = styled.TouchableOpacity`
 align-items:center;

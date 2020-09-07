@@ -36,6 +36,7 @@ const BookingItem = (props: UIProps) => {
             return Endpoint.BASE_URL + props.item?.shop_info?.logo;
         return 'https://benhvienthucuc.vn/wp-content/themes/benh-vien-thu-cuc-vn/assets/images/sec12_1.png'
     }
+    console.warn('item', item.shop_info)
     return (
         <Container style={uistyle}>
             <MainContainer onPress={() => {
@@ -57,7 +58,7 @@ const BookingItem = (props: UIProps) => {
 
                             <SubTitleStyled>{item?.shop_info?.name}</SubTitleStyled>
                             {
-                                item?.reason &&
+                                item?.reason !== null &&
 
                                 <SubTitleStyled>{item?.reason}</SubTitleStyled>
                             }

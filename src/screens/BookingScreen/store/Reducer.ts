@@ -7,6 +7,7 @@ import { IState } from './InitState';
 import { User } from 'models/user';
 import { BookingItem } from '../../../models/booking/index';
 import { Endpoint } from 'api/endpoint';
+import { SERVER_KEY } from 'constant';
 interface RequestAction {
     type: string,
 }
@@ -53,7 +54,17 @@ export const ActionCreators = {
                 fieldName: 'items',
                 fieldValue: []
             })
+            dispatch({
+                type: ActionType.FIELD_CHANGE,
+                fieldName: 'loading',
+                fieldValue: true
+            })
             const response = await client.post(Endpoint.BOOKING_LIST, { status: key });
+            dispatch({
+                type: ActionType.FIELD_CHANGE,
+                fieldName: 'loading',
+                fieldValue: false
+            })
             if (response && response.status == 200) {
 
                 let data = response.data.data as Array<any>;
@@ -74,11 +85,26 @@ export const ActionCreators = {
             fieldValue: fieldValue
         })
     },
-    CancelBooking: (dispatch: React.Dispatch<KnownAction>, id?: number) => {
+    CancelBooking: async (dispatch: React.Dispatch<KnownAction>, id: number) => {
+        let body = {
+            server_key: SERVER_KEY,
+            booking_id: id,
+            reason: ""
+        }
         dispatch({
-            type: ActionType.DELETE_ITEM,
-            id: id,
+            type: ActionType.FIELD_CHANGE,
+            fieldValue: true,
+            fieldName: 'loading'
         })
+        let response = await client.post(Endpoint.BOOKING_CANCEL, body);
+        if (response && response.status === 200) {
+            const data = response?.data.data;
+            dispatch({
+                type: ActionType.DELETE_ITEM,
+                id: id,
+            })
+        }
+
     },
     SelectItem: (dispatch: React.Dispatch<KnownAction>, itemSelected: BookingItem) => {
         dispatch({
@@ -113,6 +139,7 @@ export const reducer = (state: IState, incomingAction: KnownAction): IState => {
                 ...state,
                 itemSelected: undefined,
                 items: [...data],
+                loading: false
             };
         case ActionType.SELECT_ITEM:
             action = incomingAction as SelectAction;
