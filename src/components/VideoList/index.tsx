@@ -28,8 +28,6 @@ const VideoList = (props: UIProps) => {
     const sources = [...props.sources ?? []];
     let player: Video;
 
-    console.warn('props.formMode', props.formMode)
-
     return (
         <Container style={props.containerStyle}>
             {

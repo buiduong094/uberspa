@@ -7,9 +7,10 @@ export interface IState {
   items: Array<BookingItem>,
   itemSelected?: BookingItem,
   listItems?: any,
-
+  loading: boolean
 }
 export const InitState: IState = {
+  loading: false,
   tabItems: [
     {
       selected: true,

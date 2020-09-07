@@ -53,7 +53,17 @@ export const ActionCreators = {
                 fieldName: 'items',
                 fieldValue: []
             })
+            dispatch({
+                type: ActionType.FIELD_CHANGE,
+                fieldName: 'loading',
+                fieldValue: true
+            })
             const response = await client.post(Endpoint.BOOKING_LIST, { status: key });
+            dispatch({
+                type: ActionType.FIELD_CHANGE,
+                fieldName: 'loading',
+                fieldValue: false
+            })
             if (response && response.status == 200) {
 
                 let data = response.data.data as Array<any>;
