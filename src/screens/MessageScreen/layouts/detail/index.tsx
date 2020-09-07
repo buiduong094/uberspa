@@ -191,9 +191,18 @@ const Layout = (props: UIProps) => {
                     text={props.conversationSelected?.name ?? "Chi tiết trò chuyện"}
                     leftIcon={props.conversationSelected?.avatar}
                     titleStyle={{ marginLeft: -30 }}
-                    navigation={navigation}>
-                </Header>
-
+                    navigation={navigation}
+                    children={
+                        <ActionWrapper>
+                            <ActionStyled onPress={() => { }}>
+                                <Icon.Recorder size={24} color="#65DF7B" />
+                            </ActionStyled>
+                            {/* <ActionStyled onPress={() => { }}>
+                                <Icon.Video size={24} color="#65DF7B" />
+                            </ActionStyled> */}
+                        </ActionWrapper>
+                    }
+                />
                 <FlatList
                     ref={flatListRef}
                     keyExtractor={_keyExtractor}
@@ -370,4 +379,11 @@ width: 90%;
 `;
 const ContentWrapper = styled.View`
 backgroundColor: #20232A;
+`;
+const ActionWrapper = styled.View`
+flexDirection:row;
+alignItems:center;
+`;
+const ActionStyled = styled.TouchableOpacity`
+paddingHorizontal:5
 `;
