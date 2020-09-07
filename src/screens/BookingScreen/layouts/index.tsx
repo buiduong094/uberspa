@@ -53,7 +53,7 @@ const Layout = (props: UIProps) => {
       backgroundColor: '#FF4F4F',
       onPress: () => {
         alertDefaultTitle.show(MessageDefine.DELETE_BOOKING, 'Đóng', () => { }, 'Đồng ý', () => {
-
+          ActionCreators.CancelBooking(dispatch, state.itemSelected?.id ?? 0)
         });
       }
     },
