@@ -10,7 +10,9 @@ export interface LoginModel {
     email: string,
     password: string,
     server_key: string,
-    remember: number
+    remember: number,
+    android_device_token?: string,
+    ios_device_token?: string
 }
 
 export interface RegisterModel {

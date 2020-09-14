@@ -8,6 +8,8 @@ import { Endpoint } from 'api/endpoint';
 import { FormMessage, MessageType } from 'models/message';
 import { MessageDefine } from 'locales';
 import { SERVER_KEY } from 'constant';
+import firebase from 'firebase';
+import { Platform } from 'react-native';
 
 interface RequestAction {
     type: string,
@@ -53,6 +55,14 @@ export const ActionCreators = {
             type: ActionType.COMMITING_FORM
         });
         (async () => {
+            let fcmToken = await firebase.getToken('fcmToken');
+           if(Platform.OS =='android')
+           {
+               body.android_device_token = fcmToken;
+           }
+           else{
+               body.ios_device_token = fcmToken;
+           }
             let response = await client.login(Endpoint.LOGIN, body);
             if (response && response.status == 200) {
                 let responseJson = await response.json();
