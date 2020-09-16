@@ -28,8 +28,12 @@ interface StepAction {
     step: number
 }
 
+interface ChangeLocation {
+    type: string,
+    currentPossition: number[]
+}
 
-type KnownAction = RequestAction | ReceivedAction | FieldChangeAction | StepAction;
+type KnownAction = RequestAction | ReceivedAction | FieldChangeAction | StepAction | ChangeLocation;
 
 export const ActionCreators = {
     FieldChange: (dispatch: React.Dispatch<KnownAction>, fieldName: string, fieldValue: any) => {
@@ -81,6 +85,12 @@ export const ActionCreators = {
             step: step
         });
     },
+    ChangeLocation: (dispatch: React.Dispatch<KnownAction>, currentPossition: number[]) => {
+        dispatch({
+            type: ActionType.CHANGE_LOCATION,
+            currentPossition: currentPossition
+        });
+    },
 }
 export const reducer = (state: IState, incomingAction: KnownAction): IState => {
     let action
@@ -118,6 +128,12 @@ export const reducer = (state: IState, incomingAction: KnownAction): IState => {
             return {
                 ...state,
                 // update ds dịch vụ ở đây
+            }
+        case ActionType.CHANGE_LOCATION:
+            action = incomingAction as ChangeLocation;
+            return {
+                ...state,
+                currentPossition: action.currentPossition
             }
         default:
             return state
