@@ -39,8 +39,11 @@ let watchID;
 
 const Layout = (props: UIProps) => {
   const [state, dispatch] = React.useReducer(reducer, InitState);
-
   const navigation = useNavigation();
+  let camera;
+  useEffect(()=>{
+    camera?.flyTo([107.08333,20.95200])
+  },[])
   useEffect(() => {
     props.ShopByService();
 
@@ -240,9 +243,18 @@ const Layout = (props: UIProps) => {
         zoomEnabled={true}
       >
         <MapboxGL.Camera
+        ref={(ref)=>{
+          camera = ref
+        }}
           zoomLevel={16}
-          centerCoordinate={[106.648339, 10.749894]}
+          centerCoordinate={[107.08333,20.95]}
         />
+        <MapboxGL.PointAnnotation
+          id='Posi' coordinate={[107.08333,20.95]}
+          >
+          </MapboxGL.PointAnnotation>
+
+          <MapboxGL.UserLocation></MapboxGL.UserLocation>
       </MapboxGL.MapView>
       <BackButton onPress={goBack}>
         <Icon.Back size={27}></Icon.Back>
