@@ -41,9 +41,7 @@ const Layout = (props: UIProps) => {
   const [state, dispatch] = React.useReducer(reducer, InitState);
   const navigation = useNavigation();
   let camera;
-  useEffect(()=>{
-    camera?.flyTo([107.08333,20.95200])
-  },[])
+
   useEffect(() => {
     props.ShopByService();
 
@@ -56,12 +54,10 @@ const Layout = (props: UIProps) => {
         return false;
       } else {
         clientPermision.GeoLocation().then(geoPermission => {
-
         });
       }
     })
-    // CurrentLocation();
-
+    CurrentLocation();
   }, [])
   useEffect(() => {
     if (props.message && props.message.display) {
@@ -75,40 +71,45 @@ const Layout = (props: UIProps) => {
         }
     }
 }, [props.message])
-  // const CurrentLocation = async () => {
+useEffect(()=>{
+},[])
+  const CurrentLocation = async () => {
+    Geolocation.getCurrentPosition(
+      (position) => {
+        console.log([position.coords.longitude, position.coords.latitude])
+        ActionCreators.ChangeLocation(dispatch,[position.coords.longitude, position.coords.latitude])
+        // const geoJson: GeoLocation = {
+        //   type: 'Point',
+        //   coordinates: [position.coords.longitude, position.coords.latitude]
+        // }
 
-  //   Geolocation.getCurrentPosition(
+        // ActionCreators.REQUEST_ITEMS(dispatch, state)
+      },
+      (error) => {
+        console.log(error)
+      },
+      { enableHighAccuracy: true, timeout: 15000, }// fix error timeout
+    );
 
-  //     (position) => {
-  //       const geoJson: GeoLocation = {
-  //         type: 'Point',
-  //         coordinates: [position.coords.longitude, position.coords.latitude]
-  //       }
-
-  //       ActionCreators.REQUEST_ITEMS(dispatch, state)
-  //     },
-  //     (error) => {
-
-  //     },
-  //     { enableHighAccuracy: false, timeout: 15000, }
-  //   );
-
-  // }
+  }
   // const AnnotationContent = () => (
-  //   state.coordinates?.map((geo, index) => (
+    // state.coordinates?.map((geo, index) => (
 
-  //     <MapboxGL.MarkerView coordinate={geo.Geo} key={index}>
-  //       <MarkerStyled onPress={() => {
+    //   <MapboxGL.MarkerView coordinate={geo.Geo} key={index}>
+    //     <MarkerStyled onPress={() => {
 
-  //         ActionCreators.FieldChange(dispatch, 'display', true);
-  //       }}>
-  //         <MarkerIcon ></MarkerIcon>
-  //       </MarkerStyled>
+    //       ActionCreators.FieldChange(dispatch, 'display', true);
+    //     }}>
+    //       <MarkerIcon ></MarkerIcon>
+    //     </MarkerStyled>
 
-  //     </MapboxGL.MarkerView>
-  //   ))
+    //   </MapboxGL.MarkerView>
+    // ))
 
   // );
+  const flyTo = (location: number[])=>{
+    camera?.flyTo(location)
+  }
 
   const goBack = () => {
     navigation.goBack();
@@ -127,6 +128,7 @@ const Layout = (props: UIProps) => {
     });
 
   }
+
 
   const width = Dimensions.get('screen').width;
   const Filter = () => {
@@ -247,23 +249,38 @@ const Layout = (props: UIProps) => {
           camera = ref
         }}
           zoomLevel={16}
-          centerCoordinate={[107.08333,20.95]}
+          centerCoordinate={state.currentPossition}
         />
-        <MapboxGL.PointAnnotation
-          id='Posi' coordinate={[107.08333,20.95]}
-          >
-          </MapboxGL.PointAnnotation>
+        {/* all point in map */}
+         {/* {props.listShop?.map((item, index) => (
+            <MapboxGL.PointAnnotation
+            id={index.toString()} coordinate={[107.134036, 20.950771]} 
+            >
+              <MapboxGL.Callout title={item.name+'\n'+item.address}
+              />
+            </MapboxGL.PointAnnotation>
+          ))
+          } */}
 
-          <MapboxGL.UserLocation></MapboxGL.UserLocation>
+        <MapboxGL.UserLocation />
+        
       </MapboxGL.MapView>
+      <View style={{ zIndex: 10,backgroundColor:"transparent",position:'absolute',bottom:'10%', right:'5%' }}>
+          <TouchableOpacity style={{borderRadius:30, backgroundColor:'white'}}
+          onPress={()=>{
+            flyTo(state.currentPossition??[])
+          }}>
+            <Icon.MapMaker size={30} color='#FF0077' />
+          </TouchableOpacity>
+        </View>
       <BackButton onPress={goBack}>
         <Icon.Back size={27}></Icon.Back>
       </BackButton>
       <SearchInput
+      style={{backgroundColor:'white'}}
         onSubmitEditing={() => { ActionCreators.FieldChange(dispatch, 'display', false) }}
         placeHolder=""
-        icon={<Icon.Address size={20} color='#C2C2C2' />}
-      ></SearchInput>
+        icon={<Icon.Search size={20} color='#C2C2C2' />}/>
 
       {
         (state.step == 1 || state.step == 2) &&
@@ -274,7 +291,14 @@ const Layout = (props: UIProps) => {
           }
 
         </ModalUI>
+        
       }
+      {/* {!state.display && <TouchableOpacity style={{}} onPress={() => {
+            ActionCreators.FieldChange(dispatch, 'display', true)
+          }}>
+            <Icon.Close color='black' size={22} />
+          </TouchableOpacity>
+      } */}
       
     </Container>
   );
