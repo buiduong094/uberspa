@@ -10,7 +10,8 @@ export interface IState {
     step: number;
     services?: Array<UberService>;
  
-  
+    zoom: number,
+    isExand: boolean,
     bodySearch: {},
     coupon?: string,
     description?: string, 
@@ -21,6 +22,8 @@ export const InitState: IState = {
     display: true,
     coupon: '',
     step: 1,
+    zoom: 16,
+    isExand: false,
 date:'',
  
     bodySearch: {
