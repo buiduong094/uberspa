@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, View, Platform, Dimensions, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Platform, Dimensions, TouchableOpacity, Text } from "react-native";
 import MapboxGL from "@react-native-mapbox-gl/maps";
 import { useEffect } from 'react';
 import styled from 'styled-components/native';
@@ -42,6 +42,7 @@ const Layout = (props: UIProps) => {
   const navigation = useNavigation();
   let camera;
 
+
   useEffect(() => {
     props.ShopByService();
 
@@ -59,6 +60,7 @@ const Layout = (props: UIProps) => {
     })
     CurrentLocation();
   }, [])
+ 
   useEffect(() => {
     if (props.message && props.message.display) {
         if (props.message.type != MessageType.Loading) {
@@ -71,8 +73,7 @@ const Layout = (props: UIProps) => {
         }
     }
 }, [props.message])
-useEffect(()=>{
-},[])
+
   const CurrentLocation = async () => {
     Geolocation.getCurrentPosition(
       (position) => {
@@ -108,6 +109,7 @@ useEffect(()=>{
 
   // );
   const flyTo = (location: number[])=>{
+    camera?.zoomTo(state.zoom)
     camera?.flyTo(location)
   }
 
@@ -131,7 +133,11 @@ useEffect(()=>{
 
 
   const width = Dimensions.get('screen').width;
+  const height = Dimensions.get('window').height;
   const Filter = () => {
+    const service =(item)=>{
+      props.ServiceByShop(item)
+    } 
 
     return (
       <Content>
@@ -145,47 +151,55 @@ useEffect(()=>{
         </DialogHeader>
         {
           state.step == 1 &&
-          <ContentStep>
+          <ScrollWrapper >
+            <ContentStep>
+              <Title text="Dịch vụ" titleStyle={{ marginVertical: 10 }}></Title>
+                {
+                  props.services &&
+                  <ServiceWrapper horizontal>
+                    {
+                      props.services && props.services.map((service: any, index: number) => (
+                        <View style={{marginLeft:20}}>
+                          <ImageButton
 
+                          source={{uri: service.icon}}
+                          height={60}
+                          width={60}
 
-            <Title text="Dịch vụ" titleStyle={{ marginVertical: 10 }}></Title>
-            <ScrollWrapper >
-              {
-                props.services &&
-                <ServiceWrapper horizontal>
-                  {
-                    props.services && props.services.map((service: any, index: number) => (
-                      <ImageButton
+                          title={service.name}
+                          type={ImageButtonType.TOUCHOPACITY}
+                          imageStyle={{ backgroundColor: service?.selected ? '#65DF7B25' : '#F4F5F6', borderRadius:30, overflow: "hidden"}}
+                          ></ImageButton>
+                        </View>
+                        
+                      ))
+                    }
+                  </ServiceWrapper>
+                }
+                {
+                  props.listShop && props.listShop.length > 0 && props.listShop?.map((item, index) =>
 
-                        source={ImageSource.nail}
-                        height={20}
-                        width={20}
+                    <ShopItem
+                      key={index.toString()}
+                      item={item}
+                      isExpand={state.isExand}
+                      childs={state.isExand?(item.id == props.shopChoice?.id ? props.shopServices : []):[]}
+                      onRightPress={() => {
+                        if(!state.isExand)
+                          service(item)
+                        ActionCreators.FieldChange(dispatch,'expand',!state.isExand)
+                      } }
+                      onChildPress={selectService} />
 
-                        title={service.name}
-                        type={ImageButtonType.TOUCHOPACITY}
-                        imageStyle={{ backgroundColor: service?.selected ? '#65DF7B25' : '#F4F5F6', padding: 15, borderRadius: 30 }}
-                      ></ImageButton>
-                    ))
-                  }
-                </ServiceWrapper>
-              }
-              {
-                props.listShop && props.listShop.length > 0 && props.listShop?.map((item, index) =>
-
-                  <ShopItem
-                    item={item}
-                    childs={item.id == props.shopChoice?.id ? props.shopServices : []}
-                    onRightPress={() => { props.ServiceByShop(item) }}
-                    onChildPress={selectService} />
-
-                )
-              }
-            </ScrollWrapper>
-          </ContentStep>
+                  )
+                }
+            </ContentStep>
+          </ScrollWrapper>
         }
         {
           state.step == 2 &&
           <ScrollWrapper>
+            <ContentStep>
             <Title text="Thời gian" titleStyle={{ marginBottom: 10 }}></Title>
             <TimeWrapper>
               <TextInputUI
@@ -233,6 +247,7 @@ useEffect(()=>{
               textstyle={{ fontSize: 18 }}
               text='ĐẶT NGAY'
               onPress={onBooking}></LoginButton>
+              </ContentStep>
           </ScrollWrapper>
         }
       </Content>)
@@ -241,6 +256,8 @@ useEffect(()=>{
   return (
     <Container>
       <MapboxGL.MapView logoEnabled={false} attributionEnabled={false}
+      
+        onPress={(feature)=>flyTo(feature.geometry.coordinates)}
         style={{ flex: 1 }}
         zoomEnabled={true}
       >
@@ -248,23 +265,37 @@ useEffect(()=>{
         ref={(ref)=>{
           camera = ref
         }}
-          zoomLevel={16}
+          zoomLevel={state.zoom}
           centerCoordinate={state.currentPossition}
         />
-        {/* all point in map */}
-         {/* {props.listShop?.map((item, index) => (
+
+         {props.listShop?.map((item, index) => (
             <MapboxGL.PointAnnotation
-            id={index.toString()} coordinate={[107.134036, 20.950771]} 
+            id={index.toString()} coordinate={[Number(item.longitude),Number(item.latitude)]} 
             >
+              
               <MapboxGL.Callout title={item.name+'\n'+item.address}
-              />
+              >
+              </MapboxGL.Callout>
             </MapboxGL.PointAnnotation>
           ))
-          } */}
+          } 
 
         <MapboxGL.UserLocation />
         
       </MapboxGL.MapView>
+      <View style={{
+        position: 'absolute',
+        alignSelf: 'center',
+        top: '45%'
+      }}>
+        <TouchableOpacity onPress={async ()=>{
+          
+        }}>
+        <Icon.MapMaker size={38} color="red" />
+
+        </TouchableOpacity>
+      </View>
       <View style={{ zIndex: 10,backgroundColor:"transparent",position:'absolute',bottom:'10%', right:'5%' }}>
           <TouchableOpacity style={{borderRadius:30, backgroundColor:'white'}}
           onPress={()=>{
@@ -276,11 +307,16 @@ useEffect(()=>{
       <BackButton onPress={goBack}>
         <Icon.Back size={27}></Icon.Back>
       </BackButton>
-      <SearchInput
-      style={{backgroundColor:'white'}}
-        onSubmitEditing={() => { ActionCreators.FieldChange(dispatch, 'display', false) }}
-        placeHolder=""
-        icon={<Icon.Search size={20} color='#C2C2C2' />}/>
+      
+      <View style={{ zIndex: 10,backgroundColor:"transparent",position:'absolute',bottom:'10%', left:'5%' }}>
+        <TouchableOpacity
+        style={{borderRadius:30, backgroundColor:'white'}}
+        onPress={()=>{
+          ActionCreators.FieldChange(dispatch,'display', true)
+        }}>
+        <Icon.ArrowUp size={30} color={'red'}/>
+        </TouchableOpacity>
+      </View>
 
       {
         (state.step == 1 || state.step == 2) &&
@@ -335,8 +371,12 @@ padding:15px;
 borderTopStartRadius:10;
 borderTopEndRadius:10;
 `;
-const ContentStep = styled.View``;
+const ContentStep = styled.View`
+marginBottom:50px;
+`;
 const ScrollWrapper = styled.ScrollView`
+height:100%;
+padding: 10px;
 `;
 const DialogHeader = styled.View`
 flexDirection:row;
@@ -408,3 +448,8 @@ color:#FFFF;
 fontSize:18;
 fontFamily: ${fontFamily.medium}
 `;
+
+const SuggestContainer = styled.View`
+zIndex: 20;
+backgroundColor:#FFF
+`

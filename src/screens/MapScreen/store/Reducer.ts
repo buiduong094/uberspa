@@ -113,9 +113,15 @@ export const reducer = (state: IState, incomingAction: KnownAction): IState => {
                     loadingConfirm: action.fieldValue
                 }
             }
+            if (action.fieldName == 'expand') {
+                return {
+                    ...state,
+                    isExand: action.fieldValue
+                }
+            }
             return {
                 ...state,
-                [action.fieldName]: [action.fieldValue]
+                [action.fieldName]: action.fieldValue
             }
         case ActionType.CHANGE_STEP:
             action = incomingAction as StepAction;
