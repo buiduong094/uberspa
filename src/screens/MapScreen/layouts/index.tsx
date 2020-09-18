@@ -91,7 +91,6 @@ const Layout = (props: UIProps) => {
       },
       { enableHighAccuracy: true, timeout: 15000, }// fix error timeout
     );
-
   }
   // const AnnotationContent = () => (
     // state.coordinates?.map((geo, index) => (
@@ -299,6 +298,7 @@ const Layout = (props: UIProps) => {
       <View style={{ zIndex: 10,backgroundColor:"transparent",position:'absolute',bottom:'10%', right:'5%' }}>
           <TouchableOpacity style={{borderRadius:30, backgroundColor:'white'}}
           onPress={()=>{
+            CurrentLocation()
             flyTo(state.currentPossition??[])
           }}>
             <Icon.MapMaker size={30} color='#FF0077' />
