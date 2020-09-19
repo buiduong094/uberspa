@@ -78,9 +78,15 @@ target 'UberOne' do
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
   pod 'react-native-camera', :path => '../node_modules/react-native-camera'
+<<<<<<< HEAD
   pod 'Firebase/Core', '~> 6.13.0'
   pod 'Firebase/Messaging', '~> 6.13.0'
   pod 'Firebase/Auth', '~> 6.13.0'
+=======
+
+  pod 'react-native-geolocation-service', :path => '../node_modules/react-native-geolocation-service'
+
+>>>>>>> origin/map/test
   target 'UberOneTests' do
     inherit! :complete
     # Pods for testing

@@ -7,7 +7,8 @@ import { ImageSource } from 'assets'
 import { useNavigation } from '@react-navigation/native';
 import clientPermision from 'utils/clientPermission';
 import { ActionCreators, reducer, InitState } from '../store';
-import Geolocation from '@react-native-community/geolocation';
+// import Geolocation from '@react-native-community/geolocation';
+import Geolocation from 'react-native-geolocation-service';
 import DeviceInfo from "react-native-device-info";
 import * as Icon from 'constant/icons';
 import { SearchInput, ImageButton, UberItem, LoginButton, ModalUI } from 'components';
@@ -39,6 +40,7 @@ let watchID;
 
 const Layout = (props: UIProps) => {
   const [state, dispatch] = React.useReducer(reducer, InitState);
+  const [text, setText] = React.useState('')
   const navigation = useNavigation();
   let camera;
 
@@ -60,25 +62,25 @@ const Layout = (props: UIProps) => {
     })
     CurrentLocation();
   }, [])
-
+ 
   useEffect(() => {
     if (props.message && props.message.display) {
-      if (props.message.type != MessageType.Loading) {
-        if (props.message.type == MessageType.Success) {
-          alertDefaultTitle.show(props.message?.message ? props.message.message : 'Đặt chỗ thành công vui lòng kiếm trả trong Lịch đặt', 'OK');
+        if (props.message.type != MessageType.Loading) {
+            if (props.message.type == MessageType.Success) {
+                alertDefaultTitle.show(props.message?.message ? props.message.message : 'Đặt chỗ thành công vui lòng kiếm trả trong Lịch đặt', 'OK');
+            }
+            else {
+                alertDefaultTitle.show(props.message?.message ? props.message.message : 'Đặt chỗ thất bại, vui lòng liên hệ quản trị', 'OK');
+            }
         }
-        else {
-          alertDefaultTitle.show(props.message?.message ? props.message.message : 'Đặt chỗ thất bại, vui lòng liên hệ quản trị', 'OK');
-        }
-      }
     }
-  }, [props.message])
+}, [props.message])
 
   const CurrentLocation = async () => {
     Geolocation.getCurrentPosition(
       (position) => {
         console.log([position.coords.longitude, position.coords.latitude])
-        ActionCreators.ChangeLocation(dispatch, [position.coords.longitude, position.coords.latitude])
+        ActionCreators.ChangeLocation(dispatch,[position.coords.longitude, position.coords.latitude])
         // const geoJson: GeoLocation = {
         //   type: 'Point',
         //   coordinates: [position.coords.longitude, position.coords.latitude]
@@ -89,25 +91,26 @@ const Layout = (props: UIProps) => {
       (error) => {
         console.log(error)
       },
-      { enableHighAccuracy: true, timeout: 15000, }// fix error timeout
+      { enableHighAccuracy: true, timeout: 15000 }// fix error timeout
     );
   }
+  
   // const AnnotationContent = () => (
-  // state.coordinates?.map((geo, index) => (
+    // state.coordinates?.map((geo, index) => (
 
-  //   <MapboxGL.MarkerView coordinate={geo.Geo} key={index}>
-  //     <MarkerStyled onPress={() => {
+    //   <MapboxGL.MarkerView coordinate={geo.Geo} key={index}>
+    //     <MarkerStyled onPress={() => {
 
-  //       ActionCreators.FieldChange(dispatch, 'display', true);
-  //     }}>
-  //       <MarkerIcon ></MarkerIcon>
-  //     </MarkerStyled>
+    //       ActionCreators.FieldChange(dispatch, 'display', true);
+    //     }}>
+    //       <MarkerIcon ></MarkerIcon>
+    //     </MarkerStyled>
 
-  //   </MapboxGL.MarkerView>
-  // ))
+    //   </MapboxGL.MarkerView>
+    // ))
 
   // );
-  const flyTo = (location: number[]) => {
+  const flyTo = (location: number[])=>{
     camera?.zoomTo(state.zoom)
     camera?.flyTo(location)
   }
@@ -125,18 +128,22 @@ const Layout = (props: UIProps) => {
     alertDefaultTitle.show(MessageDefine.CREATE_BOOKING, 'Đóng', () => { }, 'Đồng ý', () => {
       let step = state.step;
       props.MapBooking(state.date, state.time ?? '', state.coupon, state.description)
-
+     
     });
 
   }
 
-
+  const changeText = (t)=>{
+    if(text.length === 1 && text !==':')
+      setText(t+':')
+    else setText(t)
+  }
   const width = Dimensions.get('screen').width;
   const height = Dimensions.get('window').height;
   const Filter = () => {
-    const service = (item) => {
+    const service =(item)=>{
       props.ServiceByShop(item)
-    }
+    } 
 
     return (
       <Content>
@@ -153,45 +160,45 @@ const Layout = (props: UIProps) => {
           <ScrollWrapper >
             <ContentStep>
               <Title text="Dịch vụ" titleStyle={{ marginVertical: 10 }}></Title>
-              {
-                props.services &&
-                <ServiceWrapper horizontal>
-                  {
-                    props.services && props.services.map((service: any, index: number) => (
-                      <View style={{ marginLeft: 20 }}>
-                        <ImageButton
+                {
+                  props.services &&
+                  <ServiceWrapper horizontal>
+                    {
+                      props.services && props.services.map((service: any, index: number) => (
+                        <View style={{marginLeft:20}}>
+                          <ImageButton
 
-                          source={{ uri: service.icon }}
+                          source={{uri: service.icon}}
                           height={60}
                           width={60}
 
                           title={service.name}
                           type={ImageButtonType.TOUCHOPACITY}
-                          imageStyle={{ backgroundColor: service?.selected ? '#65DF7B25' : '#F4F5F6', borderRadius: 30, overflow: "hidden" }}
-                        ></ImageButton>
-                      </View>
+                          imageStyle={{ backgroundColor: service?.selected ? '#65DF7B25' : '#F4F5F6', borderRadius:30, overflow: "hidden"}}
+                          ></ImageButton>
+                        </View>
+                        
+                      ))
+                    }
+                  </ServiceWrapper>
+                }
+                {
+                  props.listShop && props.listShop.length > 0 && props.listShop?.map((item, index) =>
 
-                    ))
-                  }
-                </ServiceWrapper>
-              }
-              {
-                props.listShop && props.listShop.length > 0 && props.listShop?.map((item, index) =>
+                    <ShopItem
+                      key={index.toString()}
+                      item={item}
+                      isExpand={state.isExand}
+                      childs={state.isExand?(item.id == props.shopChoice?.id ? props.shopServices : []):[]}
+                      onRightPress={() => {
+                        if(!state.isExand)
+                          service(item)
+                        ActionCreators.FieldChange(dispatch,'expand',!state.isExand)
+                      } }
+                      onChildPress={selectService} />
 
-                  <ShopItem
-                    key={index.toString()}
-                    item={item}
-                    isExpand={state.isExand}
-                    childs={state.isExand ? (item.id == props.shopChoice?.id ? props.shopServices : []) : []}
-                    onRightPress={() => {
-                      if (!state.isExand)
-                        service(item)
-                      ActionCreators.FieldChange(dispatch, 'expand', !state.isExand)
-                    }}
-                    onChildPress={selectService} />
-
-                )
-              }
+                  )
+                }
             </ContentStep>
           </ScrollWrapper>
         }
@@ -199,54 +206,57 @@ const Layout = (props: UIProps) => {
           state.step == 2 &&
           <ScrollWrapper>
             <ContentStep>
-              <Title text="Thời gian" titleStyle={{ marginBottom: 10 }}></Title>
-              <TimeWrapper>
-                <TextInputUI
-                  uistyle={{ width: (width - 70) / 2, }}
-                  contentstyle={{ backgroundColor: '#F4F5F6' }}
-                  placeholder="DD/MM/YYYY"
-                  leftIcon={<Icon.Calendar color="#C2C2C2" size={18} />}
-                />
-                <TextInputUI
-                  uistyle={{ width: (width - 70) / 2 }}
-                  contentstyle={{ backgroundColor: '#F4F5F6' }}
-                  placeholder="HH:MM"
-                  leftIcon={<Icon.Clock color="#C2C2C2" size={18} />}
-                />
-              </TimeWrapper>
-              <ReadOnlyText containerStyle={{ borderRadius: 24, height: 48 }} uistyle={{ marginTop: 15, }} text='Thanh toán tại cơ sở' title='Phương thức thanh toán' ></ReadOnlyText>
-
-              <Title text="Ghi chú" titleStyle={{ marginVertical: 10 }}></Title>
+            <Title text="Thời gian" titleStyle={{ marginBottom: 10 }}></Title>
+            <TimeWrapper>
               <TextInputUI
-                placeholder="Nội dung ghi chú"
-
+                uistyle={{ width: (width - 70) / 2, }}
+                contentstyle={{ backgroundColor: '#F4F5F6' }}
+                placeholder="DD/MM/YYYY"
+                leftIcon={<Icon.Calendar color="#C2C2C2" size={18} />}
               />
-
-              <Title text="Mã giảm giá" titleStyle={{ marginVertical: 10 }}></Title>
               <TextInputUI
-                placeholder="Mã giảm giá"
-                uistyle={{ flex: 1 }}
-                textValue={state.coupon}
-                leftIcon={<Voucher
-                  source={ImageSource.voucher}
-                  style={{
-                    height: 10,
-                    width: 13,
-                  }}
-                  resizeMode="cover" />}
+                keyboardType={'numeric'}
+                textValue={text}
+                onChangeText={changeText}
+                uistyle={{ width: (width - 70) / 2 }}
+                contentstyle={{ backgroundColor: '#F4F5F6' }}
+                placeholder="HH:MM"
+                leftIcon={<Icon.Clock color="#C2C2C2" size={18} />}
+              />
+            </TimeWrapper>
+            <ReadOnlyText containerStyle={{ borderRadius: 24, height: 48 }} uistyle={{ marginTop: 15, }} text='Thanh toán tại cơ sở' title='Phương thức thanh toán' ></ReadOnlyText>
 
-                type="text"
-                keyboardType="default"
-                onChangeText={(coupon) => {
-                  ActionCreators.FieldChange(dispatch, 'coupon', coupon)
+            <Title text="Ghi chú" titleStyle={{ marginVertical: 10 }}></Title>
+            <TextInputUI
+              placeholder="Nội dung ghi chú"
+
+            />
+
+            <Title text="Mã giảm giá" titleStyle={{ marginVertical: 10 }}></Title>
+            <TextInputUI
+              placeholder="Mã giảm giá"
+              uistyle={{ flex: 1 }}
+              textValue={state.coupon}
+              leftIcon={<Voucher
+                source={ImageSource.voucher}
+                style={{
+                  height: 10,
+                  width: 13,
                 }}
-              />
-              <LoginButton
-                uistyle={{ marginTop: 10 }}
-                textstyle={{ fontSize: 18 }}
-                text='ĐẶT NGAY'
-                onPress={onBooking}></LoginButton>
-            </ContentStep>
+                resizeMode="cover" />}
+
+              type="text"
+              keyboardType="default"
+              onChangeText={(coupon) => {
+                ActionCreators.FieldChange(dispatch, 'coupon', coupon)
+              }}
+            />
+            <LoginButton
+              uistyle={{ marginTop: 10 }}
+              textstyle={{ fontSize: 18 }}
+              text='ĐẶT NGAY'
+              onPress={onBooking}></LoginButton>
+              </ContentStep>
           </ScrollWrapper>
         }
       </Content>)
@@ -255,63 +265,66 @@ const Layout = (props: UIProps) => {
   return (
     <Container>
       <MapboxGL.MapView logoEnabled={false} attributionEnabled={false}
-        onPress={(feature) => flyTo(feature.geometry.coordinates)}
+      
+        onPress={(feature)=>flyTo(feature.geometry.coordinates)}
         style={{ flex: 1 }}
-        zoomEnabled={true}>
+        zoomEnabled={true}
+      >
         <MapboxGL.Camera
-          ref={(ref) => {
-            camera = ref
-          }}
+        ref={(ref)=>{
+          camera = ref
+        }}
           zoomLevel={state.zoom}
           centerCoordinate={state.currentPossition}
         />
 
-        {props.listShop?.map((item, index) => (
-          <MapboxGL.PointAnnotation
-            id={index.toString()} coordinate={[Number(item.longitude), Number(item.latitude)]}>
-
-            <MapboxGL.Callout title={item.name + '\n' + item.address}
+         {props.listShop?.map((item, index) => (
+            <MapboxGL.PointAnnotation
+            id={index.toString()} coordinate={[Number(item.longitude),Number(item.latitude)]} 
             >
-            </MapboxGL.Callout>
-          </MapboxGL.PointAnnotation>
-        ))
-        }
+              
+              <MapboxGL.Callout title={item.name+'\n'+item.address}
+              >
+              </MapboxGL.Callout>
+            </MapboxGL.PointAnnotation>
+          ))
+          } 
 
         <MapboxGL.UserLocation />
-
+        
       </MapboxGL.MapView>
       <View style={{
         position: 'absolute',
         alignSelf: 'center',
         top: '45%'
       }}>
-        <TouchableOpacity onPress={async () => {
-
+        <TouchableOpacity onPress={async ()=>{
+          
         }}>
-          <Icon.MapMaker size={38} color="red" />
+        <Icon.MapMaker size={38} color="red" />
 
         </TouchableOpacity>
       </View>
-      <View style={{ zIndex: 10, backgroundColor: "transparent", position: 'absolute', bottom: '10%', right: '5%' }}>
-        <TouchableOpacity style={{ borderRadius: 30, backgroundColor: 'white' }}
-          onPress={() => {
+      <View style={{ zIndex: 10,backgroundColor:"transparent",position:'absolute',bottom:'10%', right:'5%' }}>
+          <TouchableOpacity style={{borderRadius:30, backgroundColor:'white'}}
+          onPress={()=>{
             CurrentLocation()
-            flyTo(state.currentPossition ?? [])
+            flyTo(state.currentPossition??[])
           }}>
-          <Icon.MapMaker size={30} color='#FF0077' />
-        </TouchableOpacity>
-      </View>
+            <Icon.MapMaker size={30} color='#FF0077' />
+          </TouchableOpacity>
+        </View>
       <BackButton onPress={goBack}>
         <Icon.Back size={27}></Icon.Back>
       </BackButton>
-
-      <View style={{ zIndex: 10, backgroundColor: "transparent", position: 'absolute', bottom: '10%', left: '5%' }}>
+      
+      <View style={{ zIndex: 10,backgroundColor:"transparent",position:'absolute',bottom:'10%', left:'5%' }}>
         <TouchableOpacity
-          style={{ borderRadius: 30, backgroundColor: 'white' }}
-          onPress={() => {
-            ActionCreators.FieldChange(dispatch, 'display', true)
-          }}>
-          <Icon.ArrowUp size={30} color={'red'} />
+        style={{borderRadius:30, backgroundColor:'white'}}
+        onPress={()=>{
+          ActionCreators.FieldChange(dispatch,'display', true)
+        }}>
+        <Icon.ArrowUp size={30} color={'red'}/>
         </TouchableOpacity>
       </View>
 
@@ -324,7 +337,7 @@ const Layout = (props: UIProps) => {
           }
 
         </ModalUI>
-
+        
       }
       {/* {!state.display && <TouchableOpacity style={{}} onPress={() => {
             ActionCreators.FieldChange(dispatch, 'display', true)
@@ -332,7 +345,7 @@ const Layout = (props: UIProps) => {
             <Icon.Close color='black' size={22} />
           </TouchableOpacity>
       } */}
-
+      
     </Container>
   );
 }
@@ -388,7 +401,6 @@ position: absolute;
 padding:42px 15px 20px 15px;
 `;
 const ServiceWrapper = styled.ScrollView`
-
 `;
 const TimeWrapper = styled.View`
 flexDirection:row;
