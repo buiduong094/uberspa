@@ -41,6 +41,7 @@ let watchID;
 const Layout = (props: UIProps) => {
   const [state, dispatch] = React.useReducer(reducer, InitState);
   const [text, setText] = React.useState('')
+  const [search, setSearch] = React.useState('')
   const navigation = useNavigation();
   let camera;
 
@@ -321,14 +322,18 @@ const Layout = (props: UIProps) => {
             CurrentLocation()
             flyTo(state.currentPossition??[])
           }}>
-            <Icon.MapMaker size={30} color='#FF0077' />
+            <Icon.MapMaker size={40} color='#FF0077' />
           </TouchableOpacity>
         </View>
       <BackButton onPress={goBack}>
         <Icon.Back size={27}></Icon.Back>
       </BackButton>
       <SearchContainer>
-        <SearchInput style={{width:Dimensions.get('screen').width*0.75}}/>
+        <SearchInput 
+        style={{width:Dimensions.get('screen').width*0.75}}
+        value={search}
+        onTextChange={setSearch}
+        />
       </SearchContainer>
       <View style={{ zIndex: 10,backgroundColor:"transparent",position:'absolute',bottom:'10%', left:'5%' }}>
         <TouchableOpacity
@@ -336,7 +341,7 @@ const Layout = (props: UIProps) => {
         onPress={()=>{
           ActionCreators.FieldChange(dispatch,'display', true)
         }}>
-        <Icon.ArrowUp size={30} color={'red'}/>
+        <Icon.ArrowUp size={40} color={'red'}/>
         </TouchableOpacity>
       </View>
 
