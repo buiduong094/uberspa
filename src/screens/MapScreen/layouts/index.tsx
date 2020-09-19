@@ -7,7 +7,8 @@ import { ImageSource } from 'assets'
 import { useNavigation } from '@react-navigation/native';
 import clientPermision from 'utils/clientPermission';
 import { ActionCreators, reducer, InitState } from '../store';
-import Geolocation from '@react-native-community/geolocation';
+// import Geolocation from '@react-native-community/geolocation';
+import Geolocation from 'react-native-geolocation-service';
 import DeviceInfo from "react-native-device-info";
 import * as Icon from 'constant/icons';
 import { SearchInput, ImageButton, UberItem, LoginButton, ModalUI } from 'components';
@@ -39,6 +40,7 @@ let watchID;
 
 const Layout = (props: UIProps) => {
   const [state, dispatch] = React.useReducer(reducer, InitState);
+  const [text, setText] = React.useState('')
   const navigation = useNavigation();
   let camera;
 
@@ -89,9 +91,10 @@ const Layout = (props: UIProps) => {
       (error) => {
         console.log(error)
       },
-      { enableHighAccuracy: true, timeout: 15000, }// fix error timeout
+      { enableHighAccuracy: true, timeout: 15000 }// fix error timeout
     );
   }
+  
   // const AnnotationContent = () => (
     // state.coordinates?.map((geo, index) => (
 
@@ -130,7 +133,11 @@ const Layout = (props: UIProps) => {
 
   }
 
-
+  const changeText = (t)=>{
+    if(text.length === 1 && text !==':')
+      setText(t+':')
+    else setText(t)
+  }
   const width = Dimensions.get('screen').width;
   const height = Dimensions.get('window').height;
   const Filter = () => {
@@ -208,6 +215,9 @@ const Layout = (props: UIProps) => {
                 leftIcon={<Icon.Calendar color="#C2C2C2" size={18} />}
               />
               <TextInputUI
+                keyboardType={'numeric'}
+                textValue={text}
+                onChangeText={changeText}
                 uistyle={{ width: (width - 70) / 2 }}
                 contentstyle={{ backgroundColor: '#F4F5F6' }}
                 placeholder="HH:MM"

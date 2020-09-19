@@ -79,6 +79,8 @@ target 'UberOne' do
 
   pod 'react-native-camera', :path => '../node_modules/react-native-camera'
 
+  pod 'react-native-geolocation-service', :path => '../node_modules/react-native-geolocation-service'
+
   target 'UberOneTests' do
     inherit! :complete
     # Pods for testing
