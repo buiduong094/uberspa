@@ -18,7 +18,8 @@ import TextInputFormikUI from './TextInputFormik'
 import Camera from './Camera'
 import BookingItem from './BookingItem'
 import ServiceItem from './ServiceItem'
-
+import Label from './Label'
+import Layout from './Layout'
 export {
     Header,
     UberItem,
@@ -39,5 +40,7 @@ export {
     TextInputFormikUI,
     Camera,
     BookingItem,
-    ServiceItem
+    ServiceItem,
+    Label,
+    Layout
 }
