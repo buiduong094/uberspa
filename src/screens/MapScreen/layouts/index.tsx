@@ -57,10 +57,10 @@ const Layout = (props: UIProps) => {
         return false;
       } else {
         clientPermision.GeoLocation().then(geoPermission => {
+          CurrentLocation();
         });
       }
     })
-    CurrentLocation();
   }, [])
  
   useEffect(() => {
@@ -148,6 +148,16 @@ const Layout = (props: UIProps) => {
     return (
       <Content>
         <DialogHeader>
+          {
+          state.step == 2 ?
+            <TouchableOpacity onPress={() => {
+              let step = state.step
+              ActionCreators.ChangeStep(dispatch, step -1 )
+            }}>
+              <Icon.Back color='black' size={22} />
+            </TouchableOpacity>
+          : <View style={{width:19}}></View>
+          }
           <Title text="Địa điểm" titleStyle={{ marginBottom: 10 }}></Title>
           <TouchableOpacity onPress={() => {
             ActionCreators.FieldChange(dispatch, 'display', false)
@@ -317,7 +327,9 @@ const Layout = (props: UIProps) => {
       <BackButton onPress={goBack}>
         <Icon.Back size={27}></Icon.Back>
       </BackButton>
-      
+      <SearchContainer>
+        <SearchInput style={{width:Dimensions.get('screen').width*0.75}}/>
+      </SearchContainer>
       <View style={{ zIndex: 10,backgroundColor:"transparent",position:'absolute',bottom:'10%', left:'5%' }}>
         <TouchableOpacity
         style={{borderRadius:30, backgroundColor:'white'}}
@@ -459,7 +471,8 @@ fontSize:18;
 fontFamily: ${fontFamily.medium}
 `;
 
-const SuggestContainer = styled.View`
-zIndex: 20;
-backgroundColor:#FFF
+const SearchContainer = styled.View`
+position:absolute
+paddingLeft:50;
+paddingTop:35;
 `
