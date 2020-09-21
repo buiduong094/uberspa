@@ -107,11 +107,11 @@ export const ActionCreators = {
                 type: MessageType.Loading,
                 display: true,
             }
-            dispatch({
-                type: ActionType.FIELD_CHANGE,
-                fieldName: 'message',
-                fieldValue: message
-            })
+            // dispatch({
+            //     type: ActionType.FIELD_CHANGE,
+            //     fieldName: 'message',
+            //     fieldValue: message
+            // })
             const state = getState().ServiceState;
            
             let booking = {
@@ -132,12 +132,19 @@ export const ActionCreators = {
                 if (response.data.status == '200') {
                     message.type = MessageType.Success;
                 }
+                // dispatch({
+                //     type: ActionType.COMITED_FORM,
+                //     message: message,
+
+
+                // })
                 dispatch({
-                    type: ActionType.COMITED_FORM,
-                    message: message,
-
-
+                    type: ActionType.FIELD_CHANGE,
+                    fieldName: 'message',
+                    fieldValue: message
                 })
+
+                
             }
         })();
 
