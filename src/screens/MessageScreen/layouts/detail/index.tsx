@@ -19,6 +19,8 @@ import { CameraItem } from 'components/Camera/PhotoSelect';
 import ImageScroll from 'components/ImageScroll';
 import { FormMode } from 'models/form';
 import VideoList from 'components/VideoList';
+// @ts-ignore
+import JitsiMeet, { JitsiMeetView } from 'react-native-jitsi-meet';
 
 interface UIProps {
     user?: User,
@@ -181,6 +183,61 @@ const Layout = (props: UIProps) => {
         }
     };
 
+
+    const [call,setCall] = useState(false)
+    useEffect(() => {
+        if(call){
+            setTimeout(() => {
+                const url = 'https://meet.jit.si/exemple';
+                const userInfo = {
+                  displayName: 'User',
+                  email: 'user@example.com',
+                  avatar: 'https:/gravatar.com/avatar/abc123',
+                };
+                JitsiMeet.call(url, userInfo);
+            }, 1000);
+        }
+      }, [call])
+
+
+
+    // useEffect(() => {
+    //     return () => {
+    //     JitsiMeet.endCall();
+    //     };
+    // });
+
+    const onConferenceTerminated = (nativeEvent) => {
+        /* Conference terminated event */
+        // console.log(nativeEvent)
+        // if(nativeEvent)
+        JitsiMeet.endCall();
+        setCall(false)
+    }
+
+    const onConferenceJoined = (nativeEvent) => {
+        /* Conference joined event */
+        // console.log(nativeEvent)
+    }
+
+    const onConferenceWillJoin = (nativeEvent) => {
+        /* Conference will join event */
+        // console.log(nativeEvent)
+    }
+
+    const Jitsimeet = () =>{
+        return <JitsiMeetView
+        onConferenceTerminated={(e) => onConferenceTerminated(e)}
+        onConferenceJoined={(e) => onConferenceJoined(e)}
+        onConferenceWillJoin={(e) => onConferenceWillJoin(e)}
+        style={{
+            flex: 1,
+            height: '100%',
+            width: '100%',
+        }}/>
+    }
+    if(call) return Jitsimeet();
+
     return (
         <KeyboardAvoidingView
             style={{ flex: 1, justifyContent: 'flex-end' }}
@@ -194,7 +251,9 @@ const Layout = (props: UIProps) => {
                     navigation={navigation}
                     children={
                         <ActionWrapper>
-                            <ActionStyled onPress={() => { }}>
+                            <ActionStyled onPress={() => {
+                                setCall(true)
+                             }}>
                                 <Icon.Recorder size={24} color="#65DF7B" />
                             </ActionStyled>
                             {/* <ActionStyled onPress={() => { }}>
