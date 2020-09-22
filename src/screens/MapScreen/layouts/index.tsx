@@ -32,7 +32,8 @@ interface State {
   listShop?: any[],
   services?: any[],
   shopServices?: any[],
-  shopChoice?: any
+  shopChoice?: any,
+  selectedService: any,
 }
 type UIProps = State & typeof ServiceAction;
 
@@ -157,14 +158,14 @@ const Layout = (props: UIProps) => {
     });
 
   }
-
+  
   const width = Dimensions.get('screen').width;
   const height = Dimensions.get('window').height;
   const Filter = () => {
     const service =(item)=>{
       props.ServiceByShop(item)
     } 
-
+    
     return (
       <Content>
         <DialogHeader>
@@ -194,21 +195,17 @@ const Layout = (props: UIProps) => {
                   props.services &&
                   <ServiceWrapper horizontal>
                     {
-                      props.services && props.services.map((service: any, index: number) => (
-                        <View style={{marginLeft:20}}>
+                      props.selectedService &&
+                      <View style={{marginLeft:20}}>
                           <ImageButton
-
-                          source={{uri: service.icon}}
-                          height={60}
-                          width={60}
-
-                          title={service.name}
-                          type={ImageButtonType.TOUCHOPACITY}
-                          imageStyle={{ backgroundColor: service?.selected ? '#65DF7B25' : '#F4F5F6', borderRadius:30, overflow: "hidden"}}
-                          ></ImageButton>
-                        </View>
-                        
-                      ))
+                            source={{uri: props.selectedService.icon}}
+                            height={60}
+                            width={60}
+                            title={props.selectedService.name}
+                            type={ImageButtonType.TOUCHOPACITY}
+                            imageStyle={{ backgroundColor: props.selectedService?.selected ? '#65DF7B25' : '#F4F5F6', borderRadius:30, overflow: "hidden"}}
+                          />
+                      </View>
                     }
                   </ServiceWrapper>
                 }
@@ -349,15 +346,15 @@ const Layout = (props: UIProps) => {
 
         </TouchableOpacity>
       </View>
-      <LocationContainer >
-          <TouchableOpacity style={{borderRadius:30, backgroundColor:'white'}}
+      <ButtonLocation >
+          <TouchableOpacity style={{borderRadius:10, backgroundColor:'white'}}
           onPress={()=>{
             CurrentLocation()
             flyTo(state.currentPossition??[])
           }}>
-            <Icon.MapMaker size={40} color='#65DF7F' />
+            <Icon.Mapcrosshairs size={30} color='#65DF7F' />
           </TouchableOpacity>
-      </LocationContainer>
+      </ButtonLocation>
       <BackButton onPress={goBack}>
         <Icon.Back size={27}></Icon.Back>
       </BackButton>
@@ -368,15 +365,15 @@ const Layout = (props: UIProps) => {
         onTextChange={setSearch}
         />
       </SearchContainer>
-      <View style={{ zIndex: 10,backgroundColor:"transparent",position:'absolute',bottom:'10%', left:'5%' }}>
+      <ButtonDashBoard>
         <TouchableOpacity
-        style={{borderRadius:30, backgroundColor:'white'}}
+        style={{borderRadius:10, backgroundColor:'white'}}
         onPress={()=>{
           ActionCreators.FieldChange(dispatch,'display', true)
         }}>
-        <Icon.ArrowUp size={40} color={'#65DF7F'}/>
+        <Icon.DashBroad size={30} color={'#65DF7F'}/>
         </TouchableOpacity>
-      </View>
+      </ButtonDashBoard>
 
       {
         (state.step == 1 || state.step == 2) &&
@@ -404,7 +401,8 @@ const mapStateToProps = (state: ApplicationState) => ({
   shopServices: state.ServiceState.shopServices,
   services: state.ServiceState.activeServices,
   shopChoice: state.ServiceState.shop,
-  message: state.ServiceState.message
+  message: state.ServiceState.message,
+  selectedService: state.ServiceState.selectedService
 })
 
 const mapDispatchToProps = {
@@ -514,10 +512,17 @@ position:absolute
 paddingLeft:50;
 paddingTop:35;
 `
-const LocationContainer = styled.View`
+const ButtonLocation = styled.View`
 zIndex: 10;
 backgroundColor:transparent;
 position:absolute;
 bottom:10%;
 right:5%;
+`
+const ButtonDashBoard = styled.View`
+zIndex: 10;
+backgroundColor:transparent;
+position:absolute;
+bottom:10%;
+left:5%;
 `
