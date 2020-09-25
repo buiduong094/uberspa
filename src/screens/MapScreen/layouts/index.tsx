@@ -25,13 +25,15 @@ import { ActionCreators as ServiceAction } from 'store/service';
 import ShopItem from 'components/ShopItem';
 import ReadOnlyText from 'components/ReadOnlyText';
 import { MessageType, DialogMessage } from 'models/message';
+import { useFormik } from 'formik';
 
 interface State {
   message?: DialogMessage,
   listShop?: any[],
   services?: any[],
   shopServices?: any[],
-  shopChoice?: any
+  shopChoice?: any,
+  selectedService: any,
 }
 type UIProps = State & typeof ServiceAction;
 
@@ -40,14 +42,30 @@ let watchID;
 
 const Layout = (props: UIProps) => {
   const [state, dispatch] = React.useReducer(reducer, InitState);
-  const [text, setText] = React.useState('')
+  const [search, setSearch] = React.useState('')
   const navigation = useNavigation();
   let camera;
+
+  const formik = useFormik({
+    enableReinitialize: true,
+    validationSchema: state.validationSchema,
+    initialValues: { ...state.item },
+    onSubmit: (values) => {
+      console.log(values)
+      onBooking(values)
+    }
+  });
+
+  const errorMessage = (fieldName: string) => {
+    if (formik.touched[fieldName] && formik.errors[fieldName]) {
+        return formik.errors[fieldName]?.toString()
+    }
+    return undefined;
+  }
 
 
   useEffect(() => {
     props.ShopByService();
-
     // ActionCreators.Loading(dispatch, state.bodySearch);
     if (Platform.OS == 'android')
       MapboxGL.setTelemetryEnabled(true);
@@ -64,10 +82,17 @@ const Layout = (props: UIProps) => {
   }, [])
  
   useEffect(() => {
+    console.log(props.message)
     if (props.message && props.message.display) {
         if (props.message.type != MessageType.Loading) {
             if (props.message.type == MessageType.Success) {
-                alertDefaultTitle.show(props.message?.message ? props.message.message : 'Đặt chỗ thành công vui lòng kiếm trả trong Lịch đặt', 'OK');
+                alertDefaultTitle.show(props.message?.message ? props.message.message : 'Đặt chỗ thành công vui lòng kiếm tra trong Lịch đặt', 'OK' ,()=>{
+                  let message: DialogMessage = {
+                    ...props.message,
+                    display: false,
+                  }
+                  props.FieldChange('message',message);
+                });
             }
             else {
                 alertDefaultTitle.show(props.message?.message ? props.message.message : 'Đặt chỗ thất bại, vui lòng liên hệ quản trị', 'OK');
@@ -119,32 +144,28 @@ const Layout = (props: UIProps) => {
     navigation.goBack();
   }
 
-  const selectService = () => {
+  const selectService = (item) => {
+    props.FieldChange('bookService', item);
     let step = state.step;
     ActionCreators.ChangeStep(dispatch, step + 1);
   }
 
-  const onBooking = () => {
+  const onBooking = (values) => {
     alertDefaultTitle.show(MessageDefine.CREATE_BOOKING, 'Đóng', () => { }, 'Đồng ý', () => {
-      let step = state.step;
-      props.MapBooking(state.date, state.time ?? '', state.coupon, state.description)
-     
+      props.MapBooking(values.date.split('/').reverse().join('-'), values.time, state.coupon, state.description)
+      console.log(values.date.split('/').reverse().join('-'), values.time, state.coupon, state.description);
+      
     });
 
   }
-
-  const changeText = (t)=>{
-    if(text.length === 1 && text !==':')
-      setText(t+':')
-    else setText(t)
-  }
+  
   const width = Dimensions.get('screen').width;
   const height = Dimensions.get('window').height;
   const Filter = () => {
     const service =(item)=>{
       props.ServiceByShop(item)
     } 
-
+    
     return (
       <Content>
         <DialogHeader>
@@ -174,21 +195,17 @@ const Layout = (props: UIProps) => {
                   props.services &&
                   <ServiceWrapper horizontal>
                     {
-                      props.services && props.services.map((service: any, index: number) => (
-                        <View style={{marginLeft:20}}>
+                      props.selectedService &&
+                      <View style={{marginLeft:20}}>
                           <ImageButton
-
-                          source={{uri: service.icon}}
-                          height={60}
-                          width={60}
-
-                          title={service.name}
-                          type={ImageButtonType.TOUCHOPACITY}
-                          imageStyle={{ backgroundColor: service?.selected ? '#65DF7B25' : '#F4F5F6', borderRadius:30, overflow: "hidden"}}
-                          ></ImageButton>
-                        </View>
-                        
-                      ))
+                            source={{uri: props.selectedService.icon}}
+                            height={60}
+                            width={60}
+                            title={props.selectedService.name}
+                            type={ImageButtonType.TOUCHOPACITY}
+                            imageStyle={{ backgroundColor: props.selectedService?.selected ? '#65DF7B25' : '#F4F5F6', borderRadius:30, overflow: "hidden"}}
+                          />
+                      </View>
                     }
                   </ServiceWrapper>
                 }
@@ -222,12 +239,19 @@ const Layout = (props: UIProps) => {
                 uistyle={{ width: (width - 70) / 2, }}
                 contentstyle={{ backgroundColor: '#F4F5F6' }}
                 placeholder="DD/MM/YYYY"
+                textValue={formik.values['date']}
+                onChangeText={(text)=>{
+                  formik.setFieldValue('date',text)
+                }}
+                errorMessage={errorMessage('date')}
                 leftIcon={<Icon.Calendar color="#C2C2C2" size={18} />}
               />
               <TextInputUI
-                keyboardType={'numeric'}
-                textValue={text}
-                onChangeText={changeText}
+                textValue={formik.values['time']}
+                onChangeText={(text)=>{
+                  formik.setFieldValue('time',text)
+                }}
+                errorMessage={errorMessage('time')}
                 uistyle={{ width: (width - 70) / 2 }}
                 contentstyle={{ backgroundColor: '#F4F5F6' }}
                 placeholder="HH:MM"
@@ -239,7 +263,11 @@ const Layout = (props: UIProps) => {
             <Title text="Ghi chú" titleStyle={{ marginVertical: 10 }}></Title>
             <TextInputUI
               placeholder="Nội dung ghi chú"
-
+              textValue={state.description}
+              type='text'
+              onChangeText={(text)=>{
+                ActionCreators.FieldChange(dispatch,'description',text)
+              }}
             />
 
             <Title text="Mã giảm giá" titleStyle={{ marginVertical: 10 }}></Title>
@@ -265,7 +293,10 @@ const Layout = (props: UIProps) => {
               uistyle={{ marginTop: 10 }}
               textstyle={{ fontSize: 18 }}
               text='ĐẶT NGAY'
-              onPress={onBooking}></LoginButton>
+              onPress={()=>{
+                formik.handleSubmit()
+              }}
+              />
               </ContentStep>
           </ScrollWrapper>
         }
@@ -311,34 +342,38 @@ const Layout = (props: UIProps) => {
         <TouchableOpacity onPress={async ()=>{
           
         }}>
-        <Icon.MapMaker size={38} color="red" />
+        <Icon.MapPin size={38} color='#FF4F4F' />
 
         </TouchableOpacity>
       </View>
-      <View style={{ zIndex: 10,backgroundColor:"transparent",position:'absolute',bottom:'10%', right:'5%' }}>
-          <TouchableOpacity style={{borderRadius:30, backgroundColor:'white'}}
+      <ButtonLocation >
+          <TouchableOpacity style={{borderRadius:10, backgroundColor:'white'}}
           onPress={()=>{
             CurrentLocation()
             flyTo(state.currentPossition??[])
           }}>
-            <Icon.MapMaker size={30} color='#FF0077' />
+            <Icon.Mapcrosshairs size={30} color='#65DF7F' />
           </TouchableOpacity>
-        </View>
+      </ButtonLocation>
       <BackButton onPress={goBack}>
         <Icon.Back size={27}></Icon.Back>
       </BackButton>
       <SearchContainer>
-        <SearchInput style={{width:Dimensions.get('screen').width*0.75}}/>
+        <SearchInput 
+        style={{width:Dimensions.get('screen').width*0.75}}
+        value={search}
+        onTextChange={setSearch}
+        />
       </SearchContainer>
-      <View style={{ zIndex: 10,backgroundColor:"transparent",position:'absolute',bottom:'10%', left:'5%' }}>
+      <ButtonDashBoard>
         <TouchableOpacity
-        style={{borderRadius:30, backgroundColor:'white'}}
+        style={{borderRadius:10, backgroundColor:'white'}}
         onPress={()=>{
           ActionCreators.FieldChange(dispatch,'display', true)
         }}>
-        <Icon.ArrowUp size={30} color={'red'}/>
+        <Icon.DashBroad size={30} color={'#65DF7F'}/>
         </TouchableOpacity>
-      </View>
+      </ButtonDashBoard>
 
       {
         (state.step == 1 || state.step == 2) &&
@@ -366,7 +401,8 @@ const mapStateToProps = (state: ApplicationState) => ({
   shopServices: state.ServiceState.shopServices,
   services: state.ServiceState.activeServices,
   shopChoice: state.ServiceState.shop,
-  message: state.ServiceState.message
+  message: state.ServiceState.message,
+  selectedService: state.ServiceState.selectedService
 })
 
 const mapDispatchToProps = {
@@ -474,4 +510,18 @@ const SearchContainer = styled.View`
 position:absolute
 paddingLeft:50;
 paddingTop:35;
+`
+const ButtonLocation = styled.View`
+zIndex: 10;
+backgroundColor:transparent;
+position:absolute;
+bottom:10%;
+right:5%;
+`
+const ButtonDashBoard = styled.View`
+zIndex: 10;
+backgroundColor:transparent;
+position:absolute;
+bottom:10%;
+left:5%;
 `

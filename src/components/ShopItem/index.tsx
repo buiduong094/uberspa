@@ -98,7 +98,7 @@ const ShopItem = (props: UIProps) => {
                                     marginLeft: index == 0 ? 0 : 5,
                                     marginRight: index == childs.length ? 5 : 0
                                 }}
-                                onPress={() => { if (onChildPress) onChildPress(); }}
+                                onPress={() => { if (onChildPress) onChildPress(child);}}
                             ></Tag>))
                     }
                 </ChildContainer>

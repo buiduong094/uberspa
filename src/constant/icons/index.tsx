@@ -302,3 +302,18 @@ export const Recorder = (props: UIProps) => {
     return (<TextStyled style={{ color: color ? color : '#31383F', fontSize: size ? size : 14 }} >&#xf03d;</TextStyled>)
 
 }
+export const MapPin = (props: UIProps) => {
+    const { color, size } = props;
+    return (<TextStyled style={{ color: color ? color : '#31383F', fontSize: size ? size : 14 }} >&#xf276;</TextStyled>)
+
+}
+export const Mapcrosshairs = (props: UIProps) => {
+    const { color, size } = props;
+    return (<TextStyled style={{ color: color ? color : '#31383F', fontSize: size ? size : 14 }} >&#xf05b;</TextStyled>)
+
+}
+export const DashBroad = (props: UIProps) => {
+    const { color, size } = props;
+    return (<TextStyled style={{ color: color ? color : '#31383F', fontSize: size ? size : 14 }} >&#xf550;</TextStyled>)
+
+}
