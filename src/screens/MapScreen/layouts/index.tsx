@@ -26,7 +26,6 @@ import ShopItem from 'components/ShopItem';
 import ReadOnlyText from 'components/ReadOnlyText';
 import { MessageType, DialogMessage } from 'models/message';
 import { useFormik } from 'formik';
-import BottomSheet from 'reanimated-bottom-sheet';
 
 interface State {
   message?: DialogMessage,
@@ -304,7 +303,6 @@ const Layout = (props: UIProps) => {
       </Content>)
 
   }
-  const sheetRef = React.useRef(null);
   return (
     <Container>
       <MapboxGL.MapView logoEnabled={false} attributionEnabled={false}
@@ -376,29 +374,16 @@ const Layout = (props: UIProps) => {
           <Icon.DashBroad size={30} color={'#65DF7F'} />
         </TouchableOpacity>
       </ButtonDashBoard>
-      <TouchableOpacity
-        style={{ borderRadius: 10, backgroundColor: 'white' }}
-        onPress={() => {
-          sheetRef?.current.snapTo(0)
-        }}>
-        <Icon.DashBroad size={30} color={'#65DF7F'} />
-      </TouchableOpacity>
+
       {
         (state.step == 1 || state.step == 2) &&
+        <ModalUI display={state.display ?? true} height='60%'>
 
-        <BottomSheet
-          ref={sheetRef}
-          snapPoints={[450, 300, 0]}
-          borderRadius={10}
-          renderContent={Filter}
-        />
-        // <ModalUI display={state.display ?? true} height='60%'>
+          {
+            Filter()
+          }
 
-        //   {
-        //     Filter()
-        //   }
-
-        // </ModalUI>
+        </ModalUI>
 
       }
       {/* {!state.display && <TouchableOpacity style={{}} onPress={() => {
