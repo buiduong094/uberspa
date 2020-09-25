@@ -26,6 +26,7 @@ import ShopItem from 'components/ShopItem';
 import ReadOnlyText from 'components/ReadOnlyText';
 import { MessageType, DialogMessage } from 'models/message';
 import { useFormik } from 'formik';
+import BottomSheet from 'reanimated-bottom-sheet';
 
 interface State {
   message?: DialogMessage,
@@ -58,7 +59,7 @@ const Layout = (props: UIProps) => {
 
   const errorMessage = (fieldName: string) => {
     if (formik.touched[fieldName] && formik.errors[fieldName]) {
-        return formik.errors[fieldName]?.toString()
+      return formik.errors[fieldName]?.toString()
     }
     return undefined;
   }
@@ -80,32 +81,32 @@ const Layout = (props: UIProps) => {
       }
     })
   }, [])
- 
+
   useEffect(() => {
     console.log(props.message)
     if (props.message && props.message.display) {
-        if (props.message.type != MessageType.Loading) {
-            if (props.message.type == MessageType.Success) {
-                alertDefaultTitle.show(props.message?.message ? props.message.message : 'Đặt chỗ thành công vui lòng kiếm tra trong Lịch đặt', 'OK' ,()=>{
-                  let message: DialogMessage = {
-                    ...props.message,
-                    display: false,
-                  }
-                  props.FieldChange('message',message);
-                });
+      if (props.message.type != MessageType.Loading) {
+        if (props.message.type == MessageType.Success) {
+          alertDefaultTitle.show(props.message?.message ? props.message.message : 'Đặt chỗ thành công vui lòng kiếm tra trong Lịch đặt', 'OK', () => {
+            let message: DialogMessage = {
+              ...props.message,
+              display: false,
             }
-            else {
-                alertDefaultTitle.show(props.message?.message ? props.message.message : 'Đặt chỗ thất bại, vui lòng liên hệ quản trị', 'OK');
-            }
+            props.FieldChange('message', message);
+          });
         }
+        else {
+          alertDefaultTitle.show(props.message?.message ? props.message.message : 'Đặt chỗ thất bại, vui lòng liên hệ quản trị', 'OK');
+        }
+      }
     }
-}, [props.message])
+  }, [props.message])
 
   const CurrentLocation = async () => {
     Geolocation.getCurrentPosition(
       (position) => {
         console.log([position.coords.longitude, position.coords.latitude])
-        ActionCreators.ChangeLocation(dispatch,[position.coords.longitude, position.coords.latitude])
+        ActionCreators.ChangeLocation(dispatch, [position.coords.longitude, position.coords.latitude])
         // const geoJson: GeoLocation = {
         //   type: 'Point',
         //   coordinates: [position.coords.longitude, position.coords.latitude]
@@ -119,23 +120,23 @@ const Layout = (props: UIProps) => {
       { enableHighAccuracy: true, timeout: 15000 }// fix error timeout
     );
   }
-  
+
   // const AnnotationContent = () => (
-    // state.coordinates?.map((geo, index) => (
+  // state.coordinates?.map((geo, index) => (
 
-    //   <MapboxGL.MarkerView coordinate={geo.Geo} key={index}>
-    //     <MarkerStyled onPress={() => {
+  //   <MapboxGL.MarkerView coordinate={geo.Geo} key={index}>
+  //     <MarkerStyled onPress={() => {
 
-    //       ActionCreators.FieldChange(dispatch, 'display', true);
-    //     }}>
-    //       <MarkerIcon ></MarkerIcon>
-    //     </MarkerStyled>
+  //       ActionCreators.FieldChange(dispatch, 'display', true);
+  //     }}>
+  //       <MarkerIcon ></MarkerIcon>
+  //     </MarkerStyled>
 
-    //   </MapboxGL.MarkerView>
-    // ))
+  //   </MapboxGL.MarkerView>
+  // ))
 
   // );
-  const flyTo = (location: number[])=>{
+  const flyTo = (location: number[]) => {
     camera?.zoomTo(state.zoom)
     camera?.flyTo(location)
   }
@@ -154,30 +155,30 @@ const Layout = (props: UIProps) => {
     alertDefaultTitle.show(MessageDefine.CREATE_BOOKING, 'Đóng', () => { }, 'Đồng ý', () => {
       props.MapBooking(values.date.split('/').reverse().join('-'), values.time, state.coupon, state.description)
       console.log(values.date.split('/').reverse().join('-'), values.time, state.coupon, state.description);
-      
+
     });
 
   }
-  
+
   const width = Dimensions.get('screen').width;
   const height = Dimensions.get('window').height;
   const Filter = () => {
-    const service =(item)=>{
+    const service = (item) => {
       props.ServiceByShop(item)
-    } 
-    
+    }
+
     return (
       <Content>
         <DialogHeader>
           {
-          state.step == 2 ?
-            <TouchableOpacity onPress={() => {
-              let step = state.step
-              ActionCreators.ChangeStep(dispatch, step -1 )
-            }}>
-              <Icon.Back color='black' size={22} />
-            </TouchableOpacity>
-          : <View style={{width:19}}></View>
+            state.step == 2 ?
+              <TouchableOpacity onPress={() => {
+                let step = state.step
+                ActionCreators.ChangeStep(dispatch, step - 1)
+              }}>
+                <Icon.Back color='black' size={22} />
+              </TouchableOpacity>
+              : <View style={{ width: 19 }}></View>
           }
           <Title text="Địa điểm" titleStyle={{ marginBottom: 10 }}></Title>
           <TouchableOpacity onPress={() => {
@@ -191,41 +192,41 @@ const Layout = (props: UIProps) => {
           <ScrollWrapper >
             <ContentStep>
               <Title text="Dịch vụ" titleStyle={{ marginVertical: 10 }}></Title>
-                {
-                  props.services &&
-                  <ServiceWrapper horizontal>
-                    {
-                      props.selectedService &&
-                      <View style={{marginLeft:20}}>
-                          <ImageButton
-                            source={{uri: props.selectedService.icon}}
-                            height={60}
-                            width={60}
-                            title={props.selectedService.name}
-                            type={ImageButtonType.TOUCHOPACITY}
-                            imageStyle={{ backgroundColor: props.selectedService?.selected ? '#65DF7B25' : '#F4F5F6', borderRadius:30, overflow: "hidden"}}
-                          />
-                      </View>
-                    }
-                  </ServiceWrapper>
-                }
-                {
-                  props.listShop && props.listShop.length > 0 && props.listShop?.map((item, index) =>
+              {
+                props.services &&
+                <ServiceWrapper horizontal>
+                  {
+                    props.selectedService &&
+                    <View style={{ marginLeft: 20 }}>
+                      <ImageButton
+                        source={{ uri: props.selectedService.icon }}
+                        height={60}
+                        width={60}
+                        title={props.selectedService.name}
+                        type={ImageButtonType.TOUCHOPACITY}
+                        imageStyle={{ backgroundColor: props.selectedService?.selected ? '#65DF7B25' : '#F4F5F6', borderRadius: 30, overflow: "hidden" }}
+                      />
+                    </View>
+                  }
+                </ServiceWrapper>
+              }
+              {
+                props.listShop && props.listShop.length > 0 && props.listShop?.map((item, index) =>
 
-                    <ShopItem
-                      key={index.toString()}
-                      item={item}
-                      isExpand={state.isExand}
-                      childs={state.isExand?(item.id == props.shopChoice?.id ? props.shopServices : []):[]}
-                      onRightPress={() => {
-                        if(!state.isExand)
-                          service(item)
-                        ActionCreators.FieldChange(dispatch,'expand',!state.isExand)
-                      } }
-                      onChildPress={selectService} />
+                  <ShopItem
+                    key={index.toString()}
+                    item={item}
+                    isExpand={state.isExand}
+                    childs={state.isExand ? (item.id == props.shopChoice?.id ? props.shopServices : []) : []}
+                    onRightPress={() => {
+                      if (!state.isExand)
+                        service(item)
+                      ActionCreators.FieldChange(dispatch, 'expand', !state.isExand)
+                    }}
+                    onChildPress={selectService} />
 
-                  )
-                }
+                )
+              }
             </ContentStep>
           </ScrollWrapper>
         }
@@ -233,158 +234,172 @@ const Layout = (props: UIProps) => {
           state.step == 2 &&
           <ScrollWrapper>
             <ContentStep>
-            <Title text="Thời gian" titleStyle={{ marginBottom: 10 }}></Title>
-            <TimeWrapper>
+              <Title text="Thời gian" titleStyle={{ marginBottom: 10 }}></Title>
+              <TimeWrapper>
+                <TextInputUI
+                  uistyle={{ width: (width - 70) / 2, }}
+                  contentstyle={{ backgroundColor: '#F4F5F6' }}
+                  placeholder="DD/MM/YYYY"
+                  textValue={formik.values['date']}
+                  onChangeText={(text) => {
+                    formik.setFieldValue('date', text)
+                  }}
+                  errorMessage={errorMessage('date')}
+                  leftIcon={<Icon.Calendar color="#C2C2C2" size={18} />}
+                />
+                <TextInputUI
+                  textValue={formik.values['time']}
+                  onChangeText={(text) => {
+                    formik.setFieldValue('time', text)
+                  }}
+                  errorMessage={errorMessage('time')}
+                  uistyle={{ width: (width - 70) / 2 }}
+                  contentstyle={{ backgroundColor: '#F4F5F6' }}
+                  placeholder="HH:MM"
+                  leftIcon={<Icon.Clock color="#C2C2C2" size={18} />}
+                />
+              </TimeWrapper>
+              <ReadOnlyText containerStyle={{ borderRadius: 24, height: 48 }} uistyle={{ marginTop: 15, }} text='Thanh toán tại cơ sở' title='Phương thức thanh toán' ></ReadOnlyText>
+
+              <Title text="Ghi chú" titleStyle={{ marginVertical: 10 }}></Title>
               <TextInputUI
-                uistyle={{ width: (width - 70) / 2, }}
-                contentstyle={{ backgroundColor: '#F4F5F6' }}
-                placeholder="DD/MM/YYYY"
-                textValue={formik.values['date']}
-                onChangeText={(text)=>{
-                  formik.setFieldValue('date',text)
+                placeholder="Nội dung ghi chú"
+                textValue={state.description}
+                type='text'
+                onChangeText={(text) => {
+                  ActionCreators.FieldChange(dispatch, 'description', text)
                 }}
-                errorMessage={errorMessage('date')}
-                leftIcon={<Icon.Calendar color="#C2C2C2" size={18} />}
               />
+
+              <Title text="Mã giảm giá" titleStyle={{ marginVertical: 10 }}></Title>
               <TextInputUI
-                textValue={formik.values['time']}
-                onChangeText={(text)=>{
-                  formik.setFieldValue('time',text)
+                placeholder="Mã giảm giá"
+                uistyle={{ flex: 1 }}
+                textValue={state.coupon}
+                leftIcon={<Voucher
+                  source={ImageSource.voucher}
+                  style={{
+                    height: 10,
+                    width: 13,
+                  }}
+                  resizeMode="cover" />}
+
+                type="text"
+                keyboardType="default"
+                onChangeText={(coupon) => {
+                  ActionCreators.FieldChange(dispatch, 'coupon', coupon)
                 }}
-                errorMessage={errorMessage('time')}
-                uistyle={{ width: (width - 70) / 2 }}
-                contentstyle={{ backgroundColor: '#F4F5F6' }}
-                placeholder="HH:MM"
-                leftIcon={<Icon.Clock color="#C2C2C2" size={18} />}
               />
-            </TimeWrapper>
-            <ReadOnlyText containerStyle={{ borderRadius: 24, height: 48 }} uistyle={{ marginTop: 15, }} text='Thanh toán tại cơ sở' title='Phương thức thanh toán' ></ReadOnlyText>
-
-            <Title text="Ghi chú" titleStyle={{ marginVertical: 10 }}></Title>
-            <TextInputUI
-              placeholder="Nội dung ghi chú"
-              textValue={state.description}
-              type='text'
-              onChangeText={(text)=>{
-                ActionCreators.FieldChange(dispatch,'description',text)
-              }}
-            />
-
-            <Title text="Mã giảm giá" titleStyle={{ marginVertical: 10 }}></Title>
-            <TextInputUI
-              placeholder="Mã giảm giá"
-              uistyle={{ flex: 1 }}
-              textValue={state.coupon}
-              leftIcon={<Voucher
-                source={ImageSource.voucher}
-                style={{
-                  height: 10,
-                  width: 13,
+              <LoginButton
+                uistyle={{ marginTop: 10 }}
+                textstyle={{ fontSize: 18 }}
+                text='ĐẶT NGAY'
+                onPress={() => {
+                  formik.handleSubmit()
                 }}
-                resizeMode="cover" />}
-
-              type="text"
-              keyboardType="default"
-              onChangeText={(coupon) => {
-                ActionCreators.FieldChange(dispatch, 'coupon', coupon)
-              }}
-            />
-            <LoginButton
-              uistyle={{ marginTop: 10 }}
-              textstyle={{ fontSize: 18 }}
-              text='ĐẶT NGAY'
-              onPress={()=>{
-                formik.handleSubmit()
-              }}
               />
-              </ContentStep>
+            </ContentStep>
           </ScrollWrapper>
         }
       </Content>)
 
   }
+  const sheetRef = React.useRef(null);
   return (
     <Container>
       <MapboxGL.MapView logoEnabled={false} attributionEnabled={false}
-      
-        onPress={(feature)=>flyTo(feature.geometry.coordinates)}
+
+        onPress={(feature) => flyTo(feature.geometry.coordinates)}
         style={{ flex: 1 }}
         zoomEnabled={true}
       >
         <MapboxGL.Camera
-        ref={(ref)=>{
-          camera = ref
-        }}
+          ref={(ref) => {
+            camera = ref
+          }}
           zoomLevel={state.zoom}
           centerCoordinate={state.currentPossition}
         />
 
-         {props.listShop?.map((item, index) => (
-            <MapboxGL.PointAnnotation
-            id={index.toString()} coordinate={[Number(item.longitude),Number(item.latitude)]} 
+        {props.listShop?.map((item, index) => (
+          <MapboxGL.PointAnnotation
+            id={index.toString()} coordinate={[Number(item.longitude), Number(item.latitude)]}
+          >
+
+            <MapboxGL.Callout title={item.name + '\n' + item.address}
             >
-              
-              <MapboxGL.Callout title={item.name+'\n'+item.address}
-              >
-              </MapboxGL.Callout>
-            </MapboxGL.PointAnnotation>
-          ))
-          } 
+            </MapboxGL.Callout>
+          </MapboxGL.PointAnnotation>
+        ))
+        }
 
         <MapboxGL.UserLocation />
-        
+
       </MapboxGL.MapView>
       <View style={{
         position: 'absolute',
         alignSelf: 'center',
         top: '45%'
       }}>
-        <TouchableOpacity onPress={async ()=>{
-          
+        <TouchableOpacity onPress={async () => {
+
         }}>
-        <Icon.MapPin size={38} color='#FF4F4F' />
+          <Icon.MapPin size={38} color='#FF4F4F' />
 
         </TouchableOpacity>
       </View>
       <ButtonLocation >
-          <TouchableOpacity style={{borderRadius:10, backgroundColor:'white'}}
-          onPress={()=>{
+        <TouchableOpacity style={{ borderRadius: 10, backgroundColor: 'white' }}
+          onPress={() => {
             CurrentLocation()
-            flyTo(state.currentPossition??[])
+            flyTo(state.currentPossition ?? [])
           }}>
-            <Icon.Mapcrosshairs size={30} color='#65DF7F' />
-          </TouchableOpacity>
+          <Icon.Mapcrosshairs size={30} color='#65DF7F' />
+        </TouchableOpacity>
       </ButtonLocation>
       <BackButton onPress={goBack}>
         <Icon.Back size={27}></Icon.Back>
       </BackButton>
       <SearchContainer>
-        <SearchInput 
-        style={{width:Dimensions.get('screen').width*0.75}}
-        value={search}
-        onTextChange={setSearch}
+        <SearchInput
+          style={{ width: Dimensions.get('screen').width * 0.75 }}
+          value={search}
+          onTextChange={setSearch}
         />
       </SearchContainer>
       <ButtonDashBoard>
         <TouchableOpacity
-        style={{borderRadius:10, backgroundColor:'white'}}
-        onPress={()=>{
-          ActionCreators.FieldChange(dispatch,'display', true)
-        }}>
-        <Icon.DashBroad size={30} color={'#65DF7F'}/>
+          style={{ borderRadius: 10, backgroundColor: 'white' }}
+          onPress={() => {
+            ActionCreators.FieldChange(dispatch, 'display', true)
+          }}>
+          <Icon.DashBroad size={30} color={'#65DF7F'} />
         </TouchableOpacity>
       </ButtonDashBoard>
-
+      <TouchableOpacity
+        style={{ borderRadius: 10, backgroundColor: 'white' }}
+        onPress={() => {
+          sheetRef?.current.snapTo(0)
+        }}>
+        <Icon.DashBroad size={30} color={'#65DF7F'} />
+      </TouchableOpacity>
       {
         (state.step == 1 || state.step == 2) &&
-        <ModalUI display={state.display ?? true} height='60%'>
 
-          {
-            Filter()
-          }
+        <BottomSheet
+          ref={sheetRef}
+          snapPoints={[450, 300, 0]}
+          borderRadius={10}
+          renderContent={Filter}
+        />
+        // <ModalUI display={state.display ?? true} height='60%'>
 
-        </ModalUI>
-        
+        //   {
+        //     Filter()
+        //   }
+
+        // </ModalUI>
+
       }
       {/* {!state.display && <TouchableOpacity style={{}} onPress={() => {
             ActionCreators.FieldChange(dispatch, 'display', true)
@@ -392,7 +407,7 @@ const Layout = (props: UIProps) => {
             <Icon.Close color='black' size={22} />
           </TouchableOpacity>
       } */}
-      
+
     </Container>
   );
 }
