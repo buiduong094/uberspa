@@ -5,7 +5,7 @@ import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
 import com.agontuk.RNFusedLocation.RNFusedLocationPackage;
-import io.invertase.firebase.messaging.RNFirebaseMessagingPackage; // <-- Add this line
+import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
 import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
 import org.reactnative.camera.RNCameraPackage;
 import com.facebook.react.ReactInstanceManager;
