@@ -34,19 +34,19 @@ const Layout = (props: UIProps) => {
     useEffect(() => {
         ActionCreators.GET_CAROUSEL(dispatch);
         props.Services();
-        // DeviceInfo.isLocationEnabled().then((enabled: boolean) => {
-        //     if (!enabled) {
-        //         alertDefaultTitle.show(MessageDefine.REQUIRE_OPEN_GPS, "Đồng ý")
-        //         return false;
-        //     } else {
-        //         clientPermision.GeoLocation().then(geoPermission => {
-        //             if (geoPermission) {
-        //                 CurrentLocation();
-        //             }
-        //         });
-        //     }
-        // })
-        ActionCreators.REQUEST_NEAR_BY_SERVICES(dispatch, 0, 0);
+        DeviceInfo.isLocationEnabled().then((enabled: boolean) => {
+            if (!enabled) {
+                alertDefaultTitle.show(MessageDefine.REQUIRE_OPEN_GPS, "Đồng ý")
+                return false;
+            } else {
+                clientPermision.GeoLocation().then(geoPermission => {
+                    if (geoPermission) {
+                        CurrentLocation();
+                    }
+                });
+            }
+        })
+    
         if (Platform.OS == 'android') {
             clientPermision.Camera().then(permissionCamera => {
                 if (permissionCamera) {
