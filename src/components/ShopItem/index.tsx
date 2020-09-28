@@ -88,7 +88,7 @@ const ShopItem = (props: UIProps) => {
             </MainContainer>
             {
                 childs &&
-                <ChildContainer horizontal>
+                <ChildContainer showsHorizontalScrollIndicator={false} horizontal>
                     {
                         childs.map((child:any, index) => (
                             <Tag
