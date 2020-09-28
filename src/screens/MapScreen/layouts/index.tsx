@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, View, Platform, Dimensions, TouchableOpacity, Text } from "react-native";
+import { StyleSheet, View, Platform, Dimensions, TouchableOpacity } from "react-native";
 import MapboxGL from "@react-native-mapbox-gl/maps";
 import { useEffect } from 'react';
 import styled from 'styled-components/native';
@@ -26,6 +26,7 @@ import ShopItem from 'components/ShopItem';
 import ReadOnlyText from 'components/ReadOnlyText';
 import { MessageType, DialogMessage } from 'models/message';
 import { useFormik } from 'formik';
+import BottomSheet from 'reanimated-bottom-sheet';
 
 interface State {
   message?: DialogMessage,
@@ -159,6 +160,13 @@ const Layout = (props: UIProps) => {
 
   }
 
+  const header = ()=>{
+    return <HeaderBottomSheet >
+      <HorizontalLine />
+    </HeaderBottomSheet>
+  }
+
+
   const width = Dimensions.get('screen').width;
   const height = Dimensions.get('window').height;
   const Filter = () => {
@@ -177,23 +185,19 @@ const Layout = (props: UIProps) => {
               }}>
                 <Icon.Back color='black' size={22} />
               </TouchableOpacity>
-              : <View style={{ width: 19 }}></View>
+              : <View/>
           }
           <Title text="Địa điểm" titleStyle={{ marginBottom: 10 }}></Title>
-          <TouchableOpacity onPress={() => {
-            ActionCreators.FieldChange(dispatch, 'display', false)
-          }}>
-            <Icon.Close color='black' size={22} />
-          </TouchableOpacity>
+          <View/>
         </DialogHeader>
         {
           state.step == 1 &&
-          <ScrollWrapper >
+          <ScrollWrapper showsVerticalScrollIndicator={false} >
             <ContentStep>
               <Title text="Dịch vụ" titleStyle={{ marginVertical: 10 }}></Title>
               {
                 props.services &&
-                <ServiceWrapper horizontal>
+                <ServiceWrapper horizontal >
                   {
                     props.selectedService &&
                     <View style={{ marginLeft: 20 }}>
@@ -231,7 +235,7 @@ const Layout = (props: UIProps) => {
         }
         {
           state.step == 2 &&
-          <ScrollWrapper>
+          <ScrollWrapper showsVerticalScrollIndicator={false}>
             <ContentStep>
               <Title text="Thời gian" titleStyle={{ marginBottom: 10 }}></Title>
               <TimeWrapper>
@@ -365,34 +369,17 @@ const Layout = (props: UIProps) => {
           onTextChange={setSearch}
         />
       </SearchContainer>
-      <ButtonDashBoard>
-        <TouchableOpacity
-          style={{ borderRadius: 10, backgroundColor: 'white' }}
-          onPress={() => {
-            ActionCreators.FieldChange(dispatch, 'display', true)
-          }}>
-          <Icon.DashBroad size={30} color={'#65DF7F'} />
-        </TouchableOpacity>
-      </ButtonDashBoard>
-
       {
         (state.step == 1 || state.step == 2) &&
-        <ModalUI display={state.display ?? true} height='60%'>
-
-          {
-            Filter()
-          }
-
-        </ModalUI>
-
+        <BottomSheet
+          enabledContentTapInteraction={false}
+          enabledInnerScrolling={true}
+          enabledContentGestureInteraction={false}
+          snapPoints={[height*0.6, 30, 30]}
+          renderContent={Filter}
+          renderHeader={header}
+        />
       }
-      {/* {!state.display && <TouchableOpacity style={{}} onPress={() => {
-            ActionCreators.FieldChange(dispatch, 'display', true)
-          }}>
-            <Icon.Close color='black' size={22} />
-          </TouchableOpacity>
-      } */}
-
     </Container>
   );
 }
@@ -426,8 +413,6 @@ width:100%;
 bottom:0;
 background-color: #FFFF;
 padding:15px;
-borderTopStartRadius:10;
-borderTopEndRadius:10;
 `;
 const ContentStep = styled.View`
 marginBottom:50px;
@@ -518,10 +503,18 @@ position:absolute;
 bottom:10%;
 right:5%;
 `
-const ButtonDashBoard = styled.View`
-zIndex: 10;
-backgroundColor:transparent;
-position:absolute;
-bottom:10%;
-left:5%;
+const HorizontalLine = styled.View`
+borderRadius:50;
+height:7;
+width:50;
+backgroundColor:#65DF7F;
+`
+
+const HeaderBottomSheet = styled.View`
+borderTopLeftRadius:15;
+borderTopRightRadius:15;
+height:30;
+backgroundColor:#FFF;
+alignItems:center;
+justifyContent:center;
 `
