@@ -79,13 +79,9 @@ import com.android.build.OutputFile
  */
 
 project.ext.react = [
-    entryFile: "index.js",
-    bundleAssetName: "app.bundle",
+
     enableHermes: false,  // clean and rebuild if changing
-    firebase: [
-        // Override Firebase SDK Version
-        bom           : "25.7.0"
-      ],
+
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -200,6 +196,7 @@ dependencies {
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+    implementation 'com.android.support:multidex:1.0.3'
     implementation project(':react-native-firebase')
     implementation "com.google.android.gms:play-services-base:16.1.0"
     implementation "com.google.firebase:firebase-core:16.0.8"
