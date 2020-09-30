@@ -20,7 +20,7 @@ import ImageScroll from 'components/ImageScroll';
 import { FormMode } from 'models/form';
 import VideoList from 'components/VideoList';
 // @ts-ignore
-import JitsiMeet, { JitsiMeetView } from 'react-native-jitsi-meet';
+// import JitsiMeet, { JitsiMeetView } from 'react-native-jitsi-meet';
 
 interface UIProps {
     user?: User,
@@ -184,20 +184,20 @@ const Layout = (props: UIProps) => {
     };
 
 
-    const [call,setCall] = useState(false)
-    useEffect(() => {
-        if(call){
-            setTimeout(() => {
-                const url = 'https://meet.jit.si/exemple';
-                const userInfo = {
-                  displayName: 'User',
-                  email: 'user@example.com',
-                  avatar: 'https:/gravatar.com/avatar/abc123',
-                };
-                JitsiMeet.call(url, userInfo);
-            }, 1000);
-        }
-      }, [call])
+    // const [call,setCall] = useState(false)
+    // useEffect(() => {
+    //     if(call){
+    //         setTimeout(() => {
+    //             const url = 'https://meet.jit.si/exemple';
+    //             const userInfo = {
+    //               displayName: 'User',
+    //               email: 'user@example.com',
+    //               avatar: 'https:/gravatar.com/avatar/abc123',
+    //             };
+    //             JitsiMeet.call(url, userInfo);
+    //         }, 1000);
+    //     }
+    //   }, [call])
 
 
 
@@ -211,8 +211,8 @@ const Layout = (props: UIProps) => {
         /* Conference terminated event */
         // console.log(nativeEvent)
         // if(nativeEvent)
-        JitsiMeet.endCall();
-        setCall(false)
+        // JitsiMeet.endCall();
+        // setCall(false)
     }
 
     const onConferenceJoined = (nativeEvent) => {
@@ -225,18 +225,18 @@ const Layout = (props: UIProps) => {
         // console.log(nativeEvent)
     }
 
-    const Jitsimeet = () =>{
-        return <JitsiMeetView
-        onConferenceTerminated={(e) => onConferenceTerminated(e)}
-        onConferenceJoined={(e) => onConferenceJoined(e)}
-        onConferenceWillJoin={(e) => onConferenceWillJoin(e)}
-        style={{
-            flex: 1,
-            height: '100%',
-            width: '100%',
-        }}/>
-    }
-    if(call) return Jitsimeet();
+    // const Jitsimeet = () =>{
+    //     return <JitsiMeetView
+    //     onConferenceTerminated={(e) => onConferenceTerminated(e)}
+    //     onConferenceJoined={(e) => onConferenceJoined(e)}
+    //     onConferenceWillJoin={(e) => onConferenceWillJoin(e)}
+    //     style={{
+    //         flex: 1,
+    //         height: '100%',
+    //         width: '100%',
+    //     }}/>
+    // }
+    // if(call) return Jitsimeet();
 
     return (
         <KeyboardAvoidingView
@@ -252,7 +252,7 @@ const Layout = (props: UIProps) => {
                     children={
                         <ActionWrapper>
                             <ActionStyled onPress={() => {
-                                setCall(true)
+                                // setCall(true)
                              }}>
                                 <Icon.Recorder size={24} color="#65DF7B" />
                             </ActionStyled>
