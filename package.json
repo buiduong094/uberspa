@@ -9,7 +9,11 @@
     "test": "jest",
     "lint": "eslint .",
     "build:android": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res",
-    "android:clear": "rm -rf ./android/app/src/main/res/raw && rm -rf ./android/app/src/main/res/drawable-*"
+    "android:clear": "rm -rf ./android/app/src/main/res/raw && rm -rf ./android/app/src/main/res/drawable-*",
+    "push:ios": "appcenter codepush release-react -a nmb-push/UberOne -t '1.0.0' -d Production",
+    "push:android": "appcenter codepush release-react -a nmb-push/UberOne-android -t '1.0.0' -d Production",
+    "push:iosKey": "appcenter codepush deployment list -a nmb-push/UberOne -k",
+    "push:androidKey": "appcenter codepush deployment list -a nmb-push/UberOne-android -k"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.7.1",

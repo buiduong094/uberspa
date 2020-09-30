@@ -5,7 +5,7 @@ import { client, setToken } from 'api/client';
 import { IState } from './InitState';
 import store from 'store/configureStore';
 import { Endpoint } from 'api/endpoint';
-import { FormMessage, MessageType } from 'models/message';
+import { DialogMessage, MessageType } from 'models/message';
 import { MessageDefine } from 'locales';
 import { SERVER_KEY } from 'constant';
 import firebase from 'firebase';
@@ -157,7 +157,7 @@ export const reducer = (state: IState, incomingAction: KnownAction): IState => {
                     commited: true,
                 }
             } else {
-                const message: FormMessage = {
+                const message: DialogMessage = {
                     display: true,
                     type: action.isLoggedIn ? MessageType.Success : MessageType.Error,
                     message: action.isLoggedIn ? '' : MessageDefine.LOGIN_FAIL
@@ -171,7 +171,7 @@ export const reducer = (state: IState, incomingAction: KnownAction): IState => {
             }
         case ActionType.REGISTER:
             action = incomingAction as RegisterAction;
-            const message: FormMessage = {
+            const message: DialogMessage = {
                 display: true,
                 type: action.isSuccess ? MessageType.Success : MessageType.Error,
                 message: action.message
